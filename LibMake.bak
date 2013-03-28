@@ -1,18 +1,10 @@
-EESchema Schematic File Version 2  date 2013/03/28 12:09:17
+EESchema Schematic File Version 2  date 2013/03/28 8:44:08
+LIBS:conn
+LIBS:template
 LIBS:device
 LIBS:power
 LIBS:connector
-LIBS:C
-LIBS:D
-LIBS:fet-n
-LIBS:fet-p
-LIBS:jfet-n
-LIBS:jfet-p
-LIBS:L
-LIBS:LED
-LIBS:R
-LIBS:tr-npn
-LIBS:tr-pnp
+LIBS:LibMake-cache
 EELAYER 27 0
 EELAYER END
 $Descr A4 11693 8268

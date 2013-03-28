@@ -1,4 +1,4 @@
-update=2013/03/28 8:30:44
+update=2013/03/28 12:09:11
 version=1
 last_client=eeschema
 [cvpcb]
@@ -40,15 +40,24 @@ LibName11=valves
 version=1
 [eeschema]
 version=1
-LibDir=
+LibDir=TemplateLibs
 NetFmtName=
 RptD_X=0
 RptD_Y=100
 RptLab=1
 LabSize=60
 [eeschema/libraries]
-LibName1=conn
-LibName2=template
-LibName3=device
-LibName4=power
-LibName5=connector
+LibName1=device
+LibName2=power
+LibName3=connector
+LibName4=C
+LibName5=D
+LibName6=fet-n
+LibName7=fet-p
+LibName8=jfet-n
+LibName9=jfet-p
+LibName10=L
+LibName11=LED
+LibName12=R
+LibName13=tr-npn
+LibName14=tr-pnp
