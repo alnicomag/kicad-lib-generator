@@ -1,0 +1,23 @@
+EESchema-LIBRARY Version 2.3  Date: 2013/03/28 9:25:09
+#encoding utf-8
+#
+# jfet-n
+#
+DEF jfet-n Q 0 0 N Y 1 F N
+F0 "Q" 100 100 40 H V L CNN
+F1 "jfet-n" 100 -100 40 H V L CNN
+F2 "~" -210 102 29 H V C CNN
+F3 "~" -50 0 60 H V C CNN
+DRAW
+C 0 0 111 0 1 0 f
+S -45 -75 -25 75 0 1 1 F
+P 2 0 1 0  -35 -50  50 -50 N
+P 2 0 1 0  -35 50  50 50 N
+P 4 0 1 1  -40 0  -80 15  -80 -15  -40 0 F
+X ~ D 50 150 100 D 40 40 1 1 P
+X ~ G -150 0 70 R 40 40 1 1 P
+X ~ S 50 -150 100 U 40 40 1 1 P
+ENDDRAW
+ENDDEF
+#
+#End Library
