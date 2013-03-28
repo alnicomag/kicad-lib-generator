@@ -1,0 +1,23 @@
+EESchema-LIBRARY Version 2.3  Date: 2013/03/28 9:45:12
+#encoding utf-8
+#
+# LED
+#
+DEF LED LED 0 40 N N 1 F N
+F0 "LED" -100 120 40 H V L CNN
+F1 "LED" 0 -80 40 H V C CNN
+F2 "~" 0 0 60 H V C CNN
+F3 "~" 0 0 60 H V C CNN
+DRAW
+S 35 40 40 -40 0 1 1 F
+P 2 0 1 0  10 50  45 85 N
+P 2 0 1 0  50 50  85 85 N
+P 3 0 1 1  -40 40  40 0  -40 -40 F
+P 3 0 1 0  30 60  45 85  20 70 F
+P 3 0 1 0  70 60  85 85  60 70 F
+X A 1 -100 0 60 R 40 40 1 1 P
+X K 2 100 0 60 L 40 40 1 1 P
+ENDDRAW
+ENDDEF
+#
+#End Library
