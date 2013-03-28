@@ -1,11 +1,11 @@
 EESchema-LIBRARY Version 2.3  Date: 2013/03/28 8:54:47
 #encoding utf-8
 #
-# L
+# L-type1
 #
-DEF L L 0 0 N Y 1 F N
+DEF L-type1 L 0 0 N Y 1 F N
 F0 "L" -125 60 40 H V L CNN
-F1 "L" 0 -50 40 H V C CNN
+F1 "L-type1" 0 -50 40 H V C CNN
 F2 "~" -70 0 30 V V C CNN
 F3 "~" 0 0 30 H V C CNN
 F4 "4.7m" 25 60 35 H V L CNN "Inductance"
