@@ -1,4 +1,4 @@
-EESchema-LIBRARY Version 2.3  Date: 2013/03/29 16:08:12
+EESchema-LIBRARY Version 2.3  Date: 2013/03/29 16:07:51
 #encoding utf-8
 #
 # L-type1
@@ -41,11 +41,11 @@ ENDDEF
 # L-type3
 #
 DEF L-type3 L 0 0 N Y 1 F N
-F0 "L" -125 80 40 H V L CNN
+F0 "L" -125 100 40 H V L CNN
 F1 "L-type3" 0 -50 40 H V C CNN
 F2 "~" -70 0 30 V V C CNN
 F3 "~" 0 0 30 H V C CNN
-F4 "4.7m" 25 80 35 H V L CNN "Inductance"
+F4 "4.7m" 25 100 35 H V L CNN "Inductance"
 DRAW
 A -75 0 25 1 1799 0 1 0 N -50 0 -100 0
 A -25 0 25 1 1799 0 1 0 N 0 0 -50 0

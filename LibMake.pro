@@ -1,4 +1,4 @@
-update=2013/03/28 12:09:11
+update=2013/03/29 13:36:54
 version=1
 last_client=eeschema
 [cvpcb]
@@ -47,17 +47,17 @@ RptD_Y=100
 RptLab=1
 LabSize=60
 [eeschema/libraries]
-LibName1=device
-LibName2=power
-LibName3=connector
-LibName4=C
-LibName5=D
-LibName6=fet-n
-LibName7=fet-p
-LibName8=jfet-n
-LibName9=jfet-p
-LibName10=L
-LibName11=LED
-LibName12=R
-LibName13=tr-npn
-LibName14=tr-pnp
+LibName1=C
+LibName2=D
+LibName3=fet-n
+LibName4=fet-p
+LibName5=jfet-n
+LibName6=jfet-p
+LibName7=L
+LibName8=LED
+LibName9=R
+LibName10=tr-npn
+LibName11=tr-pnp
+LibName12=device
+LibName13=connector
+LibName14=power
