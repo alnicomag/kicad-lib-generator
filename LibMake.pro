@@ -1,4 +1,4 @@
-update=2013/03/29 13:36:54
+update=2013/03/29 17:37:29
 version=1
 last_client=eeschema
 [cvpcb]
@@ -40,7 +40,7 @@ LibName11=valves
 version=1
 [eeschema]
 version=1
-LibDir=TemplateLibs
+LibDir=KiLibTemplate
 NetFmtName=
 RptD_X=0
 RptD_Y=100

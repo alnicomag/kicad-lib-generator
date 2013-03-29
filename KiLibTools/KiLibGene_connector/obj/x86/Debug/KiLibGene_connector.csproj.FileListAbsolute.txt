@@ -1,0 +1,5 @@
+C:\Users\tatsuya\Documents\GitHub\KiCadMyLibrary\KiLibTools\KiLibGene_connector\bin\Debug\KiLibGene_connector.exe
+C:\Users\tatsuya\Documents\GitHub\KiCadMyLibrary\KiLibTools\KiLibGene_connector\bin\Debug\KiLibGene_connector.pdb
+C:\Users\tatsuya\Documents\GitHub\KiCadMyLibrary\KiLibTools\KiLibGene_connector\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\tatsuya\Documents\GitHub\KiCadMyLibrary\KiLibTools\KiLibGene_connector\obj\x86\Debug\KiLibGene_connector.exe
+C:\Users\tatsuya\Documents\GitHub\KiCadMyLibrary\KiLibTools\KiLibGene_connector\obj\x86\Debug\KiLibGene_connector.pdb

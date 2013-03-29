@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date 2013/03/29 16:16:47
+EESchema Schematic File Version 2  date 2013/03/29 17:49:25
 LIBS:C
 LIBS:D
 LIBS:fet-n
