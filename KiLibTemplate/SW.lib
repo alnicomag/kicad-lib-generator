@@ -1,0 +1,131 @@
+EESchema-LIBRARY Version 2.3  Date: 2013/03/30 2:04:01
+#encoding utf-8
+#
+# sw-spdt
+#
+DEF sw-spdt SW 0 40 N N 1 F N
+F0 "SW" -100 100 40 H V L CNN
+F1 "sw-spdt" 0 -125 40 H V C CNN
+F2 "~" 0 0 60 H V C CNN
+F3 "~" 0 0 60 H V C CNN
+DRAW
+C -80 0 20 0 1 0 N
+C 80 -50 20 0 1 0 N
+C 80 50 20 0 1 0 N
+P 2 0 1 0  -60 0  80 30 N
+X 1 ~ -150 0 50 R 60 60 0 1 P
+X 2 ~ 150 50 50 L 60 60 0 1 P
+X 3 ~ 150 -50 50 L 60 60 0 1 P
+ENDDRAW
+ENDDEF
+#
+# sw-spst
+#
+DEF sw-spst SW 0 40 N N 1 F N
+F0 "SW" -100 80 40 H V L CNN
+F1 "sw-spst" 0 -70 40 H V C CNN
+F2 "~" 0 0 60 H V C CNN
+F3 "~" 0 0 60 H V C CNN
+DRAW
+C -80 0 20 0 1 0 N
+C 80 0 20 0 1 0 N
+P 2 0 1 0  -80 20  80 50 N
+X 1 ~ -150 0 50 R 60 60 0 1 P
+X 2 ~ 150 0 50 L 60 60 0 1 P
+ENDDRAW
+ENDDEF
+#
+# sw-spst-tact
+#
+DEF sw-spst-tact SW 0 40 N N 1 F N
+F0 "SW" -100 100 40 H V L CNN
+F1 "sw-spst-tact" 0 -70 40 H V C CNN
+F2 "~" 0 0 60 H V C CNN
+F3 "~" 0 0 60 H V C CNN
+DRAW
+C -80 0 20 0 1 0 N
+C 80 0 20 0 1 0 N
+S -100 35 100 45 0 1 1 F
+P 4 0 1 0  -40 45  -30 70  30 70  40 45 N
+X 1 ~ -150 0 50 R 60 60 0 1 P
+X 2 ~ 150 0 50 L 60 60 0 1 P
+ENDDRAW
+ENDDEF
+#
+# sw-dpst
+#
+DEF sw-dpst SW 0 40 N N 1 F N
+F0 "SW" -100 130 40 H V L CNN
+F1 "sw-dpst" 0 -125 40 H V C CNN
+F2 "~" 0 0 60 H V C CNN
+F3 "~" 0 0 60 H V C CNN
+DRAW
+C -80 50 20 0 1 0 N
+C 80 50 20 0 1 0 N
+C -80 -50 20 0 1 0 N
+C 80 -50 20 0 1 0 N
+P 2 0 1 0  -80 70  80 100 N
+P 2 0 1 0  -80 -30  80 0 N
+P 2 0 1 0  0 -15  0 5 N
+P 2 0 1 0  0 25  0 45 N
+P 2 0 1 0  0 65  0 85 N
+X 1 ~ -150 50 50 R 60 60 0 1 P
+X 2 ~ 150 50 50 L 60 60 0 1 P
+X 3 ~ -150 -50 50 R 60 60 0 1 P
+X 4 ~ 150 -50 50 L 60 60 0 1 P
+ENDDRAW
+ENDDEF
+#
+# sw-dpst-tact
+#
+DEF sw-dpst-tact SW 0 40 N N 1 F N
+F0 "SW" -100 150 40 H V L CNN
+F1 "sw-dpst-tact" 0 -120 40 H V C CNN
+F2 "~" 0 0 60 H V C CNN
+F3 "~" 0 0 60 H V C CNN
+DRAW
+C -80 50 20 0 1 0 N
+C 80 50 20 0 1 0 N
+C -80 -50 20 0 1 0 N
+C 80 -50 20 0 1 0 N
+S -100 85 100 95 0 1 1 F
+S -100 -15 100 -5 0 1 1 F
+P 2 0 1 0  0 -5  0 15 N
+P 2 0 1 0  0 30  0 50 N
+P 2 0 1 0  0 65  0 85 N
+P 4 0 1 0  -40 95  -30 120  30 120  40 95 N
+X 1 ~ -150 50 50 R 60 60 0 1 P
+X 2 ~ 150 50 50 L 60 60 0 1 P
+X 3 ~ -150 -50 50 R 60 60 0 1 P
+X 4 ~ 150 -50 50 L 60 60 0 1 P
+ENDDRAW
+ENDDEF
+#
+# sw-dpst-tact-2
+#
+DEF sw-dpst-tact-2 SW 0 40 N N 1 F N
+F0 "SW" -100 150 40 H V L CNN
+F1 "sw-dpst-tact-2" 0 -120 40 H V C CNN
+F2 "~" 0 0 60 H V C CNN
+F3 "~" 0 0 60 H V C CNN
+DRAW
+C -80 50 20 0 1 0 N
+C 80 50 20 0 1 0 N
+C -80 -50 20 0 1 0 N
+C 80 -50 20 0 1 0 N
+S -100 85 100 95 0 1 1 F
+S -100 -15 100 -5 0 1 1 F
+P 2 0 1 0  0 -5  0 15 N
+P 2 0 1 0  0 30  0 50 N
+P 2 0 1 0  0 65  0 85 N
+P 4 0 1 0  -40 95  -30 120  30 120  40 95 N
+P 2 0 1 0  -150 -50  -150 50 N
+P 2 0 1 0  150 -50  150 50 N
+X 1 ~ -200 50 100 R 60 60 0 1 P
+X 2 ~ 200 50 100 L 60 60 0 1 P
+X 3 ~ -200 -50 100 R 60 60 0 1 P
+X 4 ~ 200 -50 100 L 60 60 0 1 P
+ENDDRAW
+ENDDEF
+#
+#End Library

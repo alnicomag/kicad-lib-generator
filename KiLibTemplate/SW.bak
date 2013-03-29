@@ -1,0 +1,55 @@
+EESchema-LIBRARY Version 2.3  Date: 2013/03/30 2:03:26
+#encoding utf-8
+#
+# sw-spdt
+#
+DEF sw-spdt SW 0 40 N N 1 F N
+F0 "SW" -100 80 40 H V L CNN
+F1 "sw-spdt" 0 -200 40 H V C CNN
+F2 "~" 0 0 60 H V C CNN
+F3 "~" 0 0 60 H V C CNN
+DRAW
+C -80 0 20 0 1 0 N
+C 80 -50 20 0 1 0 N
+C 80 50 20 0 1 0 N
+P 2 0 1 0  -60 0  80 30 N
+X ~ ~ -150 0 50 R 60 60 0 1 P
+X ~ ~ 150 -50 50 L 60 60 0 1 P
+X ~ ~ 150 50 50 L 60 60 0 1 P
+ENDDRAW
+ENDDEF
+#
+# sw-spst
+#
+DEF sw-spst SW 0 40 N N 1 F N
+F0 "SW" -100 80 40 H V L CNN
+F1 "sw-spst" 0 -70 40 H V C CNN
+F2 "~" 0 0 60 H V C CNN
+F3 "~" 0 0 60 H V C CNN
+DRAW
+C -80 0 20 0 1 0 N
+C 80 0 20 0 1 0 N
+P 2 0 1 0  -80 20  80 50 N
+X 1 1 -150 0 50 R 60 60 0 1 P
+X 2 2 150 0 50 L 60 60 0 1 P
+ENDDRAW
+ENDDEF
+#
+# sw-spst-tact
+#
+DEF sw-spst-tact SW 0 40 N N 1 F N
+F0 "SW" -100 110 40 H V L CNN
+F1 "sw-spst-tact" 0 -70 40 H V C CNN
+F2 "~" 0 0 60 H V C CNN
+F3 "~" 0 0 60 H V C CNN
+DRAW
+C -80 0 20 0 1 0 N
+C 80 0 20 0 1 0 N
+S -100 35 100 45 0 1 1 F
+P 4 0 1 0  -40 45  -30 70  30 70  40 45 N
+X 1 1 -150 0 50 R 60 60 0 1 P
+X 2 2 150 0 50 L 60 60 0 1 P
+ENDDRAW
+ENDDEF
+#
+#End Library
