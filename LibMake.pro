@@ -1,4 +1,4 @@
-update=2013/03/31 11:17:46
+update=2013/03/31 12:12:50
 version=1
 last_client=eeschema
 [cvpcb]
@@ -58,7 +58,8 @@ LibName8=SW
 LibName9=Tr
 LibName10=connector-female
 LibName11=connector-male
-LibName12=supply1
-LibName13=supply2
+LibName12=supply2
+LibName13=supply1
 LibName14=device
 LibName15=74xx
+LibName16=power

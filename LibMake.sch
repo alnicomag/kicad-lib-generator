@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date 2013/03/31 11:18:13
+EESchema Schematic File Version 2  date 2013/03/31 12:12:59
 LIBS:C
 LIBS:D
 LIBS:FET
@@ -10,10 +10,11 @@ LIBS:SW
 LIBS:Tr
 LIBS:connector-female
 LIBS:connector-male
-LIBS:supply1
 LIBS:supply2
+LIBS:supply1
 LIBS:device
 LIBS:74xx
+LIBS:power
 LIBS:LibMake-cache
 EELAYER 27 0
 EELAYER END
@@ -409,6 +410,17 @@ F 1 "-10V" H 6300 3160 40  0000 C CNN
 F 2 "~" H 6300 3300 60  0000 C CNN
 F 3 "~" H 6300 3300 60  0000 C CNN
 	1    6300 3300
+	1    0    0    -1  
+$EndComp
+$Comp
+L GND2 #PWR?
+U 1 1 5157A7C4
+P 6500 3300
+F 0 "#PWR?" H 6500 3105 40  0001 C CNN
+F 1 "GND2" H 6500 3160 40  0000 C CNN
+F 2 "~" H 6500 3300 60  0000 C CNN
+F 3 "~" H 6500 3300 60  0000 C CNN
+	1    6500 3300
 	1    0    0    -1  
 $EndComp
 $EndSCHEMATC

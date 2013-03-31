@@ -242,6 +242,10 @@ namespace KiLibGene_connector
 			{
 				PlotDownType1(sw, label);
 			}
+			foreach (string label in Vgnd)
+			{
+				PlotGNDType1(sw, label);
+			}
 		}
 
 		public void PlotType2(StreamWriter sw)
@@ -258,6 +262,10 @@ namespace KiLibGene_connector
 			foreach (string label in Vn)
 			{
 				PlotDownType2(sw, label);
+			}
+			foreach(string label in Vgnd)
+			{
+				PlotGNDType2(sw, label);
 			}
 		}
 
@@ -338,7 +346,48 @@ namespace KiLibGene_connector
 			sw.WriteLine("ENDDRAW");
 			sw.WriteLine("ENDDEF");
 		}
-		
+
+		private static void PlotGNDType1(StreamWriter sw, string component_name)
+		{
+			sw.WriteLine("#");
+			sw.WriteLine("# {0}", component_name);
+			sw.WriteLine("#");
+			sw.WriteLine("DEF {0} #PWR 0 0 N N 1 F P", component_name);
+			sw.WriteLine("F0 \"#PWR\" 0 -195 40 H I C CNN");
+			sw.WriteLine("F1 \"{0}\" 0 -140 40 H V C CNN", component_name);
+			sw.WriteLine("F2 \"~\" 0 0 60 H V C CNN");
+			sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
+			sw.WriteLine("DRAW");
+
+			sw.WriteLine("X {0} 1 0 0 50 D 20 20 0 0 W", component_name);
+			sw.WriteLine("S -50 -55 50 -45 0 1 1 F");
+			sw.WriteLine("P 2 0 1 10  -20 -50  -40 -80 N");
+			sw.WriteLine("P 2 0 1 10  10 -50  -10 -80 N");
+			sw.WriteLine("P 2 0 1 10  40 -50  20 -80 N");
+
+			sw.WriteLine("ENDDRAW");
+			sw.WriteLine("ENDDEF");
+		}
+
+		private static void PlotGNDType2(StreamWriter sw, string component_name)
+		{
+			sw.WriteLine("#");
+			sw.WriteLine("# {0}", component_name);
+			sw.WriteLine("#");
+			sw.WriteLine("DEF {0} #PWR 0 0 N N 1 F P", component_name);
+			sw.WriteLine("F0 \"#PWR\" 0 -195 40 H I C CNN");
+			sw.WriteLine("F1 \"{0}\" 0 -140 40 H V C CNN", component_name);
+			sw.WriteLine("F2 \"~\" 0 0 60 H V C CNN");
+			sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
+			sw.WriteLine("DRAW");
+
+			sw.WriteLine("X {0} 1 0 0 50 D 20 20 0 0 W", component_name);
+			sw.WriteLine("P 4 0 1 0  0 -100  -50 -50  50 -50  0 -100 N");
+
+			sw.WriteLine("ENDDRAW");
+			sw.WriteLine("ENDDEF");
+		}
+
 		private List<string> Vnum = new List<string> { "1.2", "1.8", "2.4", "2.5", "3.3", "3.6", "3.7", "4.8", "5", "6", "7.4", "8", "9", "9.4", "10", "11.1", "12", "15", "18", "22.2", "24", "36", "48" };
 		private string[] Vp = new string[] { "VCC", "VCC2", "+VCC", "VCCIO", "VDD", "VDD2", "+VDD", "VDDIO", "V+", "VM" };
 		private string[] Vn = new string[] { "VEE", "VEE2", "-VCC", "VEEIO", "VSS", "VSS2", "-VDD", "VSSIO", "V-" };
