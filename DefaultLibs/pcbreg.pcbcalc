@@ -1,0 +1,32 @@
+(datafile
+  (version 1)
+    (date "02/01/2013 17:10:40")
+      (tool "pcb_calculator (2013-01-01 BZR 3879)-testing")
+        (regulators
+          (regulator KD1084
+            (reg_vref 1.25)
+            (reg_iadj 50)
+            (reg_type 3terminal)
+          )
+          (regulator lm317
+            (reg_vref 1.25)
+            (reg_iadj 50)
+            (reg_type 3terminal)
+          )
+          (regulator lm25576
+            (reg_vref 1.2225)
+            (reg_type normal)
+          )
+          (regulator LP2951CM
+            (reg_vref 1.23)
+            (reg_type normal)
+          )
+          (regulator lt1373
+            (reg_vref 1.245)
+            (reg_type normal)
+          )
+        )
+      )
+    )
+  )
+)

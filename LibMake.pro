@@ -1,4 +1,4 @@
-update=2013/03/30 1:15:57
+update=2013/03/31 8:49:10
 version=1
 last_client=eeschema
 [cvpcb]
@@ -40,8 +40,8 @@ LibName11=valves
 version=1
 [eeschema]
 version=1
-LibDir=KiLibTemplate
-NetFmtName=
+LibDir=DefaultLibs;SchemaLib;SchemaLibTemplate
+NetFmtName=PcbnewAdvanced
 RptD_X=0
 RptD_Y=100
 RptLab=1
@@ -56,6 +56,8 @@ LibName6=LED
 LibName7=R
 LibName8=SW
 LibName9=Tr
-LibName10=connector
-LibName11=device
-LibName12=power
+LibName10=powersupply
+LibName11=connector-female
+LibName12=connector-male
+LibName13=device
+LibName14=74xx
