@@ -1,4 +1,4 @@
-update=2013/03/31 8:49:10
+update=2013/03/31 11:17:46
 version=1
 last_client=eeschema
 [cvpcb]
@@ -56,8 +56,9 @@ LibName6=LED
 LibName7=R
 LibName8=SW
 LibName9=Tr
-LibName10=powersupply
-LibName11=connector-female
-LibName12=connector-male
-LibName13=device
-LibName14=74xx
+LibName10=connector-female
+LibName11=connector-male
+LibName12=supply1
+LibName13=supply2
+LibName14=device
+LibName15=74xx

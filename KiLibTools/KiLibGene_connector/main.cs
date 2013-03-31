@@ -42,12 +42,20 @@ namespace KiLibGene_connector
 				sw.WriteLine("#End Library");
 			}
 
-			using (StreamWriter sw = new StreamWriter(@fbd.SelectedPath + "\\powersupply.lib"))
+			KiLib_PowerSupply ps = new KiLib_PowerSupply();
+			using (StreamWriter sw = new StreamWriter(@fbd.SelectedPath + "\\supply1.lib"))
 			{
-				KiLib_PowerSupply ps = new KiLib_PowerSupply();
 				sw.WriteLine("EESchema-LIBRARY Version 2.3  Date: " + DateTime.Now.ToString());
 				sw.WriteLine("#encoding utf-8");
-				ps.Plot(sw);
+				ps.PlotType1(sw);
+				sw.WriteLine("#");
+				sw.WriteLine("#End Library");
+			}
+			using (StreamWriter sw = new StreamWriter(@fbd.SelectedPath + "\\supply2.lib"))
+			{
+				sw.WriteLine("EESchema-LIBRARY Version 2.3  Date: " + DateTime.Now.ToString());
+				sw.WriteLine("#encoding utf-8");
+				ps.PlotType2(sw);
 				sw.WriteLine("#");
 				sw.WriteLine("#End Library");
 			}
@@ -219,20 +227,37 @@ namespace KiLibGene_connector
 	class KiLib_PowerSupply
 	{
 
-		public  void Plot(StreamWriter sw)
-		{
-			Plotaa(sw);
-		}
-
-
-		private void Plotaa(StreamWriter sw)
+		public void PlotType1(StreamWriter sw)
 		{
 			foreach (string label in Vnum)
 			{
-				string component_name = "+" + label + "V";
-				PlotUpType1(sw, component_name);
-				component_name = "-" + label + "V";
-				PlotDownType1(sw, component_name);
+				PlotUpType1(sw, "+" + label + "V");
+				PlotDownType1(sw, "-" + label + "V");
+			}
+			foreach(string label in Vp)
+			{
+				PlotUpType1(sw, label);
+			}
+			foreach (string label in Vn)
+			{
+				PlotDownType1(sw, label);
+			}
+		}
+
+		public void PlotType2(StreamWriter sw)
+		{
+			foreach (string label in Vnum)
+			{
+				PlotUpType2(sw, "+" + label + "V");
+				PlotDownType2(sw, "-" + label + "V");
+			}
+			foreach (string label in Vp)
+			{
+				PlotUpType2(sw, label);
+			}
+			foreach (string label in Vn)
+			{
+				PlotDownType2(sw, label);
 			}
 		}
 
@@ -255,6 +280,26 @@ namespace KiLibGene_connector
 			sw.WriteLine("ENDDEF");
 		}
 
+		private static void PlotUpType2(StreamWriter sw, string component_name)
+		{
+			sw.WriteLine("#");
+			sw.WriteLine("# {0}", component_name);
+			sw.WriteLine("#");
+			sw.WriteLine("DEF {0} #PWR 0 0 N N 1 F P", component_name);
+			sw.WriteLine("F0 \"#PWR\" 0 180 40 H I C CNN");
+			sw.WriteLine("F1 \"{0}\" 0 125 40 H V C CNN", component_name);
+			sw.WriteLine("F2 \"~\" 0 0 60 H V C CNN");
+			sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
+			sw.WriteLine("DRAW");
+
+			sw.WriteLine("X {0} 1 0 0 60 U 20 20 0 0 W", component_name);
+			sw.WriteLine("C 0 75 15 0 1 0 F");
+			sw.WriteLine("P 2 0 1 0  -40 75  40 75 N");
+
+			sw.WriteLine("ENDDRAW");
+			sw.WriteLine("ENDDEF");
+		}
+
 		private static void PlotDownType1(StreamWriter sw, string component_name)
 		{
 			sw.WriteLine("#");
@@ -263,8 +308,8 @@ namespace KiLibGene_connector
 			sw.WriteLine("DEF {0} #PWR 0 0 N N 1 F P", component_name);
 			sw.WriteLine("F0 \"#PWR\" 0 -195 40 H I C CNN");
 			sw.WriteLine("F1 \"{0}\" 0 -140 40 H V C CNN", component_name);
-			sw.WriteLine("F2 \"~\" 0 0 -60 H V C CNN");
-			sw.WriteLine("F3 \"~\" 0 0 -60 H V C CNN");
+			sw.WriteLine("F2 \"~\" 0 0 60 H V C CNN");
+			sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
 			sw.WriteLine("DRAW");
 
 			sw.WriteLine("X {0} 1 0 0 50 D 20 20 0 0 W", component_name);
@@ -274,6 +319,26 @@ namespace KiLibGene_connector
 			sw.WriteLine("ENDDEF");
 		}
 
+		private static void PlotDownType2(StreamWriter sw, string component_name)
+		{
+			sw.WriteLine("#");
+			sw.WriteLine("# {0}", component_name);
+			sw.WriteLine("#");
+			sw.WriteLine("DEF {0} #PWR 0 0 N N 1 F P", component_name);
+			sw.WriteLine("F0 \"#PWR\" 0 -195 40 H I C CNN");
+			sw.WriteLine("F1 \"{0}\" 0 -140 40 H V C CNN", component_name);
+			sw.WriteLine("F2 \"~\" 0 0 60 H V C CNN");
+			sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
+			sw.WriteLine("DRAW");
+
+			sw.WriteLine("X {0} 1 0 0 60 D 20 20 0 0 W", component_name);
+			sw.WriteLine("C 0 -75 15 0 1 0 F");
+			sw.WriteLine("P 2 0 1 0  -40 -75  40 -75 N");
+
+			sw.WriteLine("ENDDRAW");
+			sw.WriteLine("ENDDEF");
+		}
+		
 		private List<string> Vnum = new List<string> { "1.2", "1.8", "2.4", "2.5", "3.3", "3.6", "3.7", "4.8", "5", "6", "7.4", "8", "9", "9.4", "10", "11.1", "12", "15", "18", "22.2", "24", "36", "48" };
 		private string[] Vp = new string[] { "VCC", "VCC2", "+VCC", "VCCIO", "VDD", "VDD2", "+VDD", "VDDIO", "V+", "VM" };
 		private string[] Vn = new string[] { "VEE", "VEE2", "-VCC", "VEEIO", "VSS", "VSS2", "-VDD", "VSSIO", "V-" };
