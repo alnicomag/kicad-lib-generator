@@ -1,0 +1,12 @@
+C:\Users\t_sanada\Documents\GitHub\MyKiCadLibSet\KiLibTools\SchemaLibGene_RCL\bin\Debug\SchemaLibGene_RCL.exe.config
+C:\Users\t_sanada\Documents\GitHub\MyKiCadLibSet\KiLibTools\SchemaLibGene_RCL\bin\Debug\SchemaLibGene_RCL.exe
+C:\Users\t_sanada\Documents\GitHub\MyKiCadLibSet\KiLibTools\SchemaLibGene_RCL\bin\Debug\SchemaLibGene_RCL.pdb
+C:\Users\t_sanada\Documents\GitHub\MyKiCadLibSet\KiLibTools\SchemaLibGene_RCL\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\t_sanada\Documents\GitHub\MyKiCadLibSet\KiLibTools\SchemaLibGene_RCL\obj\x86\Debug\SchemaLibGene_RCL.exe
+C:\Users\t_sanada\Documents\GitHub\MyKiCadLibSet\KiLibTools\SchemaLibGene_RCL\obj\x86\Debug\SchemaLibGene_RCL.pdb
+C:\Users\tatsuya\Desktop\MyKiCadLibSet\KiLibTools\SchemaLibGene_RCL\bin\Debug\SchemaLibGene_RCL.exe.config
+C:\Users\tatsuya\Desktop\MyKiCadLibSet\KiLibTools\SchemaLibGene_RCL\obj\x86\Debug\SchemaLibGene_RCL.exe
+C:\Users\tatsuya\Desktop\MyKiCadLibSet\KiLibTools\SchemaLibGene_RCL\obj\x86\Debug\SchemaLibGene_RCL.pdb
+C:\Users\tatsuya\Desktop\MyKiCadLibSet\KiLibTools\SchemaLibGene_RCL\bin\Debug\SchemaLibGene_RCL.exe
+C:\Users\tatsuya\Desktop\MyKiCadLibSet\KiLibTools\SchemaLibGene_RCL\bin\Debug\SchemaLibGene_RCL.pdb
+C:\Users\tatsuya\Desktop\MyKiCadLibSet\KiLibTools\SchemaLibGene_RCL\obj\x86\Debug\ResolveAssemblyReference.cache

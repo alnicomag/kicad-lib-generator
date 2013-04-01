@@ -5,6 +5,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KiLibGene_connector", "KiLi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KiLibMerge", "KiLibMerge\KiLibMerge.csproj", "{965E93A6-86BB-470F-BC7E-67706AF17A58}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchemaLibGene_RCL", "SchemaLibGene_RCL\SchemaLibGene_RCL.csproj", "{95A8ECC2-4018-4B93-99CC-DF5F6259AD05}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ComponentNameGetter", "ComponentNameGetter\ComponentNameGetter.csproj", "{8BEF4C2A-A43D-4A5D-A0F1-3FDC2C151A0B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -19,6 +23,14 @@ Global
 		{965E93A6-86BB-470F-BC7E-67706AF17A58}.Debug|x86.Build.0 = Debug|x86
 		{965E93A6-86BB-470F-BC7E-67706AF17A58}.Release|x86.ActiveCfg = Release|x86
 		{965E93A6-86BB-470F-BC7E-67706AF17A58}.Release|x86.Build.0 = Release|x86
+		{95A8ECC2-4018-4B93-99CC-DF5F6259AD05}.Debug|x86.ActiveCfg = Debug|x86
+		{95A8ECC2-4018-4B93-99CC-DF5F6259AD05}.Debug|x86.Build.0 = Debug|x86
+		{95A8ECC2-4018-4B93-99CC-DF5F6259AD05}.Release|x86.ActiveCfg = Release|x86
+		{95A8ECC2-4018-4B93-99CC-DF5F6259AD05}.Release|x86.Build.0 = Release|x86
+		{8BEF4C2A-A43D-4A5D-A0F1-3FDC2C151A0B}.Debug|x86.ActiveCfg = Debug|x86
+		{8BEF4C2A-A43D-4A5D-A0F1-3FDC2C151A0B}.Debug|x86.Build.0 = Debug|x86
+		{8BEF4C2A-A43D-4A5D-A0F1-3FDC2C151A0B}.Release|x86.ActiveCfg = Release|x86
+		{8BEF4C2A-A43D-4A5D-A0F1-3FDC2C151A0B}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

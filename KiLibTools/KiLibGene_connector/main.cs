@@ -13,7 +13,7 @@ namespace KiLibGene_connector
 		static void Main(string[] args)
 		{
 			FolderBrowserDialog fbd = new FolderBrowserDialog()
-			{ 
+			{
 				Description = "ライブラリを保存するフォルダを選択して下さい．",
 				RootFolder = System.Environment.SpecialFolder.Desktop,
 				SelectedPath = @Directory.GetCurrentDirectory(),
@@ -389,7 +389,7 @@ namespace KiLibGene_connector
 		}
 
 		private List<string> Vnum = new List<string> { "1.2", "1.8", "2.4", "2.5", "3.3", "3.6", "3.7", "4.8", "5", "6", "7.4", "8", "9", "9.4", "10", "11.1", "12", "15", "18", "22.2", "24", "36", "48" };
-		private string[] Vp = new string[] { "VCC", "VCC2", "+VCC", "VCCIO", "VDD", "VDD2", "+VDD", "VDDIO", "V+", "VM" };
+        private string[] Vp = new string[] { "VCC", "VCC2", "+VCC", "VCCIO", "VDD", "VDD2", "+VDD", "VDDIO", "V+", "VM", "VBAT", "VDD_VBUS", "VDD3.3", "VDD1.8", "VDD_CORE", "VDD_MEM", "VDD_LED" };
 		private string[] Vn = new string[] { "VEE", "VEE2", "-VCC", "VEEIO", "VSS", "VSS2", "-VDD", "VSSIO", "V-" };
 		private string[] Vgnd = new string[] { "GND", "GND1", "GND2", "GND3", "GND4", "AGND", "AGND1", "AGND2", "DGND", "DGND1", "DGND2" };
 		private string[] Vearth = new string[] { "FG", "PE" };

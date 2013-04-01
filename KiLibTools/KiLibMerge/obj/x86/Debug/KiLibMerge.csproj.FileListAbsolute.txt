@@ -1,0 +1,5 @@
+C:\Users\t_sanada\Documents\GitHub\MyKiCadLibSet\KiLibTools\KiLibMerge\bin\Debug\KiLibMerge.exe
+C:\Users\t_sanada\Documents\GitHub\MyKiCadLibSet\KiLibTools\KiLibMerge\bin\Debug\KiLibMerge.pdb
+C:\Users\t_sanada\Documents\GitHub\MyKiCadLibSet\KiLibTools\KiLibMerge\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\t_sanada\Documents\GitHub\MyKiCadLibSet\KiLibTools\KiLibMerge\obj\x86\Debug\KiLibMerge.exe
+C:\Users\t_sanada\Documents\GitHub\MyKiCadLibSet\KiLibTools\KiLibMerge\obj\x86\Debug\KiLibMerge.pdb
