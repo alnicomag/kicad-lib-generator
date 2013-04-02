@@ -24,7 +24,7 @@ namespace KiLibGene_connector
 
 			}
 
-			using (StreamWriter sw = new StreamWriter(@fbd.SelectedPath+"\\connector-male.lib"))
+			using (StreamWriter sw = new StreamWriter(@fbd.SelectedPath + "\\connector-male.lib"))
 			{
 				sw.WriteLine("EESchema-LIBRARY Version 2.3  Date: " + DateTime.Now.ToString());
 				sw.WriteLine("#encoding utf-8");
@@ -69,7 +69,7 @@ namespace KiLibGene_connector
 
 		public static void Plot(StreamWriter sw)
 		{
-			PlotMaleSingle(sw);	
+			PlotMaleSingle(sw);
 			PlotMaleDouble(sw);
 		}
 
@@ -153,7 +153,7 @@ namespace KiLibGene_connector
 			PlotFemaleSingle(sw);
 			PlotFemaleDouble(sw);
 		}
-		
+
 		private static void PlotFemaleSingle(StreamWriter sw)
 		{
 			for (int pin = 1; pin <= MAX_SINGLE_PIN; pin++)
@@ -234,7 +234,7 @@ namespace KiLibGene_connector
 				PlotUpType1(sw, "+" + label + "V");
 				PlotDownType1(sw, "-" + label + "V");
 			}
-			foreach(string label in Vp)
+			foreach (string label in Vp)
 			{
 				PlotUpType1(sw, label);
 			}
@@ -263,7 +263,7 @@ namespace KiLibGene_connector
 			{
 				PlotDownType2(sw, label);
 			}
-			foreach(string label in Vgnd)
+			foreach (string label in Vgnd)
 			{
 				PlotGNDType2(sw, label);
 			}
@@ -281,8 +281,8 @@ namespace KiLibGene_connector
 			sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
 			sw.WriteLine("DRAW");
 
-			sw.WriteLine("X {0} 1 0 0 50 U 20 20 0 0 W", component_name);
-			sw.WriteLine("C 0 75 25 0 1 0 N");
+			sw.WriteLine("X {0} 1 0 0 40 U 20 20 0 0 W", component_name);
+			sw.WriteLine("C 0 70 30 0 1 0 N");
 
 			sw.WriteLine("ENDDRAW");
 			sw.WriteLine("ENDDEF");
@@ -320,8 +320,8 @@ namespace KiLibGene_connector
 			sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
 			sw.WriteLine("DRAW");
 
-			sw.WriteLine("X {0} 1 0 0 50 D 20 20 0 0 W", component_name);
-			sw.WriteLine("C 0 -75 25 0 1 0 N");
+			sw.WriteLine("X {0} 1 0 0 40 D 20 20 0 0 W", component_name);
+			sw.WriteLine("C 0 -70 30 0 1 0 N");
 
 			sw.WriteLine("ENDDRAW");
 			sw.WriteLine("ENDDEF");
@@ -389,7 +389,7 @@ namespace KiLibGene_connector
 		}
 
 		private List<string> Vnum = new List<string> { "1.2", "1.8", "2.4", "2.5", "3.3", "3.6", "3.7", "4.8", "5", "6", "7.4", "8", "9", "9.4", "10", "11.1", "12", "15", "18", "22.2", "24", "36", "48" };
-        private string[] Vp = new string[] { "VCC", "VCC2", "+VCC", "VCCIO", "VDD", "VDD2", "+VDD", "VDDIO", "V+", "VM", "VBAT", "VDD_VBUS", "VDD3.3", "VDD1.8", "VDD_CORE", "VDD_MEM", "VDD_LED" };
+		private string[] Vp = new string[] { "VCC", "VCC2", "+VCC", "VCCIO", "VDD", "VDD2", "+VDD", "VDDIO", "V+", "VM", "VBAT", "VDD_VBUS", "VDD3.3", "VDD1.8", "VDD_CORE", "VDD_MEM", "VDD_LED" };
 		private string[] Vn = new string[] { "VEE", "VEE2", "-VCC", "VEEIO", "VSS", "VSS2", "-VDD", "VSSIO", "V-" };
 		private string[] Vgnd = new string[] { "GND", "GND1", "GND2", "GND3", "GND4", "AGND", "AGND1", "AGND2", "DGND", "DGND1", "DGND2" };
 		private string[] Vearth = new string[] { "FG", "PE" };
