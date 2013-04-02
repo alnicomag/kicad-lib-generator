@@ -1,0 +1,5 @@
+C:\Users\tatsuya\Documents\GitHub\KiCadMyLibrary\KiLibTools\SchemaLibGenerator\bin\Debug\SchemaLibGenerator.exe
+C:\Users\tatsuya\Documents\GitHub\KiCadMyLibrary\KiLibTools\SchemaLibGenerator\bin\Debug\SchemaLibGenerator.pdb
+C:\Users\tatsuya\Documents\GitHub\KiCadMyLibrary\KiLibTools\SchemaLibGenerator\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\tatsuya\Documents\GitHub\KiCadMyLibrary\KiLibTools\SchemaLibGenerator\obj\x86\Debug\SchemaLibGenerator.exe
+C:\Users\tatsuya\Documents\GitHub\KiCadMyLibrary\KiLibTools\SchemaLibGenerator\obj\x86\Debug\SchemaLibGenerator.pdb
