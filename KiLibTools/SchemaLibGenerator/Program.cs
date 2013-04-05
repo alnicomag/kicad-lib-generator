@@ -12,6 +12,62 @@ namespace SchemaLibGenerator
 		[STAThread]
 		static void Main(string[] args)
 		{
+			Stream stream;      //コンポーネントリストファイルのストリーム
+			OpenFileDialog ofd = new OpenFileDialog()
+			{
+				Title = "開くコンポーネントリストファイルを選択してください",
+				InitialDirectory = @Directory.GetCurrentDirectory(),
+				Filter = "CSVファイル(*.csv)|*.csv|すべてのファイル(*.*)|*.*",
+				FilterIndex = 1
+			};
+			do
+			{
+				if (ofd.ShowDialog() == DialogResult.Cancel)
+				{
+					ofd.FileName = @Directory.GetCurrentDirectory() + "database.csv";
+				}
+			}
+			while ((stream = ofd.OpenFile()) == null);
+
+			KiLib_R r = new KiLib_R("R", "r");
+			KiLib_C c = new KiLib_C("C", "c");
+			KiLib_Transistor tr = new KiLib_Transistor("Transistor", "tr");
+			KiLib_MOSFET mosfet = new KiLib_MOSFET("MOSFET", "mosfet");
+			KiLib_PowerSupply ps = new KiLib_PowerSupply("supply", "sup");
+
+			using (StreamReader sr = new StreamReader(stream))
+			{
+				string line;
+				while ((line = sr.ReadLine()) != null)
+				{
+					if (line.Substring(0, 1) != "#")
+					{
+						string[] divline = line.Split(',');
+						if (divline[0] == r.Label)
+						{
+							r.AddComponentName(divline[3], new string[] { divline[1], divline[2] });
+						}
+						else if (divline[0] == c.Label)
+						{
+							c.AddComponentName(divline[3], new string[] { divline[1], divline[2] });
+						}
+						else if (divline[0] == tr.Label)
+						{
+							tr.AddComponentName(divline[3], new string[] { divline[1], divline[2] });
+						}
+						else if (divline[0] == mosfet.Label)
+						{
+							mosfet.AddComponentName(divline[3], new string[] { divline[1], divline[2] });
+						}
+						else if (divline[0] == ps.Label)
+						{
+							ps.AddComponentName(divline[3], new string[] { divline[1], divline[2] });
+						}
+					}
+				}
+			}
+			stream.Close();
+
 			FolderBrowserDialog fbd = new FolderBrowserDialog()
 			{
 				Description = "ライブラリを保存するフォルダを選択して下さい．",
@@ -19,71 +75,15 @@ namespace SchemaLibGenerator
 				SelectedPath = @Directory.GetCurrentDirectory(),
 				ShowNewFolderButton = true
 			};
-			if (fbd.ShowDialog() == DialogResult.Cancel)
-			{
+			fbd.ShowDialog();
 
-			}
-
-			KiLib_R r = new KiLib_R("R", "r");
-			KiLib_C c = new KiLib_C("C", "c");
-            KiLib_Transistor tr = new KiLib_Transistor("Transistor", "tr");
-			KiLib_MOSFET mosfet = new KiLib_MOSFET("MOSFET","mosfet");
-
-            using(StreamReader sr = new StreamReader("database.csv"))
-            {
-                string line;
-                while ((line = sr.ReadLine()) != null)
-                {
-                    if (line.Substring(0, 1) != "#")
-                    {
-                        string[] divline = line.Split(',');
-                        if (divline[0] == "r")
-                        {
-                            r.AddComponentName(divline[2]);
-                        }
-                        else if (divline[0] == "c")
-                        {
-							c.AddComponentName(divline[1] + "," + divline[2]);
-                        }
-                        else if (divline[0] == "tr")
-                        {
-                            tr.AddComponentName(divline[1] + "," + divline[2]);
-                        }
-                        else if (divline[0] == "mosfet")
-                        {
-							mosfet.AddComponentName(divline[1] + "," + divline[2]);
-                        }
-                    }
-                }
-                
-            }
-
-
-            WriteFile(fbd, r);
-            WriteFile(fbd, c);
+			WriteFile(fbd, r);
+			WriteFile(fbd, c);
 			WriteFile(fbd, tr);
 			WriteFile(fbd, mosfet);
 			WriteFile(fbd, new KiLib_ConMale("ConMa"));
 			WriteFile(fbd, new KiLib_ConFemale("ConFe"));
-
-
-			KiLib_PowerSupply ps = new KiLib_PowerSupply();
-			using (StreamWriter sw = new StreamWriter(@fbd.SelectedPath + "\\supply1.lib"))
-			{
-				sw.WriteLine("EESchema-LIBRARY Version 2.3  Date: " + DateTime.Now.ToString());
-				sw.WriteLine("#encoding utf-8");
-				ps.PlotType1(sw);
-				sw.WriteLine("#");
-				sw.WriteLine("#End Library");
-			}
-			using (StreamWriter sw = new StreamWriter(@fbd.SelectedPath + "\\supply2.lib"))
-			{
-				sw.WriteLine("EESchema-LIBRARY Version 2.3  Date: " + DateTime.Now.ToString());
-				sw.WriteLine("#encoding utf-8");
-				ps.PlotType2(sw);
-				sw.WriteLine("#");
-				sw.WriteLine("#End Library");
-			}
+			WriteFile(fbd, ps);
 		}
 
 		private static void WriteFile(FolderBrowserDialog fbd, KiLib lib)
@@ -99,78 +99,140 @@ namespace SchemaLibGenerator
 		}
 	}
 
-    /// <summary>
-    /// .libファイルに保存される回路図記号ライブラリを表す基底クラス
-    /// </summary>
+	/// <summary>
+	/// .libファイルに保存される回路図記号ライブラリを表す基底クラス
+	/// </summary>
 	class KiLib
 	{
 		public KiLib(string fname, string label)
 		{
 			filename = fname;
-            this.label = label;
+			this.label = label;
 		}
 
-        /// <summary>
-        /// 保存する時の.libファイルの名前
-        /// </summary>
+		/// <summary>
+		/// 保存する時の.libファイルの名前
+		/// </summary>
 		public virtual string FileName { get { return ""; } }
-        /// <summary>
-        /// 作成元csvファイルのレコード識別文字列
-        /// </summary>
-        public virtual string Label { get { return ""; } }
+		/// <summary>
+		/// 作成元csvファイルのレコード識別文字列
+		/// </summary>
+		public virtual string Label { get { return ""; } }
 
 		public virtual void Plot(StreamWriter sw) { }
 
 		protected string filename;
-        protected string label;
+		protected string label;
 	}
 
-	class KiLib_PowerSupply
+	class KiLib_PowerSupply : KiLib
 	{
+		public KiLib_PowerSupply(string fname, string label)
+			: base(fname, label)
+		{
+			names_p1 = new List<string>();
+			names_p2 = new List<string>();
+			names_n1 = new List<string>();
+			names_n2 = new List<string>();
+			names_g1 = new List<string>();
+			names_g2 = new List<string>();
+			names_e1 = new List<string>();
+		}
 
+		public override string FileName { get { return this.filename; } }
+		public override string Label { get { return this.label; } }
+
+		public override void Plot(StreamWriter sw)
+		{
+			foreach (string name in names_p1)
+			{
+				PlotVp1(sw, name);
+			}
+			foreach (string name in names_p2)
+			{
+				PlotVp2(sw, name);
+			}
+			foreach (string name in names_n1)
+			{
+				PlotVn1(sw, name);
+			}
+			foreach (string name in names_n2)
+			{
+				PlotVn2(sw, name);
+			}
+			foreach (string name in names_g1)
+			{
+				PlotVg1(sw, name);
+			}
+			foreach (string name in names_g2)
+			{
+				PlotVg2(sw, name);
+			}
+		}
+
+		public void AddComponentName(string name, string[] tags)
+		{
+			if (tags[0] == "p")
+			{
+				if (tags[1] == "1") names_p1.Add(name);
+				else if (tags[1] == "2") names_p2.Add(name);
+			}
+			else if (tags[0] == "n")
+			{
+				if (tags[1] == "1") names_n1.Add(name);
+				else if (tags[1] == "2") names_n2.Add(name);
+			}
+			else if (tags[0] == "g")
+			{
+				if (tags[1] == "1") names_g1.Add(name);
+				else if (tags[1] == "2") names_g2.Add(name);
+			}
+		}
+
+		[Obsolete]
 		public void PlotType1(StreamWriter sw)
 		{
 			foreach (string label in Vnum)
 			{
-				PlotUpType1(sw, "+" + label + "V");
-				PlotDownType1(sw, "-" + label + "V");
+				PlotVp1(sw, "+" + label + "V");
+				PlotVn1(sw, "-" + label + "V");
 			}
 			foreach (string label in Vp)
 			{
-				PlotUpType1(sw, label);
+				PlotVp1(sw, label);
 			}
 			foreach (string label in Vn)
 			{
-				PlotDownType1(sw, label);
+				PlotVn1(sw, label);
 			}
 			foreach (string label in Vgnd)
 			{
-				PlotGNDType1(sw, label);
+				PlotVg1(sw, label);
 			}
 		}
-
+		[Obsolete]
 		public void PlotType2(StreamWriter sw)
 		{
 			foreach (string label in Vnum)
 			{
-				PlotUpType2(sw, "+" + label + "V");
-				PlotDownType2(sw, "-" + label + "V");
+				PlotVp2(sw, "+" + label + "V");
+				PlotVn2(sw, "-" + label + "V");
 			}
 			foreach (string label in Vp)
 			{
-				PlotUpType2(sw, label);
+				PlotVp2(sw, label);
 			}
 			foreach (string label in Vn)
 			{
-				PlotDownType2(sw, label);
+				PlotVn2(sw, label);
 			}
 			foreach (string label in Vgnd)
 			{
-				PlotGNDType2(sw, label);
+				PlotVg2(sw, label);
 			}
 		}
 
-		private void PlotUpType1(StreamWriter sw, string component_name)
+		private void PlotVp1(StreamWriter sw, string component_name)
 		{
 			sw.WriteLine("#");
 			sw.WriteLine("# {0}", component_name);
@@ -189,7 +251,7 @@ namespace SchemaLibGenerator
 			sw.WriteLine("ENDDEF");
 		}
 
-		private void PlotUpType2(StreamWriter sw, string component_name)
+		private void PlotVp2(StreamWriter sw, string component_name)
 		{
 			sw.WriteLine("#");
 			sw.WriteLine("# {0}", component_name);
@@ -209,7 +271,7 @@ namespace SchemaLibGenerator
 			sw.WriteLine("ENDDEF");
 		}
 
-		private void PlotDownType1(StreamWriter sw, string component_name)
+		private void PlotVn1(StreamWriter sw, string component_name)
 		{
 			sw.WriteLine("#");
 			sw.WriteLine("# {0}", component_name);
@@ -228,7 +290,7 @@ namespace SchemaLibGenerator
 			sw.WriteLine("ENDDEF");
 		}
 
-		private void PlotDownType2(StreamWriter sw, string component_name)
+		private void PlotVn2(StreamWriter sw, string component_name)
 		{
 			sw.WriteLine("#");
 			sw.WriteLine("# {0}", component_name);
@@ -248,7 +310,7 @@ namespace SchemaLibGenerator
 			sw.WriteLine("ENDDEF");
 		}
 
-		private void PlotGNDType1(StreamWriter sw, string component_name)
+		private void PlotVg1(StreamWriter sw, string component_name)
 		{
 			sw.WriteLine("#");
 			sw.WriteLine("# {0}", component_name);
@@ -270,7 +332,7 @@ namespace SchemaLibGenerator
 			sw.WriteLine("ENDDEF");
 		}
 
-		private void PlotGNDType2(StreamWriter sw, string component_name)
+		private void PlotVg2(StreamWriter sw, string component_name)
 		{
 			sw.WriteLine("#");
 			sw.WriteLine("# {0}", component_name);
@@ -289,17 +351,30 @@ namespace SchemaLibGenerator
 			sw.WriteLine("ENDDEF");
 		}
 
+		[Obsolete]
 		private List<string> Vnum = new List<string> { "1.2", "1.8", "2.4", "2.5", "3.3", "3.6", "3.7", "4.8", "5", "6", "7.4", "8", "9", "9.4", "10", "11.1", "12", "15", "18", "22.2", "24", "36", "48" };
+		[Obsolete]
 		private string[] Vp = new string[] { "VCC", "VCC2", "+VCC", "VCCIO", "VDD", "VDD2", "+VDD", "VDDIO", "V+", "VM", "VBAT", "VDD_VBUS", "VDD3.3", "VDD1.8", "VDD_CORE", "VDD_MEM", "VDD_LED" };
+		[Obsolete]
 		private string[] Vn = new string[] { "VEE", "VEE2", "-VCC", "VEEIO", "VSS", "VSS2", "-VDD", "VSSIO", "V-" };
+		[Obsolete]
 		private string[] Vgnd = new string[] { "GND", "GND1", "GND2", "GND3", "GND4", "AGND", "AGND1", "AGND2", "DGND", "DGND1", "DGND2" };
+		[Obsolete]
 		private string[] Vearth = new string[] { "FG", "PE" };
+
+		private List<string> names_p1;
+		private List<string> names_p2;
+		private List<string> names_n1;
+		private List<string> names_n2;
+		private List<string> names_g1;
+		private List<string> names_g2;
+		private List<string> names_e1;
 	}
 
 	class KiLib_ConMale : KiLib
 	{
 		public KiLib_ConMale(string fname)
-			: base(fname,"")
+			: base(fname, "")
 		{
 
 		}
@@ -394,7 +469,7 @@ namespace SchemaLibGenerator
 	class KiLib_ConFemale : KiLib
 	{
 		public KiLib_ConFemale(string fname)
-			: base(fname,"")
+			: base(fname, "")
 		{
 
 		}
@@ -484,45 +559,45 @@ namespace SchemaLibGenerator
 			}
 		}
 	}
-	
+
 	class KiLib_R : KiLib
 	{
+		public KiLib_R()
+			: this("R", "r")
+		{
+
+		}
 		public KiLib_R(string fname)
-			: this(fname, "r", new List<string>() { })
+			: this(fname, "r")
 		{
 
 		}
-		public KiLib_R(string fname,string label)
-			: this(fname, label, new List<string>() { })
+		public KiLib_R(string fname, string label)
+			: base(fname, label)
 		{
-
+			names_box = new List<string>();
+			names_zigzag = new List<string>();
 		}
-        public KiLib_R(string fname, List<string> names)
-            : this(fname, "r", names)
-        {
 
-        }
-        public KiLib_R(string fname, string label, List<string> names)
-            : base(fname, label)
-        {
-            this.names = names;
-        }
-
-        public override string FileName { get { return this.filename; } }
-        public override string Label { get { return this.label; } }
+		public override string FileName { get { return this.filename; } }
+		public override string Label { get { return this.label; } }
 
 		public override void Plot(StreamWriter sw)
 		{
-			foreach (string name in names)
+			foreach (string name in names_box)
 			{
-				//PlotBoxType(sw,name);
+				PlotBoxType(sw, name);
+			}
+			foreach (string name in names_zigzag)
+			{
 				PlotZigzagType(sw, name);
 			}
 		}
 
-		public void AddComponentName(string name)
+		public void AddComponentName(string name, string[] tags)
 		{
-			names.Add(name);
+			if (tags[0] == "1") names_box.Add(name);
+			else if (tags[0] == "2") names_zigzag.Add(name);
 		}
 
 		private void PlotBoxType(StreamWriter sw, string component_name)
@@ -542,7 +617,6 @@ namespace SchemaLibGenerator
 			sw.WriteLine("ENDDRAW");
 			sw.WriteLine("ENDDEF");
 		}
-
 		private void PlotZigzagType(StreamWriter sw, string component_name)
 		{
 			sw.WriteLine("#");
@@ -561,53 +635,32 @@ namespace SchemaLibGenerator
 			sw.WriteLine("ENDDEF");
 		}
 
-		private List<string> names;
+		private List<string> names_box;
+		private List<string> names_zigzag;
 	}
 
 	class KiLib_C : KiLib
 	{
+		public KiLib_C()
+			: this("C", "c")
+		{
+
+		}
 		public KiLib_C(string fname)
-			: this(fname, "c", new List<string>())
+			: this(fname, "c")
 		{
 
 		}
 		public KiLib_C(string fname, string label)
-			: this(fname, label, new List<string>())
+			: base(fname, label)
 		{
-
+			names_ceramic = new List<string>();
+			names_pole = new List<string>();
+			names_nonepole = new List<string>();
 		}
-		public KiLib_C(string fname, List<string> names)
-			: this(fname, "c", names)
-		{
 
-		}
-        public KiLib_C(string fname, string label, List<string> names)
-            : base(fname, label)
-        {
-            names_ceramic = new List<string>() { };
-            names_pole = new List<string>() { };
-            names_nonepole = new List<string>() { };
-
-            foreach (string name in names)
-            {
-                string[] div = name.Split(',');
-                if (div[0] == "cera")
-                {
-                    names_ceramic.Add(div[1]);
-                }
-                else if (div[0] == "pole")
-                {
-                    names_pole.Add(div[1]);
-                }
-                else if (div[0] == "npole")
-                {
-                    names_nonepole.Add(div[1]);
-                }
-            }
-        }
-
-        public override string FileName { get { return this.filename; } }
-        public override string Label { get { return this.label; } }
+		public override string FileName { get { return this.filename; } }
+		public override string Label { get { return this.label; } }
 
 		public override void Plot(StreamWriter sw)
 		{
@@ -619,27 +672,17 @@ namespace SchemaLibGenerator
 			{
 				PlotPoleType(sw, name);
 			}
-            foreach (string name in names_nonepole)
-            {
-                PlotNonePoleType(sw, name);
-            }
+			foreach (string name in names_nonepole)
+			{
+				PlotNonePoleType(sw, name);
+			}
 		}
 
-		public void AddComponentName(string name)
+		public void AddComponentName(string name, string[] tags)
 		{
-			string[] div = name.Split(',');
-			if (div[0] == "cera")
-			{
-				names_ceramic.Add(div[1]);
-			}
-			else if (div[0] == "pole")
-			{
-				names_pole.Add(div[1]);
-			}
-			else if (div[0] == "npole")
-			{
-				names_nonepole.Add(div[1]);
-			}
+			if (tags[0] == "cera") names_ceramic.Add(name);
+			else if (tags[0] == "pole") names_pole.Add(name);
+			else if (tags[0] == "npole") names_nonepole.Add(name);
 		}
 
 		private void PlotCeramicType(StreamWriter sw, string component_name)      //セラミック，フィルム
@@ -708,49 +751,30 @@ namespace SchemaLibGenerator
 
 		private List<string> names_ceramic;
 		private List<string> names_pole;
-        private List<string> names_nonepole;
+		private List<string> names_nonepole;
 	}
 
 	class KiLib_Transistor : KiLib
 	{
+		public KiLib_Transistor()
+			: this("Transistor", "tr")
+		{
+
+		}
 		public KiLib_Transistor(string fname)
-			: this(fname, "tr", new List<string>())
+			: this(fname, "tr")
 		{
 
 		}
 		public KiLib_Transistor(string fname, string label)
-			: this(fname, label, new List<string>())
+			: base(fname, label)
 		{
-
+			names_npn = new List<string>();
+			names_pnp = new List<string>();
 		}
-        public KiLib_Transistor(string fname, List<string> names)
-            : this(fname, "tr", names)
-        {
-
-        }
-
-        public KiLib_Transistor(string fname, string label, List<string> names)
-            : base(fname, label)
-        {
-            names_npn = new List<string>() { };
-            names_pnp = new List<string>() { };
-
-            foreach (string name in names)
-            {
-                string[] div = name.Split(',');
-                if (div[0] == "npn")
-                {
-                    names_npn.Add(div[1]);
-                }
-                else if (div[0] == "pnp")
-                {
-                    names_pnp.Add(div[1]);
-                }
-            }
-        }
 
 		public override string FileName { get { return this.filename; } }
-        public override string Label { get { return this.label; } }
+		public override string Label { get { return this.label; } }
 
 		public override void Plot(StreamWriter sw)
 		{
@@ -764,17 +788,10 @@ namespace SchemaLibGenerator
 			}
 		}
 
-		public void AddComponentName(string name)
+		public void AddComponentName(string name, string[] tags)
 		{
-			string[] div = name.Split(',');
-			if (div[0] == "npn")
-			{
-				names_npn.Add(div[1]);
-			}
-			else if (div[0] == "pnp")
-			{
-				names_pnp.Add(div[1]);
-			}	
+			if (tags[0] == "npn") names_npn.Add(name);
+			else if (tags[0] == "pnp") names_pnp.Add(name);
 		}
 
 		private void PlotNPN(StreamWriter sw, string component_name)
@@ -829,39 +846,22 @@ namespace SchemaLibGenerator
 
 	class KiLib_MOSFET : KiLib
 	{
+		public KiLib_MOSFET()
+			: this("MOSFET", "mosfet")
+		{
+
+		}
 		public KiLib_MOSFET(string fname)
-			: this(fname, "mosfet", new List<string>())
+			: this(fname, "mosfet")
 		{
 
 		}
 		public KiLib_MOSFET(string fname, string label)
-			: this(fname, label, new List<string>())
+			: base(fname, label)
 		{
-
+			names_mosfet_n = new List<string>();
+			names_mosfet_p = new List<string>();
 		}
-		public KiLib_MOSFET(string fname, List<string> names)
-			: this(fname, "mosfet", names)
-		{
-
-		}
-        public KiLib_MOSFET(string fname, string label, List<string> names)
-            : base(fname, label)
-        {
-            names_mosfet_n = new List<string>() { };
-            names_mosfet_p = new List<string>() { };
-            foreach (string name in names)
-            {
-                string[] div = name.Split(',');
-                if (div[0] == "n")
-                {
-                    names_mosfet_n.Add(div[1]);
-                }
-                else if (div[0] == "p")
-                {
-                    names_mosfet_p.Add(div[1]);
-                }
-            }
-        }
 
 		public override string FileName { get { return this.filename; } }
 		public override string Label { get { return this.label; } }
@@ -878,16 +878,15 @@ namespace SchemaLibGenerator
 			}
 		}
 
-		public void AddComponentName(string name)
+		public void AddComponentName(string name, string[] tags)
 		{
-			string[] div = name.Split(',');
-			if (div[0] == "n")
+			if (tags[0] == "n")
 			{
-				names_mosfet_n.Add(div[1]);
+				names_mosfet_n.Add(name);
 			}
-			else if (div[0] == "p")
+			else if (tags[0] == "p")
 			{
-				names_mosfet_p.Add(div[1]);
+				names_mosfet_p.Add(name);
 			}
 		}
 
@@ -958,8 +957,8 @@ namespace SchemaLibGenerator
 
 	class KiLib_JFET : KiLib
 	{
-		public KiLib_JFET(string fname,string label)
-			: base(fname,label)
+		public KiLib_JFET(string fname, string label)
+			: base(fname, label)
 		{
 			names_jfet_n = new List<string>()
 			{
@@ -971,20 +970,8 @@ namespace SchemaLibGenerator
 			};
 		}
 
-		public override string FileName
-		{
-			get
-			{
-				return this.filename;
-			}
-		}
-        public override string Label
-        {
-            get
-            {
-                return "jfet";
-            }
-        }
+		public override string FileName { get { return this.filename; } }
+		public override string Label { get { return "jfet"; } }
 
 		public override void Plot(StreamWriter sw)
 		{
