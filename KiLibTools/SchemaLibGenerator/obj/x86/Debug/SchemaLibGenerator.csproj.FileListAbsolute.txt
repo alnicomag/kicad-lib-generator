@@ -3,3 +3,8 @@ C:\Users\tatsuya\Documents\GitHub\KiCadMyLibrary\KiLibTools\SchemaLibGenerator\b
 C:\Users\tatsuya\Documents\GitHub\KiCadMyLibrary\KiLibTools\SchemaLibGenerator\obj\x86\Debug\ResolveAssemblyReference.cache
 C:\Users\tatsuya\Documents\GitHub\KiCadMyLibrary\KiLibTools\SchemaLibGenerator\obj\x86\Debug\SchemaLibGenerator.exe
 C:\Users\tatsuya\Documents\GitHub\KiCadMyLibrary\KiLibTools\SchemaLibGenerator\obj\x86\Debug\SchemaLibGenerator.pdb
+C:\Users\shun\Documents\GitHub\MyKiCadLibSet\KiLibTools\SchemaLibGenerator\obj\x86\Debug\SchemaLibGenerator.exe
+C:\Users\shun\Documents\GitHub\MyKiCadLibSet\KiLibTools\SchemaLibGenerator\obj\x86\Debug\SchemaLibGenerator.pdb
+C:\Users\shun\Documents\GitHub\MyKiCadLibSet\KiLibTools\SchemaLibGenerator\bin\Debug\SchemaLibGenerator.exe
+C:\Users\shun\Documents\GitHub\MyKiCadLibSet\KiLibTools\SchemaLibGenerator\bin\Debug\SchemaLibGenerator.pdb
+C:\Users\shun\Documents\GitHub\MyKiCadLibSet\KiLibTools\SchemaLibGenerator\obj\x86\Debug\ResolveAssemblyReference.cache

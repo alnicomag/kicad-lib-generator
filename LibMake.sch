@@ -1,4 +1,4 @@
-EESchema Schematic File Version 2  date 2013/03/31 12:12:59
+EESchema Schematic File Version 2  date 2013/04/04 23:13:54
 LIBS:C
 LIBS:D
 LIBS:FET
@@ -8,8 +8,6 @@ LIBS:LED
 LIBS:R
 LIBS:SW
 LIBS:Tr
-LIBS:connector-female
-LIBS:connector-male
 LIBS:supply2
 LIBS:supply1
 LIBS:device
