@@ -1,8 +1,3 @@
-C:\Users\t_sanada\Documents\GitHub\MyKiCadLibSet\KiLibTools\ComponentNameGetter\bin\Debug\ComponentNameGetter.exe
-C:\Users\t_sanada\Documents\GitHub\MyKiCadLibSet\KiLibTools\ComponentNameGetter\bin\Debug\ComponentNameGetter.pdb
-C:\Users\t_sanada\Documents\GitHub\MyKiCadLibSet\KiLibTools\ComponentNameGetter\obj\x86\Debug\ResolveAssemblyReference.cache
-C:\Users\t_sanada\Documents\GitHub\MyKiCadLibSet\KiLibTools\ComponentNameGetter\obj\x86\Debug\ComponentNameGetter.exe
-C:\Users\t_sanada\Documents\GitHub\MyKiCadLibSet\KiLibTools\ComponentNameGetter\obj\x86\Debug\ComponentNameGetter.pdb
 C:\Users\shun\Documents\GitHub\MyKiCadLibSet\KiLibTools\ComponentNameGetter\obj\x86\Debug\ComponentNameGetter.exe
 C:\Users\shun\Documents\GitHub\MyKiCadLibSet\KiLibTools\ComponentNameGetter\obj\x86\Debug\ComponentNameGetter.pdb
 C:\Users\tatsuya\Documents\GitHub\MyKiCadLibSet\KiLibTools\ComponentNameGetter\bin\Debug\ComponentNameGetter.exe
@@ -10,3 +5,8 @@ C:\Users\tatsuya\Documents\GitHub\MyKiCadLibSet\KiLibTools\ComponentNameGetter\b
 C:\Users\tatsuya\Documents\GitHub\MyKiCadLibSet\KiLibTools\ComponentNameGetter\obj\x86\Debug\ComponentNameGetter.csprojResolveAssemblyReference.cache
 C:\Users\tatsuya\Documents\GitHub\MyKiCadLibSet\KiLibTools\ComponentNameGetter\obj\x86\Debug\ComponentNameGetter.exe
 C:\Users\tatsuya\Documents\GitHub\MyKiCadLibSet\KiLibTools\ComponentNameGetter\obj\x86\Debug\ComponentNameGetter.pdb
+C:\Users\t_sanada\Documents\GitHub\MyKiCadLibSet\KiLibTools\ComponentNameGetter\bin\Debug\ComponentNameGetter.exe
+C:\Users\t_sanada\Documents\GitHub\MyKiCadLibSet\KiLibTools\ComponentNameGetter\bin\Debug\ComponentNameGetter.pdb
+C:\Users\t_sanada\Documents\GitHub\MyKiCadLibSet\KiLibTools\ComponentNameGetter\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\t_sanada\Documents\GitHub\MyKiCadLibSet\KiLibTools\ComponentNameGetter\obj\x86\Debug\ComponentNameGetter.exe
+C:\Users\t_sanada\Documents\GitHub\MyKiCadLibSet\KiLibTools\ComponentNameGetter\obj\x86\Debug\ComponentNameGetter.pdb

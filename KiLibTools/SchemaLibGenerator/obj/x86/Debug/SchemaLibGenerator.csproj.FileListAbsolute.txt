@@ -15,3 +15,9 @@ C:\Users\tatsuya\Documents\GitHub\MyKiCadLibSet\KiLibTools\SchemaLibGenerator\ob
 C:\Users\tatsuya\Documents\GitHub\MyKiCadLibSet\KiLibTools\SchemaLibGenerator\bin\Debug\SchemaLibGenerator.exe
 C:\Users\tatsuya\Documents\GitHub\MyKiCadLibSet\KiLibTools\SchemaLibGenerator\bin\Debug\SchemaLibGenerator.pdb
 C:\Users\tatsuya\Documents\GitHub\MyKiCadLibSet\KiLibTools\SchemaLibGenerator\obj\x86\Debug\SchemaLibGenerator.csprojResolveAssemblyReference.cache
+C:\Users\t_sanada\Documents\GitHub\MyKiCadLibSet\KiLibTools\SchemaLibGenerator\bin\Debug\SchemaLibGenerator.exe.config
+C:\Users\t_sanada\Documents\GitHub\MyKiCadLibSet\KiLibTools\SchemaLibGenerator\bin\Debug\SchemaLibGenerator.exe
+C:\Users\t_sanada\Documents\GitHub\MyKiCadLibSet\KiLibTools\SchemaLibGenerator\bin\Debug\SchemaLibGenerator.pdb
+C:\Users\t_sanada\Documents\GitHub\MyKiCadLibSet\KiLibTools\SchemaLibGenerator\obj\x86\Debug\ResolveAssemblyReference.cache
+C:\Users\t_sanada\Documents\GitHub\MyKiCadLibSet\KiLibTools\SchemaLibGenerator\obj\x86\Debug\SchemaLibGenerator.exe
+C:\Users\t_sanada\Documents\GitHub\MyKiCadLibSet\KiLibTools\SchemaLibGenerator\obj\x86\Debug\SchemaLibGenerator.pdb
