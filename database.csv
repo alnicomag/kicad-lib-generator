@@ -48,11 +48,11 @@ sup,p,1,+48V
 sup,n,1,-48V
 sup,p,1,VCC
 sup,p,1,VCC2
-sup,p,1,#NAME?
+sup,p,1,-VCC
 sup,p,1,VCCIO
 sup,p,1,VDD
 sup,p,1,VDD2
-sup,p,1,#NAME?
+sup,p,1,-VDD
 sup,p,1,VDDIO
 sup,p,1,V+
 sup,p,1,VM
