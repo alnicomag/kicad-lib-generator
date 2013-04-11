@@ -29,11 +29,12 @@ namespace SchemaLibGenerator
 			}
 			while ((stream = ofd.OpenFile()) == null);
 
-			KiLib_R r = new KiLib_R("R", "r");
-			KiLib_C c = new KiLib_C("C", "c");
+			KiLib_Resistor r = new KiLib_Resistor("Resistor", "r");
+			KiLib_Capacitor c = new KiLib_Capacitor("Capacitor", "c");
 			KiLib_Transistor tr = new KiLib_Transistor("Transistor", "tr");
 			KiLib_MOSFET mosfet = new KiLib_MOSFET("MOSFET", "mosfet");
-			KiLib_PowerSupply ps = new KiLib_PowerSupply("supply", "sup");
+			KiLib_PowerSupply ps = new KiLib_PowerSupply("PowerSupply", "sup");
+			KiLib_Photo pd = new KiLib_Photo("PhotoDevice", "photo");
 
 			using (StreamReader sr = new StreamReader(stream))
 			{
@@ -63,6 +64,10 @@ namespace SchemaLibGenerator
 						{
 							ps.AddComponentName(divline[3], new string[] { divline[1], divline[2] });
 						}
+						else if (divline[0] == pd.Label)
+						{
+							pd.AddComponentName(divline[3], new string[] { divline[1], divline[2] });
+						}
 					}
 				}
 			}
@@ -84,6 +89,7 @@ namespace SchemaLibGenerator
 			WriteFile(fbd, new KiLib_ConMale("ConMa"));
 			WriteFile(fbd, new KiLib_ConFemale("ConFe"));
 			WriteFile(fbd, ps);
+			WriteFile(fbd, pd);
 		}
 
 		private static void WriteFile(FolderBrowserDialog fbd, KiLib lib)
@@ -560,19 +566,19 @@ namespace SchemaLibGenerator
 		}
 	}
 
-	class KiLib_R : KiLib
+	class KiLib_Resistor : KiLib
 	{
-		public KiLib_R()
+		public KiLib_Resistor()
 			: this("R", "r")
 		{
 
 		}
-		public KiLib_R(string fname)
+		public KiLib_Resistor(string fname)
 			: this(fname, "r")
 		{
 
 		}
-		public KiLib_R(string fname, string label)
+		public KiLib_Resistor(string fname, string label)
 			: base(fname, label)
 		{
 			names_box = new List<string>();
@@ -586,11 +592,11 @@ namespace SchemaLibGenerator
 		{
 			foreach (string name in names_box)
 			{
-				PlotBoxType(sw, name);
+				PlotFixedIECStyle(sw, name);
 			}
 			foreach (string name in names_zigzag)
 			{
-				PlotZigzagType(sw, name);
+				PlotFixedAmericanStyle(sw, name);
 			}
 		}
 
@@ -600,7 +606,7 @@ namespace SchemaLibGenerator
 			else if (tags[0] == "2") names_zigzag.Add(name);
 		}
 
-		private void PlotBoxType(StreamWriter sw, string component_name)
+		private void PlotFixedIECStyle(StreamWriter sw, string component_name)
 		{
 			sw.WriteLine("#");
 			sw.WriteLine("# {0}", component_name);
@@ -617,7 +623,7 @@ namespace SchemaLibGenerator
 			sw.WriteLine("ENDDRAW");
 			sw.WriteLine("ENDDEF");
 		}
-		private void PlotZigzagType(StreamWriter sw, string component_name)
+		private void PlotFixedAmericanStyle(StreamWriter sw, string component_name)
 		{
 			sw.WriteLine("#");
 			sw.WriteLine("# {0}", component_name);
@@ -639,19 +645,19 @@ namespace SchemaLibGenerator
 		private List<string> names_zigzag;
 	}
 
-	class KiLib_C : KiLib
+	class KiLib_Capacitor : KiLib
 	{
-		public KiLib_C()
+		public KiLib_Capacitor()
 			: this("C", "c")
 		{
 
 		}
-		public KiLib_C(string fname)
+		public KiLib_Capacitor(string fname)
 			: this(fname, "c")
 		{
 
 		}
-		public KiLib_C(string fname, string label)
+		public KiLib_Capacitor(string fname, string label)
 			: base(fname, label)
 		{
 			names_ceramic = new List<string>();
@@ -998,5 +1004,148 @@ namespace SchemaLibGenerator
 		private List<string> names_jfet_n;
 		private List<string> names_jfet_p;
 	}
+
+    class KiLib_Diode : KiLib
+    {
+		public KiLib_Diode()
+			: this("Diode", KiLib_Diode.DefaultLabel)
+		{
+
+		}
+		public KiLib_Diode(string fname)
+			: this(fname, KiLib_Diode.DefaultLabel)
+		{
+
+		}
+		public KiLib_Diode(string fname, string label)
+			: base(fname, label)
+		{
+			names_pn = new List<string>();
+			names_schottky = new List<string>();
+			names_zener = new List<string>();
+			names_crd = new List<string>();
+		}
+
+		public override string FileName { get { return this.filename; } }
+		public override string Label { get { return this.label; } }
+
+		public override void Plot(StreamWriter sw)
+		{
+			foreach (string name in names_pn)
+			{
+				PlotD(sw, name);
+			}
+			foreach (string name in names_schottky)
+			{
+				PlotSchottky(sw, name);
+			}
+			foreach (string name in names_zener)
+			{
+				PlotZener(sw, name);
+			}
+		}
+
+		public void AddComponentName(string name, string[] tags)
+		{
+			if (tags[0] == "pn")
+			{
+				names_pn.Add(name);
+			}
+			else if (tags[0] == "sch")
+			{
+				names_schottky.Add(name);
+			}
+			else if (tags[0] == "zener")
+			{
+				names_zener.Add(name);
+			}
+		}
+
+		private void PlotD(StreamWriter sw, string component_name)
+		{
+
+		}
+
+		private void PlotSchottky(StreamWriter sw, string component_name)
+		{
+
+		}
+
+		private void PlotZener(StreamWriter sw, string component_name)
+		{
+
+		}
+
+		private List<string> names_pn;
+		private List<string> names_schottky;
+		private List<string> names_zener;
+		private List<string> names_crd;
+
+		private const string DefaultFileName = "Diode";
+		private const string DefaultLabel = "d";
+    }
+
+    class KiLib_Photo : KiLib
+    {
+		public KiLib_Photo()
+			: this("PhotoDevice", "photo")
+		{
+
+		}
+		public KiLib_Photo(string fname)
+			: this(fname, "photo")
+		{
+
+		}
+        public KiLib_Photo(string fname, string label)
+            : base(fname, label)
+        {
+			names_led_2pin = new List<string>();
+        }
+
+        public override string FileName { get { return this.filename; } }
+        public override string Label { get { return this.label; } }
+
+        public override void Plot(StreamWriter sw)
+        {
+            foreach (string name in names_led_2pin)
+            {
+                PlotLED2pin(sw, name);
+            }
+        }
+
+        public void AddComponentName(string name, string[] tags)
+        {
+            if (tags[0] == "led")
+            {
+                if (tags[1] == "2pin") names_led_2pin.Add(name);
+            }
+        }
+
+        private void PlotLED2pin(StreamWriter sw, string component_name)
+        {
+            sw.WriteLine("#");
+            sw.WriteLine("# {0}", component_name);
+            sw.WriteLine("#");
+            sw.WriteLine("DEF {0} LED 0 40 N N 1 F N", component_name);
+            sw.WriteLine("F0 \"LED\" -100 120 40 H V L CNN");
+            sw.WriteLine("F1 \"{0}\" 0 -80 40 H V C CNN", component_name);
+            sw.WriteLine("F2 \"~\" 0 0 60 H V C CNN");
+            sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
+            sw.WriteLine("DRAW");
+            sw.WriteLine("S 35 40 40 -40 0 1 1 F");
+            sw.WriteLine("P 2 0 1 0  10 50  45 85 N");
+            sw.WriteLine("P 2 0 1 0  50 50  85 85 N");
+            sw.WriteLine("P 3 0 1 1  -40 40  40 0  -40 -40 F");
+            sw.WriteLine("P 3 0 1 0  30 60  45 85  20 70 F");
+            sw.WriteLine("P 3 0 1 0  70 60  85 85  60 70 F");
+            sw.WriteLine("X A 1 -100 0 60 R 40 40 1 1 P");
+            sw.WriteLine("X K 2 100 0 60 L 40 40 1 1 P");
+            sw.WriteLine("ENDDRAW");
+            sw.WriteLine("ENDDEF");
+        }
+
+        private List<string> names_led_2pin;
+    }
 
 }

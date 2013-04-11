@@ -1,4 +1,4 @@
-update=2013/03/31 12:12:50
+update=2013/04/11 11:00:16
 version=1
 last_client=eeschema
 [cvpcb]
@@ -40,26 +40,20 @@ LibName11=valves
 version=1
 [eeschema]
 version=1
-LibDir=DefaultLibs;SchemaLib;SchemaLibTemplate
+LibDir=SchemaLib
 NetFmtName=PcbnewAdvanced
 RptD_X=0
 RptD_Y=100
 RptLab=1
 LabSize=60
 [eeschema/libraries]
-LibName1=C
-LibName2=D
-LibName3=FET
-LibName4=JFET
-LibName5=L
-LibName6=LED
-LibName7=R
-LibName8=SW
-LibName9=Tr
-LibName10=connector-female
-LibName11=connector-male
-LibName12=supply2
-LibName13=supply1
-LibName14=device
-LibName15=74xx
-LibName16=power
+LibName1=Capacitor
+LibName2=ConFe
+LibName3=ConMa
+LibName4=MOSFET
+LibName5=PowerSupply
+LibName6=Resistor
+LibName7=Transistor
+LibName8=PhotoDevice
+LibName9=74xx
+LibName10=device

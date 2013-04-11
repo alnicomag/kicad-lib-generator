@@ -48,11 +48,11 @@ sup,p,1,+48V
 sup,n,1,-48V
 sup,p,1,VCC
 sup,p,1,VCC2
-sup,p,1,-VCC
+sup,p,1,+VCC
 sup,p,1,VCCIO
 sup,p,1,VDD
 sup,p,1,VDD2
-sup,p,1,-VDD
+sup,p,1,+VDD
 sup,p,1,VDDIO
 sup,p,1,V+
 sup,p,1,VM
@@ -65,11 +65,11 @@ sup,p,1,VDD_MEM
 sup,p,1,VDD_LED
 sup,n,1,VEE
 sup,n,1,VEE2
-sup,n,1,#NAME?
+sup,n,1,-VCC
 sup,n,1,VEEIO
 sup,n,1,VSS
 sup,n,1,VSS2
-sup,n,1,#NAME?
+sup,n,1,-VDD
 sup,n,1,VSSIO
 sup,n,1,V-
 sup,g,1,GND
@@ -937,3 +937,14 @@ mosfet,p,,TPCP8110
 mosfet,p,,TPCP8111
 mosfet,p,,TPCP8305
 mosfet,p,,TPCP8306
+######## photo device ########,,,
+photo,led,2pin,LED(phi3)
+photo,led,2pin,LED(phi5)
+photo,led,2pin,LED(1608M)
+photo,led,2pin,LED(2012M)
+photo,led,2pin,LED(3216M)
+photo,led,2pin,LED(3225M)
+######## diode ########,,,
+d,pn,,diode1
+d,zener,,diode2
+d,sch,,diode3
