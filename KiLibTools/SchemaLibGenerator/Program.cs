@@ -377,195 +377,6 @@ namespace SchemaLibGenerator
 		private List<string> names_e1;
 	}
 
-	class KiLib_ConMale : KiLib
-	{
-		public KiLib_ConMale(string fname)
-			: base(fname, "")
-		{
-
-		}
-
-		private const int MAX_SINGLE_PIN = 99;
-		private const int MAX_DOUBLE_PIN = 99;
-
-		public override string FileName
-		{
-			get
-			{
-				return this.filename;
-			}
-		}
-
-		public override void Plot(StreamWriter sw)
-		{
-			PlotMaleSingle(sw);
-			PlotMaleDouble(sw);
-		}
-
-		private void PlotMaleSingle(StreamWriter sw)
-		{
-			for (int pin = 1; pin <= MAX_SINGLE_PIN; pin++)
-			{
-				string component_name = "con-male-single-" + pin.ToString("D2");
-				sw.WriteLine("#");
-				sw.WriteLine("# {0}", component_name);
-				sw.WriteLine("#");
-				sw.WriteLine("DEF {0} CN 0 1 Y N 1 F N", component_name);
-				sw.WriteLine("F0 \"CN\" -50 {0} 40 H V L CNN", 50 * pin + 30);
-				sw.WriteLine("F1 \"{0}\" 50 {1} 40 H V C CNN", component_name, -50 * pin - 40);
-				sw.WriteLine("F2 \"~\" -50 {0} 60 H V C CNN", 50 * (pin - 1));
-				sw.WriteLine("F3 \"~\" -50 {0} 60 H V C CNN", 50 * (pin - 1));
-				sw.WriteLine("DRAW");
-				sw.WriteLine("S -50 {0} 150 -{0} 0 1 0 f", 50 * pin);		//外枠
-				for (int pinid = 1; pinid <= pin; pinid++)
-				{
-					int pin_y = 50 * pin - 50 - (pinid - 1) * 100;
-					const int WIDTH = 15;
-					sw.WriteLine("X {0} {0} -200 {1} {2} R 50 50 1 1 P", pinid, pin_y, 200 - WIDTH);		//ピン
-					sw.WriteLine("C 0 {0} {1} 0 1 1 F", pin_y, WIDTH);
-					sw.WriteLine("C 50 {0} {1} 0 1 1 F", pin_y, WIDTH);
-					sw.WriteLine("S 0 {0} 50 {1} 0 1 1 F", pin_y - WIDTH, pin_y + WIDTH);
-				}
-				sw.WriteLine("ENDDRAW");
-				sw.WriteLine("ENDDEF");
-			}
-		}
-
-		private void PlotMaleDouble(StreamWriter sw)
-		{
-			for (int pin = 2; pin <= MAX_DOUBLE_PIN; pin += 2)
-			{
-				string component_name = "con-male-double-" + pin.ToString("D2");
-				sw.WriteLine("#");
-				sw.WriteLine("# {0}", component_name);
-				sw.WriteLine("#");
-				sw.WriteLine("DEF {0} CN 0 1 Y N 1 F N", component_name);
-				sw.WriteLine("F0 \"CN\" -150 {0} 40 H V L CNN", 25 * pin + 30);
-				sw.WriteLine("F1 \"{0}\" 0 {1} 40 H V C CNN", component_name, -25 * pin - 40);
-				sw.WriteLine("F2 \"~\" -50 {0} 60 H V C CNN", 25 * (pin - 1));
-				sw.WriteLine("F3 \"~\" -50 {0} 60 H V C CNN", 25 * (pin - 1));
-				sw.WriteLine("DRAW");
-				sw.WriteLine("S -150 {0} 150 -{0} 0 1 0 f", 25 * pin);		//外枠
-				for (int pinid = 1; pinid <= pin; pinid++)
-				{
-					const int WIDTH = 15;
-					if (pinid % 2 == 1)
-					{
-						int pin_y = 25 * pin - 50 - (int)((double)pinid * 0.5) * 100;
-						sw.WriteLine("X {0} {0} -300 {1} {2} R 50 50 1 1 P", pinid, pin_y, 200 - WIDTH);		//ピン
-						sw.WriteLine("C -100 {0} {1} 0 1 1 F", pin_y, WIDTH);
-						sw.WriteLine("C -50 {0} {1} 0 1 1 F", pin_y, WIDTH);
-						sw.WriteLine("S -100 {0} -50 {1} 0 1 1 F", pin_y - WIDTH, pin_y + WIDTH);
-					}
-					else
-					{
-						int pin_y = 25 * pin - 50 - (pinid / 2 - 1) * 100;
-						sw.WriteLine("X {0} {0} 300 {1} {2} L 50 50 1 1 P", pinid, pin_y, 200 - WIDTH);		//ピン
-						sw.WriteLine("C 100 {0} {1} 0 1 1 F", pin_y, WIDTH);
-						sw.WriteLine("C 50 {0} {1} 0 1 1 F", pin_y, WIDTH);
-						sw.WriteLine("S 50 {0} 100 {1} 0 1 1 F", pin_y - WIDTH, pin_y + WIDTH);
-					}
-				}
-				sw.WriteLine("ENDDRAW");
-				sw.WriteLine("ENDDEF");
-			}
-		}
-	}
-
-	class KiLib_ConFemale : KiLib
-	{
-		public KiLib_ConFemale(string fname)
-			: base(fname, "")
-		{
-
-		}
-
-		private const int MAX_SINGLE_PIN = 99;
-		private const int MAX_DOUBLE_PIN = 99;
-
-		public override string FileName
-		{
-			get
-			{
-				return this.filename;
-			}
-		}
-		public override void Plot(StreamWriter sw)
-		{
-			PlotFemaleSingle(sw);
-			PlotFemaleDouble(sw);
-		}
-
-		private void PlotFemaleSingle(StreamWriter sw)
-		{
-			for (int pin = 1; pin <= MAX_SINGLE_PIN; pin++)
-			{
-				string component_name = "con-female-single-" + pin.ToString("D2");
-				sw.WriteLine("#");
-				sw.WriteLine("# {0}", component_name);
-				sw.WriteLine("#");
-				sw.WriteLine("DEF {0} CN 0 1 Y N 1 F N", component_name);
-				sw.WriteLine("F0 \"CN\" -50 {0} 40 H V L CNN", 50 * pin + 30);
-				sw.WriteLine("F1 \"{0}\" 50 {1} 40 H V C CNN", component_name, -50 * pin - 40);
-				sw.WriteLine("F2 \"~\" -50 {0} 60 H V C CNN", 50 * (pin - 1));
-				sw.WriteLine("F3 \"~\" -50 {0} 60 H V C CNN", 50 * (pin - 1));
-				sw.WriteLine("DRAW");
-				sw.WriteLine("S -50 {0} 150 -{0} 0 1 0 f", 50 * pin);		//外枠
-				for (int pinid = 1; pinid <= pin; pinid++)
-				{
-					int pin_y = 50 * pin - 50 - (pinid - 1) * 100;
-					const int WIDTH = 18;
-					sw.WriteLine("X {0} {0} -200 {1} {2} R 50 50 1 1 P", pinid, pin_y, 200 - WIDTH);		//ピン
-					sw.WriteLine("A 0 {0} {1} 901 -901 0 1 0 N 0 {2} 0 {3}", pin_y, WIDTH, pin_y + WIDTH, pin_y - WIDTH);
-					sw.WriteLine("P 2 0 1 0  0 {0}  25 {0} F", pin_y + WIDTH);
-					sw.WriteLine("P 2 0 1 0  0 {0}  25 {0} F", pin_y - WIDTH);
-				}
-				sw.WriteLine("ENDDRAW");
-				sw.WriteLine("ENDDEF");
-			}
-		}
-
-		private void PlotFemaleDouble(StreamWriter sw)
-		{
-			for (int pin = 2; pin <= MAX_DOUBLE_PIN; pin += 2)
-			{
-				string component_name = "con-female-double-" + pin.ToString("D2");
-				sw.WriteLine("#");
-				sw.WriteLine("# {0}", component_name);
-				sw.WriteLine("#");
-				sw.WriteLine("DEF {0} CN 0 1 Y N 1 F N", component_name);
-				sw.WriteLine("F0 \"CN\" -150 {0} 40 H V L CNN", 25 * pin + 30);
-				sw.WriteLine("F1 \"{0}\" 0 {1} 40 H V C CNN", component_name, -25 * pin - 40);
-				sw.WriteLine("F2 \"~\" -50 {0} 60 H V C CNN", 25 * (pin - 1));
-				sw.WriteLine("F3 \"~\" -50 {0} 60 H V C CNN", 25 * (pin - 1));
-				sw.WriteLine("DRAW");
-				sw.WriteLine("S -150 {0} 150 -{0} 0 1 0 f", 25 * pin);		//外枠
-				for (int pinid = 1; pinid <= pin; pinid++)
-				{
-					const int WIDTH = 18;
-					if (pinid % 2 == 1)
-					{
-						int pin_y = 25 * pin - 50 - (int)((double)pinid * 0.5) * 100;
-						sw.WriteLine("X {0} {0} -300 {1} {2} R 50 50 1 1 P", pinid, pin_y, 200 - WIDTH);		//ピン
-						sw.WriteLine("A -100 {0} {1} 901 -901 0 1 0 N -100 {2} -100 {3}", pin_y, WIDTH, pin_y + WIDTH, pin_y - WIDTH);
-						sw.WriteLine("P 2 0 1 0  -100 {0}  -75 {0} F", pin_y + WIDTH);
-						sw.WriteLine("P 2 0 1 0  -100 {0}  -75 {0} F", pin_y - WIDTH);
-					}
-					else
-					{
-						int pin_y = 25 * pin - 50 - (pinid / 2 - 1) * 100;
-						sw.WriteLine("X {0} {0} 300 {1} {2} L 50 50 1 1 P", pinid, pin_y, 200 - WIDTH);		//ピン
-						sw.WriteLine("A 100 {0} {1} 899 -899 0 1 0 N 100 {2} 100 {3}", pin_y, WIDTH, pin_y + WIDTH, pin_y - WIDTH);
-						sw.WriteLine("P 2 0 1 0  75 {0}  100 {0} F", pin_y + WIDTH);
-						sw.WriteLine("P 2 0 1 0  75 {0}  100 {0} F", pin_y - WIDTH);
-					}
-				}
-				sw.WriteLine("ENDDRAW");
-				sw.WriteLine("ENDDEF");
-			}
-		}
-	}
-
 	class KiLib_Resistor : KiLib
 	{
 		public KiLib_Resistor()
@@ -648,12 +459,12 @@ namespace SchemaLibGenerator
 	class KiLib_Capacitor : KiLib
 	{
 		public KiLib_Capacitor()
-			: this("C", "c")
+			: this(KiLib_Capacitor.DefaultFileName, KiLib_Capacitor.DefaultLabel)
 		{
 
 		}
 		public KiLib_Capacitor(string fname)
-			: this(fname, "c")
+			: this(fname, KiLib_Capacitor.DefaultLabel)
 		{
 
 		}
@@ -758,8 +569,141 @@ namespace SchemaLibGenerator
 		private List<string> names_ceramic;
 		private List<string> names_pole;
 		private List<string> names_nonepole;
+
+		private const string DefaultFileName = "Capacitor";
+		private const string DefaultLabel = "c";
 	}
 
+	class KiLib_Inductor : KiLib
+	{
+		public KiLib_Inductor()
+			: this(KiLib_Inductor.DefaultFileName, KiLib_Inductor.DefaultLabel)
+		{
+
+		}
+		public KiLib_Inductor(string fname)
+			: this(fname, KiLib_Inductor.DefaultLabel)
+		{
+
+		}
+		public KiLib_Inductor(string fname, string label)
+			: base(fname, label)
+		{
+			names_1 = new List<string>();
+			names_2 = new List<string>();
+			names_3 = new List<string>();
+		}
+
+		public override string FileName { get { return this.filename; } }
+		public override string Label { get { return this.label; } }
+
+		public override void Plot(StreamWriter sw)
+		{
+			foreach (string name in names_1)
+			{
+				Plot1(sw, name);
+			}
+			foreach (string name in names_2)
+			{
+				Plot2(sw, name);
+			}
+			foreach (string name in names_3)
+			{
+				Plot3(sw, name);
+			}
+		}
+
+		public void AddComponentName(string name, string[] tags)
+		{
+			if (tags[0] == "1") names_1.Add(name);
+			else if (tags[0] == "2") names_2.Add(name);
+			else if (tags[0] == "3") names_3.Add(name);
+		}
+
+		private void Plot1(StreamWriter sw, string component_name)      //セラミック，フィルム
+		{
+			/*
+			#
+			# L-type1
+			#
+			DEF L-type1 L 0 0 N Y 1 F N
+			F0 "L" -125 60 40 H V L CNN
+			F1 "L-type1" 0 -50 40 H V C CNN
+			F2 "~" -70 0 30 V V C CNN
+			F3 "~" 0 0 30 H V C CNN
+			F4 "4.7m" 25 60 35 H V L CNN "Inductance"
+			DRAW
+			A -75 0 25 1 1799 0 1 0 N -50 0 -100 0
+			A -25 0 25 1 1799 0 1 0 N 0 0 -50 0
+			A 25 0 25 1 1799 0 1 0 N 50 0 0 0
+			A 75 0 25 1 1799 0 1 0 N 100 0 50 0
+			X ~ 1 -150 0 50 R 60 60 1 1 P
+			X ~ 2 150 0 50 L 60 60 1 1 P
+			*/
+		}
+
+		private void Plot2(StreamWriter sw, string component_name)     //有極電解
+		{
+			/*
+			#
+			# L-type2
+			#
+			DEF L-type2 L 0 0 N Y 1 F N
+			F0 "L" -125 80 40 H V L CNN
+			F1 "L-type2" 0 -50 40 H V C CNN
+			F2 "~" -70 0 30 V V C CNN
+			F3 "~" 0 0 30 H V C CNN
+			F4 "4.7m" 25 80 35 H V L CNN "Inductance"
+			DRAW
+			A -75 0 25 1 1799 0 1 0 N -50 0 -100 0
+			A -25 0 25 1 1799 0 1 0 N 0 0 -50 0
+			A 25 0 25 1 1799 0 1 0 N 50 0 0 0
+			A 75 0 25 1 1799 0 1 0 N 100 0 50 0
+			S -95 40 95 50 0 1 1 F
+			X ~ 1 -150 0 50 R 60 60 1 1 P
+			X ~ 2 150 0 50 L 60 60 1 1 P
+			ENDDRAW
+			ENDDEF
+			*/
+		}
+
+		private void Plot3(StreamWriter sw, string component_name)        //無極性電解
+		{
+			/*
+			#
+			# L-type3
+			#
+			DEF L-type3 L 0 0 N Y 1 F N
+			F0 "L" -125 80 40 H V L CNN
+			F1 "L-type3" 0 -50 40 H V C CNN
+			F2 "~" -70 0 30 V V C CNN
+			F3 "~" 0 0 30 H V C CNN
+			F4 "4.7m" 25 80 35 H V L CNN "Inductance"
+			DRAW
+			A -75 0 25 1 1799 0 1 0 N -50 0 -100 0
+			A -25 0 25 1 1799 0 1 0 N 0 0 -50 0
+			A 25 0 25 1 1799 0 1 0 N 50 0 0 0
+			A 75 0 25 1 1799 0 1 0 N 100 0 50 0
+			S -95 40 -65 50 0 1 1 F
+			S -55 40 -25 50 0 1 1 F
+			S -15 40 15 50 0 1 1 F
+			S 25 40 55 50 0 1 1 F
+			S 65 40 95 50 0 1 1 F
+			X ~ 1 -150 0 50 R 60 60 1 1 P
+			X ~ 2 150 0 50 L 60 60 1 1 P
+			ENDDRAW
+			ENDDEF
+			*/
+		}
+
+		private List<string> names_1;
+		private List<string> names_2;
+		private List<string> names_3;
+
+		private const string DefaultFileName = "Inductor";
+		private const string DefaultLabel = "l";
+	}
+	
 	class KiLib_Transistor : KiLib
 	{
 		public KiLib_Transistor()
@@ -1008,7 +952,7 @@ namespace SchemaLibGenerator
     class KiLib_Diode : KiLib
     {
 		public KiLib_Diode()
-			: this("Diode", KiLib_Diode.DefaultLabel)
+			: this(KiLib_Diode.DefaultFileName, KiLib_Diode.DefaultLabel)
 		{
 
 		}
@@ -1033,7 +977,7 @@ namespace SchemaLibGenerator
 		{
 			foreach (string name in names_pn)
 			{
-				PlotD(sw, name);
+				PlotPN(sw, name);
 			}
 			foreach (string name in names_schottky)
 			{
@@ -1061,19 +1005,67 @@ namespace SchemaLibGenerator
 			}
 		}
 
-		private void PlotD(StreamWriter sw, string component_name)
+		private void PlotPN(StreamWriter sw, string component_name)
 		{
-
+			sw.WriteLine("#");
+			sw.WriteLine("# {0}", component_name);
+			sw.WriteLine("#");
+			sw.WriteLine("DEF {0} D 0 40 N N 1 F N", component_name);
+			sw.WriteLine("F0 \"D\" -50 70 40 H V L CNN");
+			sw.WriteLine("F1 \"{0}\" 0 -80 40 H V C CNN", component_name);
+			sw.WriteLine("F2 \"~\" 0 0 60 H V C CNN");
+			sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
+			sw.WriteLine("DRAW");
+			sw.WriteLine("S 35 40 40 -40 0 1 1 F");
+			sw.WriteLine("P 3 0 1 1  -40 40  40 0  -40 -40 F");
+			sw.WriteLine("X A 1 -100 0 60 R 40 40 1 1 P");
+			sw.WriteLine("X K 2 100 0 60 L 40 40 1 1 P");
+			sw.WriteLine("ENDDRAW");
+			sw.WriteLine("ENDDEF");
 		}
 
 		private void PlotSchottky(StreamWriter sw, string component_name)
 		{
-
+			sw.WriteLine("#");
+			sw.WriteLine("# {0}", component_name);
+			sw.WriteLine("#");
+			sw.WriteLine("DEF {0} D 0 40 N N 1 F N", component_name);
+			sw.WriteLine("F0 \"D\" -50 70 40 H V L CNN");
+			sw.WriteLine("F1 \"{0}\" 0 -80 40 H V C CNN", component_name);
+			sw.WriteLine("F2 \"~\" 0 0 60 H V C CNN");
+			sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
+			sw.WriteLine("DRAW");
+			sw.WriteLine("S 20 -40 25 -20 0 1 1 F");
+			sw.WriteLine("S 20 -40 40 -35 0 1 1 F");
+			sw.WriteLine("S 35 35 55 40 0 1 1 F");
+			sw.WriteLine("S 35 40 40 -40 0 1 1 F");
+			sw.WriteLine("S 50 20 55 40 0 1 1 F");
+			sw.WriteLine("P 3 0 1 1  -40 40  40 0  -40 -40 F");
+			sw.WriteLine("X A 1 -100 0 60 R 40 40 1 1 P");
+			sw.WriteLine("X K 2 100 0 60 L 40 40 1 1 P");
+			sw.WriteLine("ENDDRAW");
+			sw.WriteLine("ENDDEF");
 		}
 
 		private void PlotZener(StreamWriter sw, string component_name)
 		{
-
+			sw.WriteLine("#");
+			sw.WriteLine("# {0}", component_name);
+			sw.WriteLine("#");
+			sw.WriteLine("DEF {0} D 0 40 N N 1 F N", component_name);
+			sw.WriteLine("F0 \"D\" -50 70 40 H V L CNN");
+			sw.WriteLine("F1 \"{0}\" 0 -80 40 H V C CNN", component_name);
+			sw.WriteLine("F2 \"~\" 0 0 60 H V C CNN");
+			sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
+			sw.WriteLine("DRAW");
+			sw.WriteLine("S 20 35 40 40 0 1 1 F");
+			sw.WriteLine("S 35 -40 55 -35 0 1 1 F");
+			sw.WriteLine("S 35 40 40 -40 0 1 1 F");
+			sw.WriteLine("P 3 0 1 1  -40 40  40 0  -40 -40 F");
+			sw.WriteLine("X A 1 -100 0 60 R 40 40 1 1 P");
+			sw.WriteLine("X K 2 100 0 60 L 40 40 1 1 P");
+			sw.WriteLine("ENDDRAW");
+			sw.WriteLine("ENDDEF");
 		}
 
 		private List<string> names_pn;
@@ -1088,12 +1080,12 @@ namespace SchemaLibGenerator
     class KiLib_Photo : KiLib
     {
 		public KiLib_Photo()
-			: this("PhotoDevice", "photo")
+			: this(KiLib_Photo.DefaultFileName, KiLib_Photo.DefaultLabel)
 		{
 
 		}
 		public KiLib_Photo(string fname)
-			: this(fname, "photo")
+			: this(fname, KiLib_Photo.DefaultLabel)
 		{
 
 		}
@@ -1146,6 +1138,199 @@ namespace SchemaLibGenerator
         }
 
         private List<string> names_led_2pin;
+
+		private const string DefaultFileName = "PhotoDevice";
+		private const string DefaultLabel = "photo";
     }
+
+
+	class KiLib_ConMale : KiLib
+	{
+		public KiLib_ConMale(string fname)
+			: base(fname, "")
+		{
+
+		}
+
+		private const int MAX_SINGLE_PIN = 99;
+		private const int MAX_DOUBLE_PIN = 99;
+
+		public override string FileName
+		{
+			get
+			{
+				return this.filename;
+			}
+		}
+
+		public override void Plot(StreamWriter sw)
+		{
+			PlotMaleSingle(sw);
+			PlotMaleDouble(sw);
+		}
+
+		private void PlotMaleSingle(StreamWriter sw)
+		{
+			for (int pin = 1; pin <= MAX_SINGLE_PIN; pin++)
+			{
+				string component_name = "con-male-single-" + pin.ToString("D2");
+				sw.WriteLine("#");
+				sw.WriteLine("# {0}", component_name);
+				sw.WriteLine("#");
+				sw.WriteLine("DEF {0} CN 0 1 Y N 1 F N", component_name);
+				sw.WriteLine("F0 \"CN\" -50 {0} 40 H V L CNN", 50 * pin + 30);
+				sw.WriteLine("F1 \"{0}\" 50 {1} 40 H V C CNN", component_name, -50 * pin - 40);
+				sw.WriteLine("F2 \"~\" -50 {0} 60 H V C CNN", 50 * (pin - 1));
+				sw.WriteLine("F3 \"~\" -50 {0} 60 H V C CNN", 50 * (pin - 1));
+				sw.WriteLine("DRAW");
+				sw.WriteLine("S -50 {0} 150 -{0} 0 1 0 f", 50 * pin);		//外枠
+				for (int pinid = 1; pinid <= pin; pinid++)
+				{
+					int pin_y = 50 * pin - 50 - (pinid - 1) * 100;
+					const int WIDTH = 15;
+					sw.WriteLine("X {0} {0} -200 {1} {2} R 50 50 1 1 P", pinid, pin_y, 200 - WIDTH);		//ピン
+					sw.WriteLine("C 0 {0} {1} 0 1 1 F", pin_y, WIDTH);
+					sw.WriteLine("C 50 {0} {1} 0 1 1 F", pin_y, WIDTH);
+					sw.WriteLine("S 0 {0} 50 {1} 0 1 1 F", pin_y - WIDTH, pin_y + WIDTH);
+				}
+				sw.WriteLine("ENDDRAW");
+				sw.WriteLine("ENDDEF");
+			}
+		}
+
+		private void PlotMaleDouble(StreamWriter sw)
+		{
+			for (int pin = 2; pin <= MAX_DOUBLE_PIN; pin += 2)
+			{
+				string component_name = "con-male-double-" + pin.ToString("D2");
+				sw.WriteLine("#");
+				sw.WriteLine("# {0}", component_name);
+				sw.WriteLine("#");
+				sw.WriteLine("DEF {0} CN 0 1 Y N 1 F N", component_name);
+				sw.WriteLine("F0 \"CN\" -150 {0} 40 H V L CNN", 25 * pin + 30);
+				sw.WriteLine("F1 \"{0}\" 0 {1} 40 H V C CNN", component_name, -25 * pin - 40);
+				sw.WriteLine("F2 \"~\" -50 {0} 60 H V C CNN", 25 * (pin - 1));
+				sw.WriteLine("F3 \"~\" -50 {0} 60 H V C CNN", 25 * (pin - 1));
+				sw.WriteLine("DRAW");
+				sw.WriteLine("S -150 {0} 150 -{0} 0 1 0 f", 25 * pin);		//外枠
+				for (int pinid = 1; pinid <= pin; pinid++)
+				{
+					const int WIDTH = 15;
+					if (pinid % 2 == 1)
+					{
+						int pin_y = 25 * pin - 50 - (int)((double)pinid * 0.5) * 100;
+						sw.WriteLine("X {0} {0} -300 {1} {2} R 50 50 1 1 P", pinid, pin_y, 200 - WIDTH);		//ピン
+						sw.WriteLine("C -100 {0} {1} 0 1 1 F", pin_y, WIDTH);
+						sw.WriteLine("C -50 {0} {1} 0 1 1 F", pin_y, WIDTH);
+						sw.WriteLine("S -100 {0} -50 {1} 0 1 1 F", pin_y - WIDTH, pin_y + WIDTH);
+					}
+					else
+					{
+						int pin_y = 25 * pin - 50 - (pinid / 2 - 1) * 100;
+						sw.WriteLine("X {0} {0} 300 {1} {2} L 50 50 1 1 P", pinid, pin_y, 200 - WIDTH);		//ピン
+						sw.WriteLine("C 100 {0} {1} 0 1 1 F", pin_y, WIDTH);
+						sw.WriteLine("C 50 {0} {1} 0 1 1 F", pin_y, WIDTH);
+						sw.WriteLine("S 50 {0} 100 {1} 0 1 1 F", pin_y - WIDTH, pin_y + WIDTH);
+					}
+				}
+				sw.WriteLine("ENDDRAW");
+				sw.WriteLine("ENDDEF");
+			}
+		}
+	}
+
+	class KiLib_ConFemale : KiLib
+	{
+		public KiLib_ConFemale(string fname)
+			: base(fname, "")
+		{
+
+		}
+
+		private const int MAX_SINGLE_PIN = 99;
+		private const int MAX_DOUBLE_PIN = 99;
+
+		public override string FileName
+		{
+			get
+			{
+				return this.filename;
+			}
+		}
+		public override void Plot(StreamWriter sw)
+		{
+			PlotFemaleSingle(sw);
+			PlotFemaleDouble(sw);
+		}
+
+		private void PlotFemaleSingle(StreamWriter sw)
+		{
+			for (int pin = 1; pin <= MAX_SINGLE_PIN; pin++)
+			{
+				string component_name = "con-female-single-" + pin.ToString("D2");
+				sw.WriteLine("#");
+				sw.WriteLine("# {0}", component_name);
+				sw.WriteLine("#");
+				sw.WriteLine("DEF {0} CN 0 1 Y N 1 F N", component_name);
+				sw.WriteLine("F0 \"CN\" -50 {0} 40 H V L CNN", 50 * pin + 30);
+				sw.WriteLine("F1 \"{0}\" 50 {1} 40 H V C CNN", component_name, -50 * pin - 40);
+				sw.WriteLine("F2 \"~\" -50 {0} 60 H V C CNN", 50 * (pin - 1));
+				sw.WriteLine("F3 \"~\" -50 {0} 60 H V C CNN", 50 * (pin - 1));
+				sw.WriteLine("DRAW");
+				sw.WriteLine("S -50 {0} 150 -{0} 0 1 0 f", 50 * pin);		//外枠
+				for (int pinid = 1; pinid <= pin; pinid++)
+				{
+					int pin_y = 50 * pin - 50 - (pinid - 1) * 100;
+					const int WIDTH = 18;
+					sw.WriteLine("X {0} {0} -200 {1} {2} R 50 50 1 1 P", pinid, pin_y, 200 - WIDTH);		//ピン
+					sw.WriteLine("A 0 {0} {1} 901 -901 0 1 0 N 0 {2} 0 {3}", pin_y, WIDTH, pin_y + WIDTH, pin_y - WIDTH);
+					sw.WriteLine("P 2 0 1 0  0 {0}  25 {0} F", pin_y + WIDTH);
+					sw.WriteLine("P 2 0 1 0  0 {0}  25 {0} F", pin_y - WIDTH);
+				}
+				sw.WriteLine("ENDDRAW");
+				sw.WriteLine("ENDDEF");
+			}
+		}
+
+		private void PlotFemaleDouble(StreamWriter sw)
+		{
+			for (int pin = 2; pin <= MAX_DOUBLE_PIN; pin += 2)
+			{
+				string component_name = "con-female-double-" + pin.ToString("D2");
+				sw.WriteLine("#");
+				sw.WriteLine("# {0}", component_name);
+				sw.WriteLine("#");
+				sw.WriteLine("DEF {0} CN 0 1 Y N 1 F N", component_name);
+				sw.WriteLine("F0 \"CN\" -150 {0} 40 H V L CNN", 25 * pin + 30);
+				sw.WriteLine("F1 \"{0}\" 0 {1} 40 H V C CNN", component_name, -25 * pin - 40);
+				sw.WriteLine("F2 \"~\" -50 {0} 60 H V C CNN", 25 * (pin - 1));
+				sw.WriteLine("F3 \"~\" -50 {0} 60 H V C CNN", 25 * (pin - 1));
+				sw.WriteLine("DRAW");
+				sw.WriteLine("S -150 {0} 150 -{0} 0 1 0 f", 25 * pin);		//外枠
+				for (int pinid = 1; pinid <= pin; pinid++)
+				{
+					const int WIDTH = 18;
+					if (pinid % 2 == 1)
+					{
+						int pin_y = 25 * pin - 50 - (int)((double)pinid * 0.5) * 100;
+						sw.WriteLine("X {0} {0} -300 {1} {2} R 50 50 1 1 P", pinid, pin_y, 200 - WIDTH);		//ピン
+						sw.WriteLine("A -100 {0} {1} 901 -901 0 1 0 N -100 {2} -100 {3}", pin_y, WIDTH, pin_y + WIDTH, pin_y - WIDTH);
+						sw.WriteLine("P 2 0 1 0  -100 {0}  -75 {0} F", pin_y + WIDTH);
+						sw.WriteLine("P 2 0 1 0  -100 {0}  -75 {0} F", pin_y - WIDTH);
+					}
+					else
+					{
+						int pin_y = 25 * pin - 50 - (pinid / 2 - 1) * 100;
+						sw.WriteLine("X {0} {0} 300 {1} {2} L 50 50 1 1 P", pinid, pin_y, 200 - WIDTH);		//ピン
+						sw.WriteLine("A 100 {0} {1} 899 -899 0 1 0 N 100 {2} 100 {3}", pin_y, WIDTH, pin_y + WIDTH, pin_y - WIDTH);
+						sw.WriteLine("P 2 0 1 0  75 {0}  100 {0} F", pin_y + WIDTH);
+						sw.WriteLine("P 2 0 1 0  75 {0}  100 {0} F", pin_y - WIDTH);
+					}
+				}
+				sw.WriteLine("ENDDRAW");
+				sw.WriteLine("ENDDEF");
+			}
+		}
+	}
 
 }
