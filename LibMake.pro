@@ -1,4 +1,4 @@
-update=2013/04/11 11:00:16
+update=2013/04/13 9:43:53
 version=1
 last_client=eeschema
 [cvpcb]
@@ -57,3 +57,4 @@ LibName7=Transistor
 LibName8=PhotoDevice
 LibName9=74xx
 LibName10=device
+LibName11=Diode

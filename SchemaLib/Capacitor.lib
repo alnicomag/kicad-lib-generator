@@ -1,4 +1,4 @@
-EESchema-LIBRARY Version 2.3  Date: 2013/04/11 11:02:20
+EESchema-LIBRARY Version 2.3  Date: 2013/04/13 22:45:41
 #encoding utf-8
 #
 # C(cera)
@@ -13,6 +13,43 @@ S -60 -30 60 -15 0 1 1 F
 S -60 30 60 15 0 1 1 F
 X ~ 1 0 100 75 D 40 40 1 1 P
 X ~ 2 0 -100 75 U 40 40 1 1 P
+ENDDRAW
+ENDDEF
+#
+# C(pole)
+#
+DEF C(pole) C 0 10 N N 1 F N
+F0 "C" 50 70 45 H V L CNN
+F1 "C(pole)" 50 -75 45 H V L CNN
+F2 "~" 38 -150 30 H V C CNN
+F3 "~" 0 0 60 H V C CNN
+DRAW
+T 0 -30 55 30 0 0 0 +  Normal 0 C C
+S -60 -35 60 -20 0 1 1 F
+S -60 35 60 20 0 1 1 F
+P 2 0 1 10  -20 25  -50 -25 N
+P 2 0 1 10  15 25  -15 -25 N
+P 2 0 1 10  50 25  20 -25 N
+X p 1 0 100 70 D 40 40 1 1 P
+X m 2 0 -100 70 U 40 40 1 1 P
+ENDDRAW
+ENDDEF
+#
+# C(npole)
+#
+DEF C(npole) C 0 10 N N 1 F N
+F0 "C" 50 70 45 H V L CNN
+F1 "C(npole)" 50 -75 45 H V L CNN
+F2 "~" 38 -150 30 H V C CNN
+F3 "~" 0 0 60 H V C CNN
+DRAW
+S -60 -35 60 -20 0 1 1 F
+S -60 35 60 20 0 1 1 F
+P 2 0 1 10  -20 25  -50 -25 N
+P 2 0 1 10  15 25  -15 -25 N
+P 2 0 1 10  50 25  20 -25 N
+X p 1 0 100 70 D 40 40 1 1 P
+X m 2 0 -100 70 U 40 40 1 1 P
 ENDDRAW
 ENDDEF
 #
@@ -178,43 +215,6 @@ S -60 -30 60 -15 0 1 1 F
 S -60 30 60 15 0 1 1 F
 X ~ 1 0 100 75 D 40 40 1 1 P
 X ~ 2 0 -100 75 U 40 40 1 1 P
-ENDDRAW
-ENDDEF
-#
-# C(pole)
-#
-DEF C(pole) C 0 10 N N 1 F N
-F0 "C" 50 70 45 H V L CNN
-F1 "C(pole)" 50 -75 45 H V L CNN
-F2 "~" 38 -150 30 H V C CNN
-F3 "~" 0 0 60 H V C CNN
-DRAW
-T 0 -30 55 30 0 0 0 +  Normal 0 C C
-S -60 -35 60 -20 0 1 1 F
-S -60 35 60 20 0 1 1 F
-P 2 0 1 10  -20 25  -50 -25 N
-P 2 0 1 10  15 25  -15 -25 N
-P 2 0 1 10  50 25  20 -25 N
-X p 1 0 100 70 D 40 40 1 1 P
-X m 2 0 -100 70 U 40 40 1 1 P
-ENDDRAW
-ENDDEF
-#
-# C(npole)
-#
-DEF C(npole) C 0 10 N N 1 F N
-F0 "C" 50 70 45 H V L CNN
-F1 "C(npole)" 50 -75 45 H V L CNN
-F2 "~" 38 -150 30 H V C CNN
-F3 "~" 0 0 60 H V C CNN
-DRAW
-S -60 -35 60 -20 0 1 1 F
-S -60 35 60 20 0 1 1 F
-P 2 0 1 10  -20 25  -50 -25 N
-P 2 0 1 10  15 25  -15 -25 N
-P 2 0 1 10  50 25  20 -25 N
-X p 1 0 100 70 D 40 40 1 1 P
-X m 2 0 -100 70 U 40 40 1 1 P
 ENDDRAW
 ENDDEF
 #

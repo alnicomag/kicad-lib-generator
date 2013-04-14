@@ -29,12 +29,13 @@ namespace SchemaLibGenerator
 			}
 			while ((stream = ofd.OpenFile()) == null);
 
-			KiLib_Resistor r = new KiLib_Resistor("Resistor", "r");
-			KiLib_Capacitor c = new KiLib_Capacitor("Capacitor", "c");
-			KiLib_Transistor tr = new KiLib_Transistor("Transistor", "tr");
-			KiLib_MOSFET mosfet = new KiLib_MOSFET("MOSFET", "mosfet");
-			KiLib_PowerSupply ps = new KiLib_PowerSupply("PowerSupply", "sup");
-			KiLib_Photo pd = new KiLib_Photo("PhotoDevice", "photo");
+			KiSchemaLib.Resistor r = new KiSchemaLib.Resistor();
+			KiSchemaLib.Capacitor c = new KiSchemaLib.Capacitor();
+			KiSchemaLib.Transistor tr = new KiSchemaLib.Transistor();
+			KiSchemaLib.MOSFET mosfet = new KiSchemaLib.MOSFET();
+			KiSchemaLib.PowerSupply ps = new KiSchemaLib.PowerSupply();
+			KiSchemaLib.Photo pd = new KiSchemaLib.Photo();
+			KiSchemaLib.Diode d = new KiSchemaLib.Diode();
 
 			using (StreamReader sr = new StreamReader(stream))
 			{
@@ -44,13 +45,17 @@ namespace SchemaLibGenerator
 					if (line.Substring(0, 1) != "#")
 					{
 						string[] divline = line.Split(',');
-						if (divline[0] == r.Label)
+						if (divline[0] == ps.Label)
 						{
-							r.AddComponentName(divline[3], new string[] { divline[1], divline[2] });
+							ps.AddComponentName(divline[1], divline[2]);
+						}
+						else if (divline[0] == r.Label)
+						{
+							r.AddComponentName(divline[1], divline[2], divline[3], divline[4]);
 						}
 						else if (divline[0] == c.Label)
 						{
-							c.AddComponentName(divline[3], new string[] { divline[1], divline[2] });
+							c.AddComponentName(divline[1], divline[2], divline[3], divline[4]);
 						}
 						else if (divline[0] == tr.Label)
 						{
@@ -60,13 +65,13 @@ namespace SchemaLibGenerator
 						{
 							mosfet.AddComponentName(divline[3], new string[] { divline[1], divline[2] });
 						}
-						else if (divline[0] == ps.Label)
-						{
-							ps.AddComponentName(divline[3], new string[] { divline[1], divline[2] });
-						}
 						else if (divline[0] == pd.Label)
 						{
 							pd.AddComponentName(divline[3], new string[] { divline[1], divline[2] });
+						}
+						else if (divline[0] == d.Label)
+						{
+							d.AddComponentName(divline[3], new string[] { divline[1], divline[2] });
 						}
 					}
 				}
@@ -82,1255 +87,1465 @@ namespace SchemaLibGenerator
 			};
 			fbd.ShowDialog();
 
-			WriteFile(fbd, r);
-			WriteFile(fbd, c);
-			WriteFile(fbd, tr);
-			WriteFile(fbd, mosfet);
-			WriteFile(fbd, new KiLib_ConMale("ConMa"));
-			WriteFile(fbd, new KiLib_ConFemale("ConFe"));
-			WriteFile(fbd, ps);
-			WriteFile(fbd, pd);
+			ps.WriteFile(fbd);
+			r.WriteFile(fbd);
+			c.WriteFile(fbd);
+		//	tr.WriteFile(fbd);
+		//	mosfet.WriteFile(fbd);
+		//	pd.WriteFile(fbd);
+		//	d.WriteFile(fbd);
+		//	new KiSchemaLib.ConMale().WriteFile(fbd);
+		//	new KiSchemaLib.ConFemale().WriteFile(fbd);
 		}
+	}
 
-		private static void WriteFile(FolderBrowserDialog fbd, KiLib lib)
+	
+	namespace KiSchemaLib
+	{
+		/// <summary>
+		/// .libファイルに保存される回路図記号ライブラリを表す抽象クラス
+		/// </summary>
+		abstract class KiSchemaLibFile
 		{
-			using (StreamWriter sw = new StreamWriter(@fbd.SelectedPath + "\\" + lib.FileName + ".lib"))
+			public KiSchemaLibFile(string fname)
+			{
+				filename = fname;
+			}
+
+			/// <summary>
+			/// 保存する時の.libファイルの名前
+			/// </summary>
+			public abstract string FileName { get; }
+			/// <summary>
+			/// 作成元csvファイルのレコード識別文字列
+			/// </summary>
+			public abstract string Label { get; }
+
+			public virtual void WriteFile(FolderBrowserDialog fbd) { }
+
+			protected string filename;
+
+			protected static void WriteHeader(StreamWriter sw)
 			{
 				sw.WriteLine("EESchema-LIBRARY Version 2.3  Date: " + DateTime.Now.ToString());
 				sw.WriteLine("#encoding utf-8");
-				lib.Plot(sw);
+			}
+			protected static void WriteFooter(StreamWriter sw)
+			{
 				sw.WriteLine("#");
 				sw.WriteLine("#End Library");
 			}
 		}
-	}
 
-	/// <summary>
-	/// .libファイルに保存される回路図記号ライブラリを表す基底クラス
-	/// </summary>
-	class KiLib
-	{
-		public KiLib(string fname, string label)
+		class Fields
 		{
-			filename = fname;
-			this.label = label;
-		}
-
-		/// <summary>
-		/// 保存する時の.libファイルの名前
-		/// </summary>
-		public virtual string FileName { get { return ""; } }
-		/// <summary>
-		/// 作成元csvファイルのレコード識別文字列
-		/// </summary>
-		public virtual string Label { get { return ""; } }
-
-		public virtual void Plot(StreamWriter sw) { }
-
-		protected string filename;
-		protected string label;
-	}
-
-	class KiLib_PowerSupply : KiLib
-	{
-		public KiLib_PowerSupply(string fname, string label)
-			: base(fname, label)
-		{
-			names_p1 = new List<string>();
-			names_p2 = new List<string>();
-			names_n1 = new List<string>();
-			names_n2 = new List<string>();
-			names_g1 = new List<string>();
-			names_g2 = new List<string>();
-			names_e1 = new List<string>();
-		}
-
-		public override string FileName { get { return this.filename; } }
-		public override string Label { get { return this.label; } }
-
-		public override void Plot(StreamWriter sw)
-		{
-			foreach (string name in names_p1)
+			public Fields(string name, string footprint, string vendor)
 			{
-				PlotVp1(sw, name);
+				ComponentName = name;
+				PCBFootprint = footprint;
+				Vendor = vendor;
 			}
-			foreach (string name in names_p2)
+			public string ComponentName { get; set; }
+			public string Value { get; set; }
+			public string PCBFootprint { get; set; }
+			public string UserDocLink { get; set; }
+			public string Vendor { get; set; }
+		}
+
+
+		enum SymbolTagOfPowerSupply
+		{
+			PositiveCircle,
+			NegativeCircle,
+			PositiveBar,
+			NegativeBar,
+			GND,
+			Earth
+		}
+
+		class ComponentOfPowerSupply : Fields
+		{
+			public ComponentOfPowerSupply(string name, SymbolTagOfPowerSupply tag, string footprint, string vendor)
+				: base(name, footprint, vendor)
 			{
-				PlotVp2(sw, name);
+				this.tag = tag;
 			}
-			foreach (string name in names_n1)
+			public SymbolTagOfPowerSupply tag;
+		}
+
+		class PowerSupply : KiSchemaLibFile
+		{
+			static PowerSupply()
 			{
-				PlotVn1(sw, name);
+				DEFAULT_FILE_NAME = "PowerSupply";
+				LABEL = "sup";
 			}
-			foreach (string name in names_n2)
+			public PowerSupply()
+				: this(PowerSupply.DEFAULT_FILE_NAME)
 			{
-				PlotVn2(sw, name);
+
 			}
-			foreach (string name in names_g1)
+			public PowerSupply(string fname)
+				: base(fname)
 			{
-				PlotVg1(sw, name);
-			}
-			foreach (string name in names_g2)
-			{
-				PlotVg2(sw, name);
-			}
-		}
-
-		public void AddComponentName(string name, string[] tags)
-		{
-			if (tags[0] == "p")
-			{
-				if (tags[1] == "1") names_p1.Add(name);
-				else if (tags[1] == "2") names_p2.Add(name);
-			}
-			else if (tags[0] == "n")
-			{
-				if (tags[1] == "1") names_n1.Add(name);
-				else if (tags[1] == "2") names_n2.Add(name);
-			}
-			else if (tags[0] == "g")
-			{
-				if (tags[1] == "1") names_g1.Add(name);
-				else if (tags[1] == "2") names_g2.Add(name);
-			}
-		}
-
-		[Obsolete]
-		public void PlotType1(StreamWriter sw)
-		{
-			foreach (string label in Vnum)
-			{
-				PlotVp1(sw, "+" + label + "V");
-				PlotVn1(sw, "-" + label + "V");
-			}
-			foreach (string label in Vp)
-			{
-				PlotVp1(sw, label);
-			}
-			foreach (string label in Vn)
-			{
-				PlotVn1(sw, label);
-			}
-			foreach (string label in Vgnd)
-			{
-				PlotVg1(sw, label);
-			}
-		}
-		[Obsolete]
-		public void PlotType2(StreamWriter sw)
-		{
-			foreach (string label in Vnum)
-			{
-				PlotVp2(sw, "+" + label + "V");
-				PlotVn2(sw, "-" + label + "V");
-			}
-			foreach (string label in Vp)
-			{
-				PlotVp2(sw, label);
-			}
-			foreach (string label in Vn)
-			{
-				PlotVn2(sw, label);
-			}
-			foreach (string label in Vgnd)
-			{
-				PlotVg2(sw, label);
-			}
-		}
-
-		private void PlotVp1(StreamWriter sw, string component_name)
-		{
-			sw.WriteLine("#");
-			sw.WriteLine("# {0}", component_name);
-			sw.WriteLine("#");
-			sw.WriteLine("DEF {0} #PWR 0 0 N N 1 F P", component_name);
-			sw.WriteLine("F0 \"#PWR\" 0 180 40 H I C CNN");
-			sw.WriteLine("F1 \"{0}\" 0 125 40 H V C CNN", component_name);
-			sw.WriteLine("F2 \"~\" 0 0 60 H V C CNN");
-			sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
-			sw.WriteLine("DRAW");
-
-			sw.WriteLine("X {0} 1 0 0 40 U 20 20 0 0 W", component_name);
-			sw.WriteLine("C 0 70 30 0 1 0 N");
-
-			sw.WriteLine("ENDDRAW");
-			sw.WriteLine("ENDDEF");
-		}
-
-		private void PlotVp2(StreamWriter sw, string component_name)
-		{
-			sw.WriteLine("#");
-			sw.WriteLine("# {0}", component_name);
-			sw.WriteLine("#");
-			sw.WriteLine("DEF {0} #PWR 0 0 N N 1 F P", component_name);
-			sw.WriteLine("F0 \"#PWR\" 0 180 40 H I C CNN");
-			sw.WriteLine("F1 \"{0}\" 0 125 40 H V C CNN", component_name);
-			sw.WriteLine("F2 \"~\" 0 0 60 H V C CNN");
-			sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
-			sw.WriteLine("DRAW");
-
-			sw.WriteLine("X {0} 1 0 0 60 U 20 20 0 0 W", component_name);
-			sw.WriteLine("C 0 75 15 0 1 0 F");
-			sw.WriteLine("P 2 0 1 0  -40 75  40 75 N");
-
-			sw.WriteLine("ENDDRAW");
-			sw.WriteLine("ENDDEF");
-		}
-
-		private void PlotVn1(StreamWriter sw, string component_name)
-		{
-			sw.WriteLine("#");
-			sw.WriteLine("# {0}", component_name);
-			sw.WriteLine("#");
-			sw.WriteLine("DEF {0} #PWR 0 0 N N 1 F P", component_name);
-			sw.WriteLine("F0 \"#PWR\" 0 -195 40 H I C CNN");
-			sw.WriteLine("F1 \"{0}\" 0 -140 40 H V C CNN", component_name);
-			sw.WriteLine("F2 \"~\" 0 0 60 H V C CNN");
-			sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
-			sw.WriteLine("DRAW");
-
-			sw.WriteLine("X {0} 1 0 0 40 D 20 20 0 0 W", component_name);
-			sw.WriteLine("C 0 -70 30 0 1 0 N");
-
-			sw.WriteLine("ENDDRAW");
-			sw.WriteLine("ENDDEF");
-		}
-
-		private void PlotVn2(StreamWriter sw, string component_name)
-		{
-			sw.WriteLine("#");
-			sw.WriteLine("# {0}", component_name);
-			sw.WriteLine("#");
-			sw.WriteLine("DEF {0} #PWR 0 0 N N 1 F P", component_name);
-			sw.WriteLine("F0 \"#PWR\" 0 -195 40 H I C CNN");
-			sw.WriteLine("F1 \"{0}\" 0 -140 40 H V C CNN", component_name);
-			sw.WriteLine("F2 \"~\" 0 0 60 H V C CNN");
-			sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
-			sw.WriteLine("DRAW");
-
-			sw.WriteLine("X {0} 1 0 0 60 D 20 20 0 0 W", component_name);
-			sw.WriteLine("C 0 -75 15 0 1 0 F");
-			sw.WriteLine("P 2 0 1 0  -40 -75  40 -75 N");
-
-			sw.WriteLine("ENDDRAW");
-			sw.WriteLine("ENDDEF");
-		}
-
-		private void PlotVg1(StreamWriter sw, string component_name)
-		{
-			sw.WriteLine("#");
-			sw.WriteLine("# {0}", component_name);
-			sw.WriteLine("#");
-			sw.WriteLine("DEF {0} #PWR 0 0 N N 1 F P", component_name);
-			sw.WriteLine("F0 \"#PWR\" 0 -195 40 H I C CNN");
-			sw.WriteLine("F1 \"{0}\" 0 -140 40 H V C CNN", component_name);
-			sw.WriteLine("F2 \"~\" 0 0 60 H V C CNN");
-			sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
-			sw.WriteLine("DRAW");
-
-			sw.WriteLine("X {0} 1 0 0 50 D 20 20 0 0 W", component_name);
-			sw.WriteLine("S -50 -55 50 -45 0 1 1 F");
-			sw.WriteLine("P 2 0 1 10  -20 -50  -40 -80 N");
-			sw.WriteLine("P 2 0 1 10  10 -50  -10 -80 N");
-			sw.WriteLine("P 2 0 1 10  40 -50  20 -80 N");
-
-			sw.WriteLine("ENDDRAW");
-			sw.WriteLine("ENDDEF");
-		}
-
-		private void PlotVg2(StreamWriter sw, string component_name)
-		{
-			sw.WriteLine("#");
-			sw.WriteLine("# {0}", component_name);
-			sw.WriteLine("#");
-			sw.WriteLine("DEF {0} #PWR 0 0 N N 1 F P", component_name);
-			sw.WriteLine("F0 \"#PWR\" 0 -195 40 H I C CNN");
-			sw.WriteLine("F1 \"{0}\" 0 -140 40 H V C CNN", component_name);
-			sw.WriteLine("F2 \"~\" 0 0 60 H V C CNN");
-			sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
-			sw.WriteLine("DRAW");
-
-			sw.WriteLine("X {0} 1 0 0 50 D 20 20 0 0 W", component_name);
-			sw.WriteLine("P 4 0 1 0  0 -100  -50 -50  50 -50  0 -100 N");
-
-			sw.WriteLine("ENDDRAW");
-			sw.WriteLine("ENDDEF");
-		}
-
-		[Obsolete]
-		private List<string> Vnum = new List<string> { "1.2", "1.8", "2.4", "2.5", "3.3", "3.6", "3.7", "4.8", "5", "6", "7.4", "8", "9", "9.4", "10", "11.1", "12", "15", "18", "22.2", "24", "36", "48" };
-		[Obsolete]
-		private string[] Vp = new string[] { "VCC", "VCC2", "+VCC", "VCCIO", "VDD", "VDD2", "+VDD", "VDDIO", "V+", "VM", "VBAT", "VDD_VBUS", "VDD3.3", "VDD1.8", "VDD_CORE", "VDD_MEM", "VDD_LED" };
-		[Obsolete]
-		private string[] Vn = new string[] { "VEE", "VEE2", "-VCC", "VEEIO", "VSS", "VSS2", "-VDD", "VSSIO", "V-" };
-		[Obsolete]
-		private string[] Vgnd = new string[] { "GND", "GND1", "GND2", "GND3", "GND4", "AGND", "AGND1", "AGND2", "DGND", "DGND1", "DGND2" };
-		[Obsolete]
-		private string[] Vearth = new string[] { "FG", "PE" };
-
-		private List<string> names_p1;
-		private List<string> names_p2;
-		private List<string> names_n1;
-		private List<string> names_n2;
-		private List<string> names_g1;
-		private List<string> names_g2;
-		private List<string> names_e1;
-	}
-
-	class KiLib_Resistor : KiLib
-	{
-		public KiLib_Resistor()
-			: this("R", "r")
-		{
-
-		}
-		public KiLib_Resistor(string fname)
-			: this(fname, "r")
-		{
-
-		}
-		public KiLib_Resistor(string fname, string label)
-			: base(fname, label)
-		{
-			names_box = new List<string>();
-			names_zigzag = new List<string>();
-		}
-
-		public override string FileName { get { return this.filename; } }
-		public override string Label { get { return this.label; } }
-
-		public override void Plot(StreamWriter sw)
-		{
-			foreach (string name in names_box)
-			{
-				PlotFixedIECStyle(sw, name);
-			}
-			foreach (string name in names_zigzag)
-			{
-				PlotFixedAmericanStyle(sw, name);
-			}
-		}
-
-		public void AddComponentName(string name, string[] tags)
-		{
-			if (tags[0] == "1") names_box.Add(name);
-			else if (tags[0] == "2") names_zigzag.Add(name);
-		}
-
-		private void PlotFixedIECStyle(StreamWriter sw, string component_name)
-		{
-			sw.WriteLine("#");
-			sw.WriteLine("# {0}", component_name);
-			sw.WriteLine("#");
-			sw.WriteLine("DEF {0} R 0 0 N Y 1 F N", component_name);
-			sw.WriteLine("F0 \"R\" -100 60 45 H V L CNN");
-			sw.WriteLine("F1 \"{0}\" 0 -70 45 H V C CNN", component_name);
-			sw.WriteLine("F2 \"~\" -70 0 30 V V C CNN");
-			sw.WriteLine("F3 \"~\" 0 0 30 H V C CNN");
-			sw.WriteLine("DRAW");
-			sw.WriteLine("S -100 30 100 -30 0 1 0 N");
-			sw.WriteLine("X ~ 1 -150 0 50 R 60 60 1 1 P");
-			sw.WriteLine("X ~ 2 150 0 50 L 60 60 1 1 P");
-			sw.WriteLine("ENDDRAW");
-			sw.WriteLine("ENDDEF");
-		}
-		private void PlotFixedAmericanStyle(StreamWriter sw, string component_name)
-		{
-			sw.WriteLine("#");
-			sw.WriteLine("# {0}", component_name);
-			sw.WriteLine("#");
-			sw.WriteLine("DEF {0} R 0 0 N Y 1 F N", component_name);
-			sw.WriteLine("F0 \"R\" -125 60 45 H V L CNN");
-			sw.WriteLine("F1 \"{0}\" 0 -70 45 H V C CNN", component_name);
-			sw.WriteLine("F2 \"~\" -70 0 30 V V C CNN");
-			sw.WriteLine("F3 \"~\" 0 0 30 H V C CNN");
-			sw.WriteLine("DRAW");
-			sw.WriteLine("P 8 0 1 0  -105 0  -87 30  -52 -30  -17 30  17 -30  52 30  87 -30  105 0 N");
-			sw.WriteLine("X ~ 1 -150 0 45 R 60 60 1 1 P");
-			sw.WriteLine("X ~ 2 150 0 45 L 60 60 1 1 P");
-			sw.WriteLine("ENDDRAW");
-			sw.WriteLine("ENDDEF");
-		}
-
-		private List<string> names_box;
-		private List<string> names_zigzag;
-	}
-
-	class KiLib_Capacitor : KiLib
-	{
-		public KiLib_Capacitor()
-			: this(KiLib_Capacitor.DefaultFileName, KiLib_Capacitor.DefaultLabel)
-		{
-
-		}
-		public KiLib_Capacitor(string fname)
-			: this(fname, KiLib_Capacitor.DefaultLabel)
-		{
-
-		}
-		public KiLib_Capacitor(string fname, string label)
-			: base(fname, label)
-		{
-			names_ceramic = new List<string>();
-			names_pole = new List<string>();
-			names_nonepole = new List<string>();
-		}
-
-		public override string FileName { get { return this.filename; } }
-		public override string Label { get { return this.label; } }
-
-		public override void Plot(StreamWriter sw)
-		{
-			foreach (string name in names_ceramic)
-			{
-				PlotCeramicType(sw, name);
-			}
-			foreach (string name in names_pole)
-			{
-				PlotPoleType(sw, name);
-			}
-			foreach (string name in names_nonepole)
-			{
-				PlotNonePoleType(sw, name);
-			}
-		}
-
-		public void AddComponentName(string name, string[] tags)
-		{
-			if (tags[0] == "cera") names_ceramic.Add(name);
-			else if (tags[0] == "pole") names_pole.Add(name);
-			else if (tags[0] == "npole") names_nonepole.Add(name);
-		}
-
-		private void PlotCeramicType(StreamWriter sw, string component_name)      //セラミック，フィルム
-		{
-			sw.WriteLine("#");
-			sw.WriteLine("# {0}", component_name);
-			sw.WriteLine("#");
-			sw.WriteLine("DEF {0} C 0 10 N N 1 F N", component_name);
-			sw.WriteLine("F0 \"C\" 50 70 45 H V L CNN");
-			sw.WriteLine("F1 \"{0}\" 50 -75 45 H V L CNN", component_name);
-			sw.WriteLine("F2 \"~\" 38 -150 30 H V C CNN");
-			sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
-			sw.WriteLine("DRAW");
-			sw.WriteLine("S -60 -30 60 -15 0 1 1 F");
-			sw.WriteLine("S -60 30 60 15 0 1 1 F");
-			sw.WriteLine("X ~ 1 0 100 75 D 40 40 1 1 P");
-			sw.WriteLine("X ~ 2 0 -100 75 U 40 40 1 1 P");
-			sw.WriteLine("ENDDRAW");
-			sw.WriteLine("ENDDEF");
-		}
-
-		private void PlotPoleType(StreamWriter sw, string component_name)     //有極電解
-		{
-			sw.WriteLine("#");
-			sw.WriteLine("# {0}", component_name);
-			sw.WriteLine("#");
-			sw.WriteLine("DEF {0} C 0 10 N N 1 F N", component_name);
-			sw.WriteLine("F0 \"C\" 50 70 45 H V L CNN");
-			sw.WriteLine("F1 \"{0}\" 50 -75 45 H V L CNN", component_name);
-			sw.WriteLine("F2 \"~\" 38 -150 30 H V C CNN");
-			sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
-			sw.WriteLine("DRAW");
-			sw.WriteLine("T 0 -30 55 30 0 0 0 +  Normal 0 C C");
-			sw.WriteLine("S -60 -35 60 -20 0 1 1 F");
-			sw.WriteLine("S -60 35 60 20 0 1 1 F");
-			sw.WriteLine("P 2 0 1 10  -20 25  -50 -25 N");
-			sw.WriteLine("P 2 0 1 10  15 25  -15 -25 N");
-			sw.WriteLine("P 2 0 1 10  50 25  20 -25 N");
-			sw.WriteLine("X p 1 0 100 70 D 40 40 1 1 P");
-			sw.WriteLine("X m 2 0 -100 70 U 40 40 1 1 P");
-			sw.WriteLine("ENDDRAW");
-			sw.WriteLine("ENDDEF");
-		}
-
-		private void PlotNonePoleType(StreamWriter sw, string component_name)        //無極性電解
-		{
-			sw.WriteLine("#");
-			sw.WriteLine("# {0}", component_name);
-			sw.WriteLine("#");
-			sw.WriteLine("DEF {0} C 0 10 N N 1 F N", component_name);
-			sw.WriteLine("F0 \"C\" 50 70 45 H V L CNN");
-			sw.WriteLine("F1 \"{0}\" 50 -75 45 H V L CNN", component_name);
-			sw.WriteLine("F2 \"~\" 38 -150 30 H V C CNN");
-			sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
-			sw.WriteLine("DRAW");
-			sw.WriteLine("S -60 -35 60 -20 0 1 1 F");
-			sw.WriteLine("S -60 35 60 20 0 1 1 F");
-			sw.WriteLine("P 2 0 1 10  -20 25  -50 -25 N");
-			sw.WriteLine("P 2 0 1 10  15 25  -15 -25 N");
-			sw.WriteLine("P 2 0 1 10  50 25  20 -25 N");
-			sw.WriteLine("X p 1 0 100 70 D 40 40 1 1 P");
-			sw.WriteLine("X m 2 0 -100 70 U 40 40 1 1 P");
-			sw.WriteLine("ENDDRAW");
-			sw.WriteLine("ENDDEF");
-		}
-
-		private List<string> names_ceramic;
-		private List<string> names_pole;
-		private List<string> names_nonepole;
-
-		private const string DefaultFileName = "Capacitor";
-		private const string DefaultLabel = "c";
-	}
-
-	class KiLib_Inductor : KiLib
-	{
-		public KiLib_Inductor()
-			: this(KiLib_Inductor.DefaultFileName, KiLib_Inductor.DefaultLabel)
-		{
-
-		}
-		public KiLib_Inductor(string fname)
-			: this(fname, KiLib_Inductor.DefaultLabel)
-		{
-
-		}
-		public KiLib_Inductor(string fname, string label)
-			: base(fname, label)
-		{
-			names_1 = new List<string>();
-			names_2 = new List<string>();
-			names_3 = new List<string>();
-		}
-
-		public override string FileName { get { return this.filename; } }
-		public override string Label { get { return this.label; } }
-
-		public override void Plot(StreamWriter sw)
-		{
-			foreach (string name in names_1)
-			{
-				Plot1(sw, name);
-			}
-			foreach (string name in names_2)
-			{
-				Plot2(sw, name);
-			}
-			foreach (string name in names_3)
-			{
-				Plot3(sw, name);
-			}
-		}
-
-		public void AddComponentName(string name, string[] tags)
-		{
-			if (tags[0] == "1") names_1.Add(name);
-			else if (tags[0] == "2") names_2.Add(name);
-			else if (tags[0] == "3") names_3.Add(name);
-		}
-
-		private void Plot1(StreamWriter sw, string component_name)      //セラミック，フィルム
-		{
-			/*
-			#
-			# L-type1
-			#
-			DEF L-type1 L 0 0 N Y 1 F N
-			F0 "L" -125 60 40 H V L CNN
-			F1 "L-type1" 0 -50 40 H V C CNN
-			F2 "~" -70 0 30 V V C CNN
-			F3 "~" 0 0 30 H V C CNN
-			F4 "4.7m" 25 60 35 H V L CNN "Inductance"
-			DRAW
-			A -75 0 25 1 1799 0 1 0 N -50 0 -100 0
-			A -25 0 25 1 1799 0 1 0 N 0 0 -50 0
-			A 25 0 25 1 1799 0 1 0 N 50 0 0 0
-			A 75 0 25 1 1799 0 1 0 N 100 0 50 0
-			X ~ 1 -150 0 50 R 60 60 1 1 P
-			X ~ 2 150 0 50 L 60 60 1 1 P
-			*/
-		}
-
-		private void Plot2(StreamWriter sw, string component_name)     //有極電解
-		{
-			/*
-			#
-			# L-type2
-			#
-			DEF L-type2 L 0 0 N Y 1 F N
-			F0 "L" -125 80 40 H V L CNN
-			F1 "L-type2" 0 -50 40 H V C CNN
-			F2 "~" -70 0 30 V V C CNN
-			F3 "~" 0 0 30 H V C CNN
-			F4 "4.7m" 25 80 35 H V L CNN "Inductance"
-			DRAW
-			A -75 0 25 1 1799 0 1 0 N -50 0 -100 0
-			A -25 0 25 1 1799 0 1 0 N 0 0 -50 0
-			A 25 0 25 1 1799 0 1 0 N 50 0 0 0
-			A 75 0 25 1 1799 0 1 0 N 100 0 50 0
-			S -95 40 95 50 0 1 1 F
-			X ~ 1 -150 0 50 R 60 60 1 1 P
-			X ~ 2 150 0 50 L 60 60 1 1 P
-			ENDDRAW
-			ENDDEF
-			*/
-		}
-
-		private void Plot3(StreamWriter sw, string component_name)        //無極性電解
-		{
-			/*
-			#
-			# L-type3
-			#
-			DEF L-type3 L 0 0 N Y 1 F N
-			F0 "L" -125 80 40 H V L CNN
-			F1 "L-type3" 0 -50 40 H V C CNN
-			F2 "~" -70 0 30 V V C CNN
-			F3 "~" 0 0 30 H V C CNN
-			F4 "4.7m" 25 80 35 H V L CNN "Inductance"
-			DRAW
-			A -75 0 25 1 1799 0 1 0 N -50 0 -100 0
-			A -25 0 25 1 1799 0 1 0 N 0 0 -50 0
-			A 25 0 25 1 1799 0 1 0 N 50 0 0 0
-			A 75 0 25 1 1799 0 1 0 N 100 0 50 0
-			S -95 40 -65 50 0 1 1 F
-			S -55 40 -25 50 0 1 1 F
-			S -15 40 15 50 0 1 1 F
-			S 25 40 55 50 0 1 1 F
-			S 65 40 95 50 0 1 1 F
-			X ~ 1 -150 0 50 R 60 60 1 1 P
-			X ~ 2 150 0 50 L 60 60 1 1 P
-			ENDDRAW
-			ENDDEF
-			*/
-		}
-
-		private List<string> names_1;
-		private List<string> names_2;
-		private List<string> names_3;
-
-		private const string DefaultFileName = "Inductor";
-		private const string DefaultLabel = "l";
-	}
-	
-	class KiLib_Transistor : KiLib
-	{
-		public KiLib_Transistor()
-			: this("Transistor", "tr")
-		{
-
-		}
-		public KiLib_Transistor(string fname)
-			: this(fname, "tr")
-		{
-
-		}
-		public KiLib_Transistor(string fname, string label)
-			: base(fname, label)
-		{
-			names_npn = new List<string>();
-			names_pnp = new List<string>();
-		}
-
-		public override string FileName { get { return this.filename; } }
-		public override string Label { get { return this.label; } }
-
-		public override void Plot(StreamWriter sw)
-		{
-			foreach (string name in names_npn)
-			{
-				PlotNPN(sw, name);
-			}
-			foreach (string name in names_pnp)
-			{
-				PlotPNP(sw, name);
-			}
-		}
-
-		public void AddComponentName(string name, string[] tags)
-		{
-			if (tags[0] == "npn") names_npn.Add(name);
-			else if (tags[0] == "pnp") names_pnp.Add(name);
-		}
-
-		private void PlotNPN(StreamWriter sw, string component_name)
-		{
-			sw.WriteLine("#");
-			sw.WriteLine("# {0}", component_name);
-			sw.WriteLine("#");
-			sw.WriteLine("DEF {0} Q 0 40 Y N 1 F N", component_name);
-			sw.WriteLine("F0 \"Q\" 150 50 45 H V L CNN");
-			sw.WriteLine("F1 \"{0}\" 150 -50 45 H V L CNN", component_name);
-			sw.WriteLine("F2 \"~\" -50 0 60 H V C CNN");
-			sw.WriteLine("F3 \"~\" -50 0 60 H V C CNN");
-			sw.WriteLine("DRAW");
-			sw.WriteLine("C 0 0 111 0 1 0 f");
-			sw.WriteLine("S -60 -75 -40 75 0 1 1 F");
-			sw.WriteLine("P 2 0 1 0  -50 -25  50 -100 N");
-			sw.WriteLine("P 2 0 1 0  -50 25  50 100 N");
-			sw.WriteLine("P 4 0 1 0  42 -94  0 -80  16 -57  42 -94 F");
-			sw.WriteLine("X B ~ -150 0 100 R 40 40 1 1 I");
-			sw.WriteLine("X C ~ 50 150 50 D 40 40 1 1 P");
-			sw.WriteLine("X E ~ 50 -150 50 U 40 40 1 1 P");
-			sw.WriteLine("ENDDRAW");
-			sw.WriteLine("ENDDEF");
-		}
-
-		private void PlotPNP(StreamWriter sw, string component_name)
-		{
-			sw.WriteLine("#");
-			sw.WriteLine("# {0}", component_name);
-			sw.WriteLine("#");
-			sw.WriteLine("DEF {0} Q 0 40 Y N 1 F N", component_name);
-			sw.WriteLine("F0 \"Q\" 150 50 45 H V L CNN");
-			sw.WriteLine("F1 \"{0}\" 150 -50 45 H V L CNN", component_name);
-			sw.WriteLine("F2 \"~\" -50 0 60 H V C CNN");
-			sw.WriteLine("F3 \"~\" -50 0 60 H V C CNN");
-			sw.WriteLine("DRAW");
-			sw.WriteLine("C 0 0 111 0 1 0 f");
-			sw.WriteLine("S -60 -75 -40 75 0 1 1 F");
-			sw.WriteLine("P 2 0 1 0  -50 -25  50 -100 N");
-			sw.WriteLine("P 2 0 1 0  -50 25  50 100 N");
-			sw.WriteLine("P 4 0 1 0  -34 -37  8 -51  -8 -73  -34 -37 F");
-			sw.WriteLine("X B ~ -150 0 100 R 40 40 1 1 I");
-			sw.WriteLine("X C ~ 50 150 50 D 40 40 1 1 P");
-			sw.WriteLine("X E ~ 50 -150 50 U 40 40 1 1 P");
-			sw.WriteLine("ENDDRAW");
-			sw.WriteLine("ENDDEF");
-		}
-
-		private List<string> names_npn;
-		private List<string> names_pnp;
-	}
-
-	class KiLib_MOSFET : KiLib
-	{
-		public KiLib_MOSFET()
-			: this("MOSFET", "mosfet")
-		{
-
-		}
-		public KiLib_MOSFET(string fname)
-			: this(fname, "mosfet")
-		{
-
-		}
-		public KiLib_MOSFET(string fname, string label)
-			: base(fname, label)
-		{
-			names_mosfet_n = new List<string>();
-			names_mosfet_p = new List<string>();
-		}
-
-		public override string FileName { get { return this.filename; } }
-		public override string Label { get { return this.label; } }
-
-		public override void Plot(StreamWriter sw)
-		{
-			foreach (string name in names_mosfet_n)
-			{
-				PlotMOSFETn(sw, name);
-			}
-			foreach (string name in names_mosfet_p)
-			{
-				PlotMOSFETp(sw, name);
-			}
-		}
-
-		public void AddComponentName(string name, string[] tags)
-		{
-			if (tags[0] == "n")
-			{
-				names_mosfet_n.Add(name);
-			}
-			else if (tags[0] == "p")
-			{
-				names_mosfet_p.Add(name);
-			}
-		}
-
-		private void PlotMOSFETn(StreamWriter sw, string component_name)
-		{
-			sw.WriteLine("#");
-			sw.WriteLine("# {0}", component_name);
-			sw.WriteLine("#");
-			sw.WriteLine("DEF {0} Q 0 40 Y N 1 F N", component_name);
-			sw.WriteLine("F0 \"Q\" 100 100 40 H V L CNN");
-			sw.WriteLine("F1 \"{0}\" 100 -100 40 H V L CNN", component_name);
-			sw.WriteLine("F2 \"~\" -50 0 60 H V C CNN");
-			sw.WriteLine("F3 \"~\" -50 0 60 H V C CNN");
-			sw.WriteLine("DRAW");
-			sw.WriteLine("C 0 0 111 0 1 0 f");
-			sw.WriteLine("S -75 -53 -60 53 0 1 1 F");
-			sw.WriteLine("S -50 -30 -35 -70 0 1 1 F");
-			sw.WriteLine("S -50 -20 -35 20 0 1 1 F");
-			sw.WriteLine("S -50 30 -35 70 0 1 1 F");
-			sw.WriteLine("S 30 15 70 20 0 1 1 F");
-			sw.WriteLine("P 2 0 1 0  -35 -50  0 -50 N");
-			sw.WriteLine("P 2 0 1 0  -35 0  0 0 N");
-			sw.WriteLine("P 2 0 1 0  -35 50  0 50 N");
-			sw.WriteLine("P 4 0 1 1  -40 0  -10 -12  -10 12  -40 0 F");
-			sw.WriteLine("P 4 0 1 0  0 75  50 75  50 -75  0 -75 N");
-			sw.WriteLine("P 4 0 1 1  50 20  30 -20  70 -20  50 20 F");
-			sw.WriteLine("X D ~ 0 150 100 D 40 40 1 1 P");
-			sw.WriteLine("X G ~ -150 -50 80 R 40 40 1 1 I");
-			sw.WriteLine("X S ~ 0 -150 150 U 40 40 1 1 P");
-			sw.WriteLine("ENDDRAW");
-			sw.WriteLine("ENDDEF");
-		}
-
-		private void PlotMOSFETp(StreamWriter sw, string component_name)
-		{
-			sw.WriteLine("#");
-			sw.WriteLine("# {0}", component_name);
-			sw.WriteLine("#");
-			sw.WriteLine("DEF {0} Q 0 40 Y N 1 F N", component_name);
-			sw.WriteLine("F0 \"Q\" 100 100 40 H V L CNN");
-			sw.WriteLine("F1 \"{0}\" 100 -100 40 H V L CNN", component_name);
-			sw.WriteLine("F2 \"~\" -50 0 60 H V C CNN");
-			sw.WriteLine("F3 \"~\" -50 0 60 H V C CNN");
-			sw.WriteLine("DRAW");
-			sw.WriteLine("C 0 0 111 0 1 0 f");
-			sw.WriteLine("S -75 -53 -60 53 0 1 1 F");
-			sw.WriteLine("S -50 -30 -35 -70 0 1 1 F");
-			sw.WriteLine("S -50 -20 -35 20 0 1 1 F");
-			sw.WriteLine("S -50 30 -35 70 0 1 1 F");
-			sw.WriteLine("S 30 -15 70 -20 0 1 1 F");
-			sw.WriteLine("P 2 0 1 0  -35 -50  0 -50 N");
-			sw.WriteLine("P 2 0 1 0  -35 0  0 0 N");
-			sw.WriteLine("P 2 0 1 0  -35 50  0 50 N");
-			sw.WriteLine("P 4 0 1 1  0 0  -30 -12  -30 12  0 0 F");
-			sw.WriteLine("P 4 0 1 0  0 75  50 75  50 -75  0 -75 N");
-			sw.WriteLine("P 4 0 1 0  0 75  50 75  50 -75  0 -75 N");
-			sw.WriteLine("P 4 0 1 1  50 -20  30 20  70 20  50 -20 F");
-			sw.WriteLine("X D ~ 0 150 100 D 40 40 1 1 P");
-			sw.WriteLine("X G ~ -150 -50 80 R 40 40 1 1 I");
-			sw.WriteLine("X S ~ 0 -150 150 U 40 40 1 1 P");
-			sw.WriteLine("ENDDRAW");
-			sw.WriteLine("ENDDEF");
-		}
-
-		private List<string> names_mosfet_n;
-		private List<string> names_mosfet_p;
-	}
-
-	class KiLib_JFET : KiLib
-	{
-		public KiLib_JFET(string fname, string label)
-			: base(fname, label)
-		{
-			names_jfet_n = new List<string>()
-			{
-
-			};
-			names_jfet_p = new List<string>()
-			{
-
-			};
-		}
-
-		public override string FileName { get { return this.filename; } }
-		public override string Label { get { return "jfet"; } }
-
-		public override void Plot(StreamWriter sw)
-		{
-			foreach (string name in names_jfet_n)
-			{
-				PlotJFETn(sw, name);
-			}
-			foreach (string name in names_jfet_p)
-			{
-				PlotJFETp(sw, name);
-			}
-		}
-
-		private void PlotJFETn(StreamWriter sw, string component_name)
-		{
-
-		}
-
-		private void PlotJFETp(StreamWriter sw, string component_name)
-		{
-
-		}
-
-		private List<string> names_jfet_n;
-		private List<string> names_jfet_p;
-	}
-
-    class KiLib_Diode : KiLib
-    {
-		public KiLib_Diode()
-			: this(KiLib_Diode.DefaultFileName, KiLib_Diode.DefaultLabel)
-		{
-
-		}
-		public KiLib_Diode(string fname)
-			: this(fname, KiLib_Diode.DefaultLabel)
-		{
-
-		}
-		public KiLib_Diode(string fname, string label)
-			: base(fname, label)
-		{
-			names_pn = new List<string>();
-			names_schottky = new List<string>();
-			names_zener = new List<string>();
-			names_crd = new List<string>();
-		}
-
-		public override string FileName { get { return this.filename; } }
-		public override string Label { get { return this.label; } }
-
-		public override void Plot(StreamWriter sw)
-		{
-			foreach (string name in names_pn)
-			{
-				PlotPN(sw, name);
-			}
-			foreach (string name in names_schottky)
-			{
-				PlotSchottky(sw, name);
-			}
-			foreach (string name in names_zener)
-			{
-				PlotZener(sw, name);
-			}
-		}
-
-		public void AddComponentName(string name, string[] tags)
-		{
-			if (tags[0] == "pn")
-			{
-				names_pn.Add(name);
-			}
-			else if (tags[0] == "sch")
-			{
-				names_schottky.Add(name);
-			}
-			else if (tags[0] == "zener")
-			{
-				names_zener.Add(name);
-			}
-		}
-
-		private void PlotPN(StreamWriter sw, string component_name)
-		{
-			sw.WriteLine("#");
-			sw.WriteLine("# {0}", component_name);
-			sw.WriteLine("#");
-			sw.WriteLine("DEF {0} D 0 40 N N 1 F N", component_name);
-			sw.WriteLine("F0 \"D\" -50 70 40 H V L CNN");
-			sw.WriteLine("F1 \"{0}\" 0 -80 40 H V C CNN", component_name);
-			sw.WriteLine("F2 \"~\" 0 0 60 H V C CNN");
-			sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
-			sw.WriteLine("DRAW");
-			sw.WriteLine("S 35 40 40 -40 0 1 1 F");
-			sw.WriteLine("P 3 0 1 1  -40 40  40 0  -40 -40 F");
-			sw.WriteLine("X A 1 -100 0 60 R 40 40 1 1 P");
-			sw.WriteLine("X K 2 100 0 60 L 40 40 1 1 P");
-			sw.WriteLine("ENDDRAW");
-			sw.WriteLine("ENDDEF");
-		}
-
-		private void PlotSchottky(StreamWriter sw, string component_name)
-		{
-			sw.WriteLine("#");
-			sw.WriteLine("# {0}", component_name);
-			sw.WriteLine("#");
-			sw.WriteLine("DEF {0} D 0 40 N N 1 F N", component_name);
-			sw.WriteLine("F0 \"D\" -50 70 40 H V L CNN");
-			sw.WriteLine("F1 \"{0}\" 0 -80 40 H V C CNN", component_name);
-			sw.WriteLine("F2 \"~\" 0 0 60 H V C CNN");
-			sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
-			sw.WriteLine("DRAW");
-			sw.WriteLine("S 20 -40 25 -20 0 1 1 F");
-			sw.WriteLine("S 20 -40 40 -35 0 1 1 F");
-			sw.WriteLine("S 35 35 55 40 0 1 1 F");
-			sw.WriteLine("S 35 40 40 -40 0 1 1 F");
-			sw.WriteLine("S 50 20 55 40 0 1 1 F");
-			sw.WriteLine("P 3 0 1 1  -40 40  40 0  -40 -40 F");
-			sw.WriteLine("X A 1 -100 0 60 R 40 40 1 1 P");
-			sw.WriteLine("X K 2 100 0 60 L 40 40 1 1 P");
-			sw.WriteLine("ENDDRAW");
-			sw.WriteLine("ENDDEF");
-		}
-
-		private void PlotZener(StreamWriter sw, string component_name)
-		{
-			sw.WriteLine("#");
-			sw.WriteLine("# {0}", component_name);
-			sw.WriteLine("#");
-			sw.WriteLine("DEF {0} D 0 40 N N 1 F N", component_name);
-			sw.WriteLine("F0 \"D\" -50 70 40 H V L CNN");
-			sw.WriteLine("F1 \"{0}\" 0 -80 40 H V C CNN", component_name);
-			sw.WriteLine("F2 \"~\" 0 0 60 H V C CNN");
-			sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
-			sw.WriteLine("DRAW");
-			sw.WriteLine("S 20 35 40 40 0 1 1 F");
-			sw.WriteLine("S 35 -40 55 -35 0 1 1 F");
-			sw.WriteLine("S 35 40 40 -40 0 1 1 F");
-			sw.WriteLine("P 3 0 1 1  -40 40  40 0  -40 -40 F");
-			sw.WriteLine("X A 1 -100 0 60 R 40 40 1 1 P");
-			sw.WriteLine("X K 2 100 0 60 L 40 40 1 1 P");
-			sw.WriteLine("ENDDRAW");
-			sw.WriteLine("ENDDEF");
-		}
-
-		private List<string> names_pn;
-		private List<string> names_schottky;
-		private List<string> names_zener;
-		private List<string> names_crd;
-
-		private const string DefaultFileName = "Diode";
-		private const string DefaultLabel = "d";
-    }
-
-    class KiLib_Photo : KiLib
-    {
-		public KiLib_Photo()
-			: this(KiLib_Photo.DefaultFileName, KiLib_Photo.DefaultLabel)
-		{
-
-		}
-		public KiLib_Photo(string fname)
-			: this(fname, KiLib_Photo.DefaultLabel)
-		{
-
-		}
-        public KiLib_Photo(string fname, string label)
-            : base(fname, label)
-        {
-			names_led_2pin = new List<string>();
-        }
-
-        public override string FileName { get { return this.filename; } }
-        public override string Label { get { return this.label; } }
-
-        public override void Plot(StreamWriter sw)
-        {
-            foreach (string name in names_led_2pin)
-            {
-                PlotLED2pin(sw, name);
-            }
-        }
-
-        public void AddComponentName(string name, string[] tags)
-        {
-            if (tags[0] == "led")
-            {
-                if (tags[1] == "2pin") names_led_2pin.Add(name);
-            }
-        }
-
-        private void PlotLED2pin(StreamWriter sw, string component_name)
-        {
-            sw.WriteLine("#");
-            sw.WriteLine("# {0}", component_name);
-            sw.WriteLine("#");
-            sw.WriteLine("DEF {0} LED 0 40 N N 1 F N", component_name);
-            sw.WriteLine("F0 \"LED\" -100 120 40 H V L CNN");
-            sw.WriteLine("F1 \"{0}\" 0 -80 40 H V C CNN", component_name);
-            sw.WriteLine("F2 \"~\" 0 0 60 H V C CNN");
-            sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
-            sw.WriteLine("DRAW");
-            sw.WriteLine("S 35 40 40 -40 0 1 1 F");
-            sw.WriteLine("P 2 0 1 0  10 50  45 85 N");
-            sw.WriteLine("P 2 0 1 0  50 50  85 85 N");
-            sw.WriteLine("P 3 0 1 1  -40 40  40 0  -40 -40 F");
-            sw.WriteLine("P 3 0 1 0  30 60  45 85  20 70 F");
-            sw.WriteLine("P 3 0 1 0  70 60  85 85  60 70 F");
-            sw.WriteLine("X A 1 -100 0 60 R 40 40 1 1 P");
-            sw.WriteLine("X K 2 100 0 60 L 40 40 1 1 P");
-            sw.WriteLine("ENDDRAW");
-            sw.WriteLine("ENDDEF");
-        }
-
-        private List<string> names_led_2pin;
-
-		private const string DefaultFileName = "PhotoDevice";
-		private const string DefaultLabel = "photo";
-    }
-
-
-	class KiLib_ConMale : KiLib
-	{
-		public KiLib_ConMale(string fname)
-			: base(fname, "")
-		{
-
-		}
-
-		private const int MAX_SINGLE_PIN = 99;
-		private const int MAX_DOUBLE_PIN = 99;
-
-		public override string FileName
-		{
-			get
-			{
-				return this.filename;
-			}
-		}
-
-		public override void Plot(StreamWriter sw)
-		{
-			PlotMaleSingle(sw);
-			PlotMaleDouble(sw);
-		}
-
-		private void PlotMaleSingle(StreamWriter sw)
-		{
-			for (int pin = 1; pin <= MAX_SINGLE_PIN; pin++)
-			{
-				string component_name = "con-male-single-" + pin.ToString("D2");
-				sw.WriteLine("#");
-				sw.WriteLine("# {0}", component_name);
-				sw.WriteLine("#");
-				sw.WriteLine("DEF {0} CN 0 1 Y N 1 F N", component_name);
-				sw.WriteLine("F0 \"CN\" -50 {0} 40 H V L CNN", 50 * pin + 30);
-				sw.WriteLine("F1 \"{0}\" 50 {1} 40 H V C CNN", component_name, -50 * pin - 40);
-				sw.WriteLine("F2 \"~\" -50 {0} 60 H V C CNN", 50 * (pin - 1));
-				sw.WriteLine("F3 \"~\" -50 {0} 60 H V C CNN", 50 * (pin - 1));
-				sw.WriteLine("DRAW");
-				sw.WriteLine("S -50 {0} 150 -{0} 0 1 0 f", 50 * pin);		//外枠
-				for (int pinid = 1; pinid <= pin; pinid++)
+				component = new List<ComponentOfPowerSupply>();
+				PlotSymbolMethods = new List<PlotSymbol>()
 				{
-					int pin_y = 50 * pin - 50 - (pinid - 1) * 100;
-					const int WIDTH = 15;
-					sw.WriteLine("X {0} {0} -200 {1} {2} R 50 50 1 1 P", pinid, pin_y, 200 - WIDTH);		//ピン
-					sw.WriteLine("C 0 {0} {1} 0 1 1 F", pin_y, WIDTH);
-					sw.WriteLine("C 50 {0} {1} 0 1 1 F", pin_y, WIDTH);
-					sw.WriteLine("S 0 {0} 50 {1} 0 1 1 F", pin_y - WIDTH, pin_y + WIDTH);
+					PlotPositiveCircle,
+					PlotNegativeCircle,
+					PlotPositiveBar,
+					PlotNegativeBar,
+					PlotGND,
+					PlotEarth
+				};
+			}
+
+			public override string FileName { get { return this.filename; } }
+			public override string Label { get { return PowerSupply.LABEL; } }
+
+			public void AddComponentName(string name, params string[] tags)
+			{
+				try
+				{
+					for (int i = 0; i < Enum.GetNames(typeof(SymbolTagOfPowerSupply)).Length; i++)
+					{
+						if (tags[0] == i.ToString())
+						{
+							component.Add(new ComponentOfPowerSupply(name, (SymbolTagOfPowerSupply)i, "", ""));
+						}
+					}
 				}
+				catch(IndexOutOfRangeException)
+				{
+
+				}
+			}
+
+			public override void WriteFile(FolderBrowserDialog fbd)
+			{
+				using (StreamWriter sw = new StreamWriter(@fbd.SelectedPath + "\\" + FileName + ".lib"))
+				{
+					WriteHeader(sw);
+					WriteComponents(sw);
+					WriteFooter(sw);
+				}
+			}
+
+			private void WriteComponents(StreamWriter sw)
+			{
+				foreach (ComponentOfPowerSupply i in component)
+				{
+					PlotSymbolMethods[(int)(i.tag)](sw, i);
+				}
+			}
+
+			private delegate void PlotSymbol(StreamWriter sw, ComponentOfPowerSupply comp);
+
+			private List<PlotSymbol> PlotSymbolMethods;
+
+			private void PlotPositiveCircle(StreamWriter sw, ComponentOfPowerSupply comp)
+			{
+				sw.WriteLine("#");
+				sw.WriteLine("# {0}", comp.ComponentName);
+				sw.WriteLine("#");
+				sw.WriteLine("DEF {0} #PWR 0 0 N N 1 F P", comp.ComponentName);
+				sw.WriteLine("F0 \"#PWR\" 0 180 40 H I C CNN");
+				sw.WriteLine("F1 \"{0}\" 0 125 40 H V C CNN", comp.ComponentName);
+				sw.WriteLine("F2 \"{0}\" 0 0 60 H V C CNN",comp.PCBFootprint);
+				sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
+				sw.WriteLine("DRAW");
+
+				sw.WriteLine("X {0} 1 0 0 40 U 20 20 0 0 W", comp.ComponentName);
+				sw.WriteLine("C 0 70 30 0 1 0 N");
+
 				sw.WriteLine("ENDDRAW");
 				sw.WriteLine("ENDDEF");
 			}
+			private void PlotPositiveBar(StreamWriter sw, ComponentOfPowerSupply comp)
+			{
+				sw.WriteLine("#");
+				sw.WriteLine("# {0}", comp.ComponentName);
+				sw.WriteLine("#");
+				sw.WriteLine("DEF {0} #PWR 0 0 N N 1 F P", comp.ComponentName);
+				sw.WriteLine("F0 \"#PWR\" 0 180 40 H I C CNN");
+				sw.WriteLine("F1 \"{0}\" 0 125 40 H V C CNN", comp.ComponentName);
+				sw.WriteLine("F2 \"{0}\" 0 0 60 H V C CNN",comp.PCBFootprint);
+				sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
+				sw.WriteLine("DRAW");
+
+				sw.WriteLine("X {0} 1 0 0 60 U 20 20 0 0 W", comp.ComponentName);
+				sw.WriteLine("C 0 75 15 0 1 0 F");
+				sw.WriteLine("P 2 0 1 0  -40 75  40 75 N");
+
+				sw.WriteLine("ENDDRAW");
+				sw.WriteLine("ENDDEF");
+			}
+			private void PlotNegativeCircle(StreamWriter sw, ComponentOfPowerSupply comp)
+			{
+				sw.WriteLine("#");
+				sw.WriteLine("# {0}", comp.ComponentName);
+				sw.WriteLine("#");
+				sw.WriteLine("DEF {0} #PWR 0 0 N N 1 F P", comp.ComponentName);
+				sw.WriteLine("F0 \"#PWR\" 0 -195 40 H I C CNN");
+				sw.WriteLine("F1 \"{0}\" 0 -140 40 H V C CNN", comp.ComponentName);
+				sw.WriteLine("F2 \"{0}\" 0 0 60 H V C CNN",comp.PCBFootprint);
+				sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
+				sw.WriteLine("DRAW");
+
+				sw.WriteLine("X {0} 1 0 0 40 D 20 20 0 0 W", comp.ComponentName);
+				sw.WriteLine("C 0 -70 30 0 1 0 N");
+
+				sw.WriteLine("ENDDRAW");
+				sw.WriteLine("ENDDEF");
+			}
+			private void PlotNegativeBar(StreamWriter sw, ComponentOfPowerSupply comp)
+			{
+				sw.WriteLine("#");
+				sw.WriteLine("# {0}", comp.ComponentName);
+				sw.WriteLine("#");
+				sw.WriteLine("DEF {0} #PWR 0 0 N N 1 F P", comp.ComponentName);
+				sw.WriteLine("F0 \"#PWR\" 0 -195 40 H I C CNN");
+				sw.WriteLine("F1 \"{0}\" 0 -140 40 H V C CNN", comp.ComponentName);
+				sw.WriteLine("F2 \"{0}\" 0 0 60 H V C CNN",comp.PCBFootprint);
+				sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
+				sw.WriteLine("DRAW");
+
+				sw.WriteLine("X {0} 1 0 0 60 D 20 20 0 0 W", comp.ComponentName);
+				sw.WriteLine("C 0 -75 15 0 1 0 F");
+				sw.WriteLine("P 2 0 1 0  -40 -75  40 -75 N");
+
+				sw.WriteLine("ENDDRAW");
+				sw.WriteLine("ENDDEF");
+			}
+			private void PlotGND(StreamWriter sw, ComponentOfPowerSupply comp)
+			{
+				sw.WriteLine("#");
+				sw.WriteLine("# {0}", comp.ComponentName);
+				sw.WriteLine("#");
+				sw.WriteLine("DEF {0} #PWR 0 0 N N 1 F P", comp.ComponentName);
+				sw.WriteLine("F0 \"#PWR\" 0 -195 40 H I C CNN");
+				sw.WriteLine("F1 \"{0}\" 0 -140 40 H V C CNN", comp.ComponentName);
+				sw.WriteLine("F2 \"{0}\" 0 0 60 H V C CNN",comp.PCBFootprint);
+				sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
+				sw.WriteLine("DRAW");
+
+				sw.WriteLine("X {0} 1 0 0 50 D 20 20 0 0 W", comp.ComponentName);
+				sw.WriteLine("S -50 -55 50 -45 0 1 1 F");
+				sw.WriteLine("P 2 0 1 10  -20 -50  -40 -80 N");
+				sw.WriteLine("P 2 0 1 10  10 -50  -10 -80 N");
+				sw.WriteLine("P 2 0 1 10  40 -50  20 -80 N");
+
+				sw.WriteLine("ENDDRAW");
+				sw.WriteLine("ENDDEF");
+			}
+			private void PlotEarth(StreamWriter sw, ComponentOfPowerSupply comp)
+			{
+				sw.WriteLine("#");
+				sw.WriteLine("# {0}", comp.ComponentName);
+				sw.WriteLine("#");
+				sw.WriteLine("DEF {0} #PWR 0 0 N N 1 F P", comp.ComponentName);
+				sw.WriteLine("F0 \"#PWR\" 0 -195 40 H I C CNN");
+				sw.WriteLine("F1 \"{0}\" 0 -140 40 H V C CNN", comp.ComponentName);
+				sw.WriteLine("F2 \"{0}\" 0 0 60 H V C CNN", comp.PCBFootprint);
+				sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
+				sw.WriteLine("DRAW");
+
+				sw.WriteLine("X {0} 1 0 0 50 D 20 20 0 0 W", comp.ComponentName);
+				sw.WriteLine("P 4 0 1 0  0 -100  -50 -50  50 -50  0 -100 N");
+
+				sw.WriteLine("ENDDRAW");
+				sw.WriteLine("ENDDEF");
+			}
+
+			private List<ComponentOfPowerSupply> component;
+
+			private readonly static string DEFAULT_FILE_NAME;
+			private readonly static string LABEL;
+
+			[Obsolete]
+			private List<string> Vnum = new List<string> { "1.2", "1.8", "2.4", "2.5", "3.3", "3.6", "3.7", "4.8", "5", "6", "7.4", "8", "9", "9.4", "10", "11.1", "12", "15", "18", "22.2", "24", "36", "48" };
+			[Obsolete]
+			private string[] Vp = new string[] { "VCC", "VCC2", "+VCC", "VCCIO", "VDD", "VDD2", "+VDD", "VDDIO", "V+", "VM", "VBAT", "VDD_VBUS", "VDD3.3", "VDD1.8", "VDD_CORE", "VDD_MEM", "VDD_LED" };
+			[Obsolete]
+			private string[] Vn = new string[] { "VEE", "VEE2", "-VCC", "VEEIO", "VSS", "VSS2", "-VDD", "VSSIO", "V-" };
+			[Obsolete]
+			private string[] Vgnd = new string[] { "GND", "GND1", "GND2", "GND3", "GND4", "AGND", "AGND1", "AGND2", "DGND", "DGND1", "DGND2" };
+			[Obsolete]
+			private string[] Vearth = new string[] { "FG", "PE" };
 		}
 
-		private void PlotMaleDouble(StreamWriter sw)
+
+		enum SymbolTagOfResistor
 		{
-			for (int pin = 2; pin <= MAX_DOUBLE_PIN; pin += 2)
+			FixedIEC,
+			FixedAmerican,
+			VariableIEC,
+			VariableAmerican
+		}
+
+		class ComponentOfResistor : Fields
+		{
+			public ComponentOfResistor(string name, SymbolTagOfResistor tag, string footprint, string vendor)
+				: base(name, footprint, vendor)
 			{
-				string component_name = "con-male-double-" + pin.ToString("D2");
+				this.tag = tag;
+			}
+			public SymbolTagOfResistor tag;
+		}
+
+		class Resistor : KiSchemaLibFile
+		{
+			static Resistor()
+			{
+				DEFAULT_FILE_NAME = "Resistor";
+				LABEL = "r";
+			}
+			public Resistor()
+				: this(Resistor.DEFAULT_FILE_NAME)
+			{
+
+			}
+			public Resistor(string fname)
+				: base(fname)
+			{
+				component = new List<ComponentOfResistor>();
+				PlotSymbolMethods = new List<PlotSymbol>()
+				{
+					PlotFixedIEC,
+					PlotFixedAmerican,
+					PlotVariableIEC,
+					PlotVariableAmerican
+				};
+			}
+
+			public override string FileName { get { return this.filename; } }
+			public override string Label { get { return Resistor.LABEL; } }
+
+			public void AddComponentName(string name, params string[] tags)
+			{
+				try
+				{
+					for (int i = 0; i < Enum.GetNames(typeof(SymbolTagOfResistor)).Length; i++)
+					{
+						if (tags[0] == i.ToString())
+						{
+							component.Add(new ComponentOfResistor(name, (SymbolTagOfResistor)i, tags[1], tags[2]));
+						}
+					}
+				}
+				catch(IndexOutOfRangeException)
+				{
+
+				}
+			}
+			
+			public override void WriteFile(FolderBrowserDialog fbd)
+			{
+				using (StreamWriter sw = new StreamWriter(@fbd.SelectedPath + "\\" + FileName + ".lib"))
+				{
+					WriteHeader(sw);
+					WriteComponents(sw);
+					WriteFooter(sw);
+				}
+			}
+
+			private void WriteComponents(StreamWriter sw)
+			{
+				foreach (ComponentOfResistor i in component)
+				{
+					PlotSymbolMethods[(int)(i.tag)](sw, i);
+				}
+			}
+
+			private delegate void PlotSymbol(StreamWriter sw, ComponentOfResistor comp);
+
+			private List<PlotSymbol> PlotSymbolMethods;
+
+			private void PlotFixedIEC(StreamWriter sw, ComponentOfResistor comp)
+			{
+				sw.WriteLine("#");
+				sw.WriteLine("# {0}", comp.ComponentName);
+				sw.WriteLine("#");
+				sw.WriteLine("DEF {0} R 0 0 N Y 1 F N", comp.ComponentName);
+				sw.WriteLine("F0 \"R\" -100 60 45 H V L CNN");
+				sw.WriteLine("F1 \"{0}\" 0 -70 45 H V C CNN", comp.ComponentName);
+				sw.WriteLine("F2 \"{0}\" -70 0 30 V V C CNN", comp.PCBFootprint);
+				sw.WriteLine("F3 \"~\" 0 0 30 H V C CNN");
+				sw.WriteLine("DRAW");
+				sw.WriteLine("S -100 30 100 -30 0 1 0 N");
+				sw.WriteLine("X ~ 1 -150 0 50 R 60 60 1 1 P");
+				sw.WriteLine("X ~ 2 150 0 50 L 60 60 1 1 P");
+				sw.WriteLine("ENDDRAW");
+				sw.WriteLine("ENDDEF");
+			}
+			private void PlotFixedAmerican(StreamWriter sw, ComponentOfResistor comp)
+			{
+				sw.WriteLine("#");
+				sw.WriteLine("# {0}", comp.ComponentName);
+				sw.WriteLine("#");
+				sw.WriteLine("DEF {0} R 0 0 N Y 1 F N", comp.ComponentName);
+				sw.WriteLine("F0 \"R\" -125 60 45 H V L CNN");
+				sw.WriteLine("F1 \"{0}\" 0 -70 45 H V C CNN", comp.ComponentName);
+				sw.WriteLine("F2 \"{0}\" -70 0 30 V V C CNN",comp.PCBFootprint);
+				sw.WriteLine("F3 \"~\" 0 0 30 H V C CNN");
+				sw.WriteLine("DRAW");
+				sw.WriteLine("P 8 0 1 0  -105 0  -87 30  -52 -30  -17 30  17 -30  52 30  87 -30  105 0 N");
+				sw.WriteLine("X ~ 1 -150 0 45 R 60 60 1 1 P");
+				sw.WriteLine("X ~ 2 150 0 45 L 60 60 1 1 P");
+				sw.WriteLine("ENDDRAW");
+				sw.WriteLine("ENDDEF");
+			}
+			private void PlotVariableIEC(StreamWriter sw, ComponentOfResistor comp)
+			{
+
+			}
+			private void PlotVariableAmerican(StreamWriter sw, ComponentOfResistor comp)
+			{
+
+			}
+
+			private List<ComponentOfResistor> component;
+
+			private readonly static string DEFAULT_FILE_NAME;
+			private readonly static string LABEL;
+		}
+
+
+		enum SymbolTagOfCapacitor
+		{
+			Ceramic,
+			Pole,
+			NonePole
+		}
+
+		class ComponentOfCapacitor : Fields
+		{
+			public ComponentOfCapacitor(string name, SymbolTagOfCapacitor tag, string footprint, string vendor)
+				: base(name, footprint, vendor)
+			{
+				this.tag = tag;
+			}
+			public SymbolTagOfCapacitor tag;
+		}
+
+		class Capacitor : KiSchemaLibFile
+		{
+			static Capacitor()
+			{
+				DEFAULT_FILE_NAME = "Capacitor";
+				LABEL = "c";
+			}
+			public Capacitor()
+				: this(Capacitor.DEFAULT_FILE_NAME)
+			{
+
+			}
+			public Capacitor(string fname)
+				: base(fname)
+			{
+				component = new List<ComponentOfCapacitor>();
+				PlotSymbolMethods = new List<PlotSymbol>()
+				{
+					PlotCeramic,
+					PlotPole,
+					PlotNonePole
+				};
+			}
+
+			public override string FileName { get { return this.filename; } }
+			public override string Label { get { return Capacitor.LABEL; } }
+
+			public void AddComponentName(string name, params string[] tags)
+			{
+				try
+				{
+					for (int i = 0; i < Enum.GetNames(typeof(SymbolTagOfResistor)).Length; i++)
+					{
+						if (tags[0] == i.ToString())
+						{
+							component.Add(new ComponentOfCapacitor(name, (SymbolTagOfCapacitor)i, tags[1], tags[2]));
+						}
+					}
+				}
+				catch (IndexOutOfRangeException)
+				{
+
+				}
+			}
+
+			public override void WriteFile(FolderBrowserDialog fbd)
+			{
+				using (StreamWriter sw = new StreamWriter(@fbd.SelectedPath + "\\" + FileName + ".lib"))
+				{
+					WriteHeader(sw);
+					WriteComponents(sw);
+					WriteFooter(sw);
+				}
+			}
+
+			private void WriteComponents(StreamWriter sw)
+			{
+				foreach (ComponentOfCapacitor i in component)
+				{
+					PlotSymbolMethods[(int)(i.tag)](sw, i);
+				}
+			}
+
+			private delegate void PlotSymbol(StreamWriter sw, ComponentOfCapacitor comp);
+
+			private List<PlotSymbol> PlotSymbolMethods;
+
+			private void PlotCeramic(StreamWriter sw, ComponentOfCapacitor comp)      //セラミック，フィルム
+			{
+				sw.WriteLine("#");
+				sw.WriteLine("# {0}", comp.ComponentName);
+				sw.WriteLine("#");
+				sw.WriteLine("DEF {0} C 0 10 N N 1 F N", comp.ComponentName);
+				sw.WriteLine("F0 \"C\" 50 70 45 H V L CNN");
+				sw.WriteLine("F1 \"{0}\" 50 -75 45 H V L CNN", comp.ComponentName);
+				sw.WriteLine("F2 \"{0}\" 38 -150 30 H V C CNN",comp.PCBFootprint);
+				sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
+				sw.WriteLine("DRAW");
+				sw.WriteLine("S -60 -30 60 -15 0 1 1 F");
+				sw.WriteLine("S -60 30 60 15 0 1 1 F");
+				sw.WriteLine("X ~ 1 0 100 75 D 40 40 1 1 P");
+				sw.WriteLine("X ~ 2 0 -100 75 U 40 40 1 1 P");
+				sw.WriteLine("ENDDRAW");
+				sw.WriteLine("ENDDEF");
+			}
+			private void PlotPole(StreamWriter sw, ComponentOfCapacitor comp)     //有極電解
+			{
+				sw.WriteLine("#");
+				sw.WriteLine("# {0}", comp.ComponentName);
+				sw.WriteLine("#");
+				sw.WriteLine("DEF {0} C 0 10 N N 1 F N", comp.ComponentName);
+				sw.WriteLine("F0 \"C\" 50 70 45 H V L CNN");
+				sw.WriteLine("F1 \"{0}\" 50 -75 45 H V L CNN", comp.ComponentName);
+				sw.WriteLine("F2 \"{0}\" 38 -150 30 H V C CNN",comp.PCBFootprint);
+				sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
+				sw.WriteLine("DRAW");
+				sw.WriteLine("T 0 -30 55 30 0 0 0 +  Normal 0 C C");
+				sw.WriteLine("S -60 -35 60 -20 0 1 1 F");
+				sw.WriteLine("S -60 35 60 20 0 1 1 F");
+				sw.WriteLine("P 2 0 1 10  -20 25  -50 -25 N");
+				sw.WriteLine("P 2 0 1 10  15 25  -15 -25 N");
+				sw.WriteLine("P 2 0 1 10  50 25  20 -25 N");
+				sw.WriteLine("X p 1 0 100 70 D 40 40 1 1 P");
+				sw.WriteLine("X m 2 0 -100 70 U 40 40 1 1 P");
+				sw.WriteLine("ENDDRAW");
+				sw.WriteLine("ENDDEF");
+			}
+			private void PlotNonePole(StreamWriter sw, ComponentOfCapacitor comp)        //無極性電解
+			{
+				sw.WriteLine("#");
+				sw.WriteLine("# {0}", comp.ComponentName);
+				sw.WriteLine("#");
+				sw.WriteLine("DEF {0} C 0 10 N N 1 F N", comp.ComponentName);
+				sw.WriteLine("F0 \"C\" 50 70 45 H V L CNN");
+				sw.WriteLine("F1 \"{0}\" 50 -75 45 H V L CNN", comp.ComponentName);
+				sw.WriteLine("F2 \"{0}\" 38 -150 30 H V C CNN",comp.PCBFootprint);
+				sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
+				sw.WriteLine("DRAW");
+				sw.WriteLine("S -60 -35 60 -20 0 1 1 F");
+				sw.WriteLine("S -60 35 60 20 0 1 1 F");
+				sw.WriteLine("P 2 0 1 10  -20 25  -50 -25 N");
+				sw.WriteLine("P 2 0 1 10  15 25  -15 -25 N");
+				sw.WriteLine("P 2 0 1 10  50 25  20 -25 N");
+				sw.WriteLine("X p 1 0 100 70 D 40 40 1 1 P");
+				sw.WriteLine("X m 2 0 -100 70 U 40 40 1 1 P");
+				sw.WriteLine("ENDDRAW");
+				sw.WriteLine("ENDDEF");
+			}
+
+			private List<ComponentOfCapacitor> component;
+
+			private readonly static string DEFAULT_FILE_NAME;
+			private readonly static string LABEL;
+		}
+
+
+		class Inductor : KiSchemaLibFile
+		{
+			static Inductor()
+			{
+				DEFAULT_FILE_NAME = "Inductor";
+				LABEL = "l";
+				TAGS = new string[] { "1", "2", "3" };
+			}
+			public Inductor()
+				: this(Inductor.DEFAULT_FILE_NAME)
+			{
+
+			}
+			public Inductor(string fname)
+				: base(fname)
+			{
+				names_1 = new List<string>();
+				names_2 = new List<string>();
+				names_3 = new List<string>();
+			}
+
+			public override string FileName { get { return this.filename; } }
+			public override string Label { get { return Inductor.LABEL; } }
+
+			public override void WriteFile(FolderBrowserDialog fbd)
+			{
+				using (StreamWriter sw = new StreamWriter(@fbd.SelectedPath + "\\" + FileName + ".lib"))
+				{
+					WriteHeader(sw);
+					WriteComponents(sw);
+					WriteFooter(sw);
+				}
+			}
+
+			public void AddComponentName(string name, string[] tags)
+			{
+				if (tags[0] == TAGS[0]) names_1.Add(name);
+				else if (tags[0] == TAGS[1]) names_2.Add(name);
+				else if (tags[0] == TAGS[2]) names_3.Add(name);
+			}
+
+			private void WriteComponents(StreamWriter sw)
+			{
+				foreach (string name in names_1)
+				{
+					Plot1(sw, name);
+				}
+				foreach (string name in names_2)
+				{
+					Plot2(sw, name);
+				}
+				foreach (string name in names_3)
+				{
+					Plot3(sw, name);
+				}
+			}
+
+			private void Plot1(StreamWriter sw, string component_name)
+			{
+				/*
+				#
+				# L-type1
+				#
+				DEF L-type1 L 0 0 N Y 1 F N
+				F0 "L" -125 60 40 H V L CNN
+				F1 "L-type1" 0 -50 40 H V C CNN
+				F2 "~" -70 0 30 V V C CNN
+				F3 "~" 0 0 30 H V C CNN
+				F4 "4.7m" 25 60 35 H V L CNN "Inductance"
+				DRAW
+				A -75 0 25 1 1799 0 1 0 N -50 0 -100 0
+				A -25 0 25 1 1799 0 1 0 N 0 0 -50 0
+				A 25 0 25 1 1799 0 1 0 N 50 0 0 0
+				A 75 0 25 1 1799 0 1 0 N 100 0 50 0
+				X ~ 1 -150 0 50 R 60 60 1 1 P
+				X ~ 2 150 0 50 L 60 60 1 1 P
+				*/
+			}
+
+			private void Plot2(StreamWriter sw, string component_name)
+			{
+				/*
+				#
+				# L-type2
+				#
+				DEF L-type2 L 0 0 N Y 1 F N
+				F0 "L" -125 80 40 H V L CNN
+				F1 "L-type2" 0 -50 40 H V C CNN
+				F2 "~" -70 0 30 V V C CNN
+				F3 "~" 0 0 30 H V C CNN
+				F4 "4.7m" 25 80 35 H V L CNN "Inductance"
+				DRAW
+				A -75 0 25 1 1799 0 1 0 N -50 0 -100 0
+				A -25 0 25 1 1799 0 1 0 N 0 0 -50 0
+				A 25 0 25 1 1799 0 1 0 N 50 0 0 0
+				A 75 0 25 1 1799 0 1 0 N 100 0 50 0
+				S -95 40 95 50 0 1 1 F
+				X ~ 1 -150 0 50 R 60 60 1 1 P
+				X ~ 2 150 0 50 L 60 60 1 1 P
+				ENDDRAW
+				ENDDEF
+				*/
+			}
+
+			private void Plot3(StreamWriter sw, string component_name)
+			{
+				/*
+				#
+				# L-type3
+				#
+				DEF L-type3 L 0 0 N Y 1 F N
+				F0 "L" -125 80 40 H V L CNN
+				F1 "L-type3" 0 -50 40 H V C CNN
+				F2 "~" -70 0 30 V V C CNN
+				F3 "~" 0 0 30 H V C CNN
+				F4 "4.7m" 25 80 35 H V L CNN "Inductance"
+				DRAW
+				A -75 0 25 1 1799 0 1 0 N -50 0 -100 0
+				A -25 0 25 1 1799 0 1 0 N 0 0 -50 0
+				A 25 0 25 1 1799 0 1 0 N 50 0 0 0
+				A 75 0 25 1 1799 0 1 0 N 100 0 50 0
+				S -95 40 -65 50 0 1 1 F
+				S -55 40 -25 50 0 1 1 F
+				S -15 40 15 50 0 1 1 F
+				S 25 40 55 50 0 1 1 F
+				S 65 40 95 50 0 1 1 F
+				X ~ 1 -150 0 50 R 60 60 1 1 P
+				X ~ 2 150 0 50 L 60 60 1 1 P
+				ENDDRAW
+				ENDDEF
+				*/
+			}
+
+			private List<string> names_1;
+			private List<string> names_2;
+			private List<string> names_3;
+
+			private readonly static string DEFAULT_FILE_NAME;
+			private readonly static string LABEL;
+			private readonly static string[] TAGS;
+		}
+
+		class Diode : KiSchemaLibFile
+		{
+			static Diode()
+			{
+				DEFAULT_FILE_NAME = "Diode";
+				LABEL = "d";
+				TAGS = new string[] { "recti", "sbd", "zener" };
+			}
+			public Diode()
+				: this(Diode.DEFAULT_FILE_NAME)
+			{
+
+			}
+			public Diode(string fname)
+				: base(fname)
+			{
+				names_pn = new List<string>();
+				names_schottky = new List<string>();
+				names_zener = new List<string>();
+				names_crd = new List<string>();
+			}
+
+			public override string FileName { get { return this.filename; } }
+			public override string Label { get { return Diode.LABEL; } }
+
+			public void AddComponentName(string name, string[] tags)
+			{
+				if (tags[0] == Diode.TAGS[0])
+				{
+					names_pn.Add(name);
+				}
+				else if (tags[0] == Diode.TAGS[1])
+				{
+					names_schottky.Add(name);
+				}
+				else if (tags[0] == Diode.TAGS[2])
+				{
+					names_zener.Add(name);
+				}
+			}
+
+			public override void WriteFile(FolderBrowserDialog fbd)
+			{
+				using (StreamWriter sw = new StreamWriter(@fbd.SelectedPath + "\\" + FileName + ".lib"))
+				{
+					WriteHeader(sw);
+					WriteComponents(sw);
+					WriteFooter(sw);
+				}
+			}
+
+			private void WriteComponents(StreamWriter sw)
+			{
+				foreach (string name in names_pn)
+				{
+					PlotRecti(sw, name);
+				}
+				foreach (string name in names_schottky)
+				{
+					PlotSBD(sw, name);
+				}
+				foreach (string name in names_zener)
+				{
+					PlotZener(sw, name);
+				}
+			}
+
+			private void PlotRecti(StreamWriter sw, string component_name)
+			{
 				sw.WriteLine("#");
 				sw.WriteLine("# {0}", component_name);
 				sw.WriteLine("#");
-				sw.WriteLine("DEF {0} CN 0 1 Y N 1 F N", component_name);
-				sw.WriteLine("F0 \"CN\" -150 {0} 40 H V L CNN", 25 * pin + 30);
-				sw.WriteLine("F1 \"{0}\" 0 {1} 40 H V C CNN", component_name, -25 * pin - 40);
-				sw.WriteLine("F2 \"~\" -50 {0} 60 H V C CNN", 25 * (pin - 1));
-				sw.WriteLine("F3 \"~\" -50 {0} 60 H V C CNN", 25 * (pin - 1));
+				sw.WriteLine("DEF {0} D 0 40 N N 1 F N", component_name);
+				sw.WriteLine("F0 \"D\" -50 70 40 H V L CNN");
+				sw.WriteLine("F1 \"{0}\" 0 -80 40 H V C CNN", component_name);
+				sw.WriteLine("F2 \"~\" 0 0 60 H V C CNN");
+				sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
 				sw.WriteLine("DRAW");
-				sw.WriteLine("S -150 {0} 150 -{0} 0 1 0 f", 25 * pin);		//外枠
-				for (int pinid = 1; pinid <= pin; pinid++)
+				sw.WriteLine("S 35 40 40 -40 0 1 1 F");
+				sw.WriteLine("P 3 0 1 1  -40 40  40 0  -40 -40 F");
+				sw.WriteLine("X A 1 -100 0 60 R 40 40 1 1 P");
+				sw.WriteLine("X K 2 100 0 60 L 40 40 1 1 P");
+				sw.WriteLine("ENDDRAW");
+				sw.WriteLine("ENDDEF");
+			}
+
+			private void PlotSBD(StreamWriter sw, string component_name)
+			{
+				sw.WriteLine("#");
+				sw.WriteLine("# {0}", component_name);
+				sw.WriteLine("#");
+				sw.WriteLine("DEF {0} D 0 40 N N 1 F N", component_name);
+				sw.WriteLine("F0 \"D\" -50 70 40 H V L CNN");
+				sw.WriteLine("F1 \"{0}\" 0 -80 40 H V C CNN", component_name);
+				sw.WriteLine("F2 \"~\" 0 0 60 H V C CNN");
+				sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
+				sw.WriteLine("DRAW");
+				sw.WriteLine("S 20 -40 25 -20 0 1 1 F");
+				sw.WriteLine("S 20 -40 40 -35 0 1 1 F");
+				sw.WriteLine("S 35 35 55 40 0 1 1 F");
+				sw.WriteLine("S 35 40 40 -40 0 1 1 F");
+				sw.WriteLine("S 50 20 55 40 0 1 1 F");
+				sw.WriteLine("P 3 0 1 1  -40 40  40 0  -40 -40 F");
+				sw.WriteLine("X A 1 -100 0 60 R 40 40 1 1 P");
+				sw.WriteLine("X K 2 100 0 60 L 40 40 1 1 P");
+				sw.WriteLine("ENDDRAW");
+				sw.WriteLine("ENDDEF");
+			}
+
+			private void PlotZener(StreamWriter sw, string component_name)
+			{
+				sw.WriteLine("#");
+				sw.WriteLine("# {0}", component_name);
+				sw.WriteLine("#");
+				sw.WriteLine("DEF {0} D 0 40 N N 1 F N", component_name);
+				sw.WriteLine("F0 \"D\" -50 70 40 H V L CNN");
+				sw.WriteLine("F1 \"{0}\" 0 -80 40 H V C CNN", component_name);
+				sw.WriteLine("F2 \"~\" 0 0 60 H V C CNN");
+				sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
+				sw.WriteLine("DRAW");
+				sw.WriteLine("S 20 35 40 40 0 1 1 F");
+				sw.WriteLine("S 35 -40 55 -35 0 1 1 F");
+				sw.WriteLine("S 35 40 40 -40 0 1 1 F");
+				sw.WriteLine("P 3 0 1 1  -40 40  40 0  -40 -40 F");
+				sw.WriteLine("X A 1 -100 0 60 R 40 40 1 1 P");
+				sw.WriteLine("X K 2 100 0 60 L 40 40 1 1 P");
+				sw.WriteLine("ENDDRAW");
+				sw.WriteLine("ENDDEF");
+			}
+
+			private List<string> names_pn;
+			private List<string> names_schottky;
+			private List<string> names_zener;
+			private List<string> names_crd;
+
+			private readonly static string DEFAULT_FILE_NAME;
+			private readonly static string LABEL;
+			private readonly static string[] TAGS;
+		}
+
+		class Transistor : KiSchemaLibFile
+		{
+			static Transistor()
+			{
+				DEFAULT_FILE_NAME = "Transistor";
+				LABEL = "tr";
+				TAGS = new string[] { "npn", "pnp" };
+			}
+			public Transistor()
+				: this(Transistor.DEFAULT_FILE_NAME)
+			{
+
+			}
+			public Transistor(string fname)
+				: base(fname)
+			{
+				names_npn = new List<string>();
+				names_pnp = new List<string>();
+			}
+
+			public override string FileName { get { return this.filename; } }
+			public override string Label { get { return Transistor.LABEL; } }
+
+			public void AddComponentName(string name, string[] tags)
+			{
+				if (tags[0] == TAGS[0]) names_npn.Add(name);
+				else if (tags[0] == TAGS[1]) names_pnp.Add(name);
+			}
+
+			public override void WriteFile(FolderBrowserDialog fbd)
+			{
+				using (StreamWriter sw = new StreamWriter(@fbd.SelectedPath + "\\" + FileName + ".lib"))
 				{
-					const int WIDTH = 15;
-					if (pinid % 2 == 1)
+					WriteHeader(sw);
+					WriteComponents(sw);
+					WriteFooter(sw);
+				}
+			}
+
+			private void WriteComponents(StreamWriter sw)
+			{
+				foreach (string name in names_npn)
+				{
+					PlotNPN(sw, name);
+				}
+				foreach (string name in names_pnp)
+				{
+					PlotPNP(sw, name);
+				}
+			}
+
+			private void PlotNPN(StreamWriter sw, string component_name)
+			{
+				sw.WriteLine("#");
+				sw.WriteLine("# {0}", component_name);
+				sw.WriteLine("#");
+				sw.WriteLine("DEF {0} Q 0 40 Y N 1 F N", component_name);
+				sw.WriteLine("F0 \"Q\" 150 50 45 H V L CNN");
+				sw.WriteLine("F1 \"{0}\" 150 -50 45 H V L CNN", component_name);
+				sw.WriteLine("F2 \"~\" -50 0 60 H V C CNN");
+				sw.WriteLine("F3 \"~\" -50 0 60 H V C CNN");
+				sw.WriteLine("DRAW");
+				sw.WriteLine("C 0 0 111 0 1 0 f");
+				sw.WriteLine("S -60 -75 -40 75 0 1 1 F");
+				sw.WriteLine("P 2 0 1 0  -50 -25  50 -100 N");
+				sw.WriteLine("P 2 0 1 0  -50 25  50 100 N");
+				sw.WriteLine("P 4 0 1 0  42 -94  0 -80  16 -57  42 -94 F");
+				sw.WriteLine("X B ~ -150 0 100 R 40 40 1 1 I");
+				sw.WriteLine("X C ~ 50 150 50 D 40 40 1 1 P");
+				sw.WriteLine("X E ~ 50 -150 50 U 40 40 1 1 P");
+				sw.WriteLine("ENDDRAW");
+				sw.WriteLine("ENDDEF");
+			}
+
+			private void PlotPNP(StreamWriter sw, string component_name)
+			{
+				sw.WriteLine("#");
+				sw.WriteLine("# {0}", component_name);
+				sw.WriteLine("#");
+				sw.WriteLine("DEF {0} Q 0 40 Y N 1 F N", component_name);
+				sw.WriteLine("F0 \"Q\" 150 50 45 H V L CNN");
+				sw.WriteLine("F1 \"{0}\" 150 -50 45 H V L CNN", component_name);
+				sw.WriteLine("F2 \"~\" -50 0 60 H V C CNN");
+				sw.WriteLine("F3 \"~\" -50 0 60 H V C CNN");
+				sw.WriteLine("DRAW");
+				sw.WriteLine("C 0 0 111 0 1 0 f");
+				sw.WriteLine("S -60 -75 -40 75 0 1 1 F");
+				sw.WriteLine("P 2 0 1 0  -50 -25  50 -100 N");
+				sw.WriteLine("P 2 0 1 0  -50 25  50 100 N");
+				sw.WriteLine("P 4 0 1 0  -34 -37  8 -51  -8 -73  -34 -37 F");
+				sw.WriteLine("X B ~ -150 0 100 R 40 40 1 1 I");
+				sw.WriteLine("X C ~ 50 150 50 D 40 40 1 1 P");
+				sw.WriteLine("X E ~ 50 -150 50 U 40 40 1 1 P");
+				sw.WriteLine("ENDDRAW");
+				sw.WriteLine("ENDDEF");
+			}
+
+			private List<string> names_npn;
+			private List<string> names_pnp;
+
+			private readonly static string DEFAULT_FILE_NAME;
+			private readonly static string LABEL;
+			private readonly static string[] TAGS;
+		}
+
+		class MOSFET : KiSchemaLibFile
+		{
+			static MOSFET()
+			{
+				DEFAULT_FILE_NAME = "MOSFET";
+				LABEL = "mosfet";
+				TAGS = new string[] { "n", "p" };
+			}
+			public MOSFET()
+				: this(MOSFET.DEFAULT_FILE_NAME)
+			{
+
+			}
+			public MOSFET(string fname)
+				: base(fname)
+			{
+				names_mosfet_n = new List<string>();
+				names_mosfet_p = new List<string>();
+			}
+
+			public override string FileName { get { return this.filename; } }
+			public override string Label { get { return MOSFET.LABEL; } }
+
+			public void AddComponentName(string name, string[] tags)
+			{
+				if (tags[0] == "n")
+				{
+					names_mosfet_n.Add(name);
+				}
+				else if (tags[0] == "p")
+				{
+					names_mosfet_p.Add(name);
+				}
+			}
+
+			public override void WriteFile(FolderBrowserDialog fbd)
+			{
+				using (StreamWriter sw = new StreamWriter(@fbd.SelectedPath + "\\" + FileName + ".lib"))
+				{
+					WriteHeader(sw);
+					WriteComponents(sw);
+					WriteFooter(sw);
+				}
+			}
+
+			private void WriteComponents(StreamWriter sw)
+			{
+				foreach (string name in names_mosfet_n)
+				{
+					PlotMOSFETn(sw, name);
+				}
+				foreach (string name in names_mosfet_p)
+				{
+					PlotMOSFETp(sw, name);
+				}
+			}
+
+			private void PlotMOSFETn(StreamWriter sw, string component_name)
+			{
+				sw.WriteLine("#");
+				sw.WriteLine("# {0}", component_name);
+				sw.WriteLine("#");
+				sw.WriteLine("DEF {0} Q 0 40 Y N 1 F N", component_name);
+				sw.WriteLine("F0 \"Q\" 100 100 40 H V L CNN");
+				sw.WriteLine("F1 \"{0}\" 100 -100 40 H V L CNN", component_name);
+				sw.WriteLine("F2 \"~\" -50 0 60 H V C CNN");
+				sw.WriteLine("F3 \"~\" -50 0 60 H V C CNN");
+				sw.WriteLine("DRAW");
+				sw.WriteLine("C 0 0 111 0 1 0 f");
+				sw.WriteLine("S -75 -53 -60 53 0 1 1 F");
+				sw.WriteLine("S -50 -30 -35 -70 0 1 1 F");
+				sw.WriteLine("S -50 -20 -35 20 0 1 1 F");
+				sw.WriteLine("S -50 30 -35 70 0 1 1 F");
+				sw.WriteLine("S 30 15 70 20 0 1 1 F");
+				sw.WriteLine("P 2 0 1 0  -35 -50  0 -50 N");
+				sw.WriteLine("P 2 0 1 0  -35 0  0 0 N");
+				sw.WriteLine("P 2 0 1 0  -35 50  0 50 N");
+				sw.WriteLine("P 4 0 1 1  -40 0  -10 -12  -10 12  -40 0 F");
+				sw.WriteLine("P 4 0 1 0  0 75  50 75  50 -75  0 -75 N");
+				sw.WriteLine("P 4 0 1 1  50 20  30 -20  70 -20  50 20 F");
+				sw.WriteLine("X D ~ 0 150 100 D 40 40 1 1 P");
+				sw.WriteLine("X G ~ -150 -50 80 R 40 40 1 1 I");
+				sw.WriteLine("X S ~ 0 -150 150 U 40 40 1 1 P");
+				sw.WriteLine("ENDDRAW");
+				sw.WriteLine("ENDDEF");
+			}
+
+			private void PlotMOSFETp(StreamWriter sw, string component_name)
+			{
+				sw.WriteLine("#");
+				sw.WriteLine("# {0}", component_name);
+				sw.WriteLine("#");
+				sw.WriteLine("DEF {0} Q 0 40 Y N 1 F N", component_name);
+				sw.WriteLine("F0 \"Q\" 100 100 40 H V L CNN");
+				sw.WriteLine("F1 \"{0}\" 100 -100 40 H V L CNN", component_name);
+				sw.WriteLine("F2 \"~\" -50 0 60 H V C CNN");
+				sw.WriteLine("F3 \"~\" -50 0 60 H V C CNN");
+				sw.WriteLine("DRAW");
+				sw.WriteLine("C 0 0 111 0 1 0 f");
+				sw.WriteLine("S -75 -53 -60 53 0 1 1 F");
+				sw.WriteLine("S -50 -30 -35 -70 0 1 1 F");
+				sw.WriteLine("S -50 -20 -35 20 0 1 1 F");
+				sw.WriteLine("S -50 30 -35 70 0 1 1 F");
+				sw.WriteLine("S 30 -15 70 -20 0 1 1 F");
+				sw.WriteLine("P 2 0 1 0  -35 -50  0 -50 N");
+				sw.WriteLine("P 2 0 1 0  -35 0  0 0 N");
+				sw.WriteLine("P 2 0 1 0  -35 50  0 50 N");
+				sw.WriteLine("P 4 0 1 1  0 0  -30 -12  -30 12  0 0 F");
+				sw.WriteLine("P 4 0 1 0  0 75  50 75  50 -75  0 -75 N");
+				sw.WriteLine("P 4 0 1 0  0 75  50 75  50 -75  0 -75 N");
+				sw.WriteLine("P 4 0 1 1  50 -20  30 20  70 20  50 -20 F");
+				sw.WriteLine("X D ~ 0 150 100 D 40 40 1 1 P");
+				sw.WriteLine("X G ~ -150 -50 80 R 40 40 1 1 I");
+				sw.WriteLine("X S ~ 0 -150 150 U 40 40 1 1 P");
+				sw.WriteLine("ENDDRAW");
+				sw.WriteLine("ENDDEF");
+			}
+
+			private List<string> names_mosfet_n;
+			private List<string> names_mosfet_p;
+
+			private readonly static string DEFAULT_FILE_NAME;
+			private readonly static string LABEL;
+			private readonly static string[] TAGS;
+		}
+
+		class JFET : KiSchemaLibFile
+		{
+			static JFET()
+			{
+				DEFAULT_FILE_NAME = "JFET";
+				LABEL = "jfet";
+				TAGS = new string[] { "n", "p" };
+			}
+			public JFET()
+				: this(JFET.DEFAULT_FILE_NAME)
+			{
+
+			}
+			public JFET(string fname)
+				: base(fname)
+			{
+				names_jfet_n = new List<string>();
+				names_jfet_p = new List<string>();
+			}
+
+			public override string FileName { get { return this.filename; } }
+			public override string Label { get { return JFET.LABEL; } }
+
+			public override void WriteFile(FolderBrowserDialog fbd)
+			{
+				using (StreamWriter sw = new StreamWriter(@fbd.SelectedPath + "\\" + FileName + ".lib"))
+				{
+					WriteHeader(sw);
+					WriteComponents(sw);
+					WriteFooter(sw);
+				}
+			}
+
+			private void WriteComponents(StreamWriter sw)
+			{
+				foreach (string name in names_jfet_n)
+				{
+					PlotJFETn(sw, name);
+				}
+				foreach (string name in names_jfet_p)
+				{
+					PlotJFETp(sw, name);
+				}
+			}
+
+			private void PlotJFETn(StreamWriter sw, string component_name)
+			{
+
+			}
+
+			private void PlotJFETp(StreamWriter sw, string component_name)
+			{
+
+			}
+
+			private List<string> names_jfet_n;
+			private List<string> names_jfet_p;
+
+			private readonly static string DEFAULT_FILE_NAME;
+			private readonly static string LABEL;
+			private readonly static string[] TAGS;
+		}
+
+		
+		class Photo : KiSchemaLibFile
+		{
+			static Photo()
+			{
+				DEFAULT_FILE_NAME = "PhotoDevice";
+				LABEL = "photo";
+				TAGS = new string[] { "recti", "sbd", "zener" };
+			}
+			public Photo()
+				: this(Photo.DEFAULT_FILE_NAME)
+			{
+
+			}
+			public Photo(string fname)
+				: base(fname)
+			{
+				names_led_2pin = new List<string>();
+			}
+
+			public override string FileName { get { return this.filename; } }
+			public override string Label { get { return Photo.LABEL; } }
+
+			public void AddComponentName(string name, string[] tags)
+			{
+				if (tags[0] == "led")
+				{
+					if (tags[1] == "2pin") names_led_2pin.Add(name);
+				}
+			}
+
+			public override void WriteFile(FolderBrowserDialog fbd)
+			{
+				using (StreamWriter sw = new StreamWriter(@fbd.SelectedPath + "\\" + FileName + ".lib"))
+				{
+					WriteHeader(sw);
+					WriteComponents(sw);
+					WriteFooter(sw);
+				}
+			}
+
+			private void WriteComponents(StreamWriter sw)
+			{
+				foreach (string name in names_led_2pin)
+				{
+					PlotLED2pin(sw, name);
+				}
+			}
+
+			private void PlotLED2pin(StreamWriter sw, string component_name)
+			{
+				sw.WriteLine("#");
+				sw.WriteLine("# {0}", component_name);
+				sw.WriteLine("#");
+				sw.WriteLine("DEF {0} LED 0 40 N N 1 F N", component_name);
+				sw.WriteLine("F0 \"LED\" -100 120 40 H V L CNN");
+				sw.WriteLine("F1 \"{0}\" 0 -80 40 H V C CNN", component_name);
+				sw.WriteLine("F2 \"~\" 0 0 60 H V C CNN");
+				sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
+				sw.WriteLine("DRAW");
+				sw.WriteLine("S 35 40 40 -40 0 1 1 F");
+				sw.WriteLine("P 2 0 1 0  10 50  45 85 N");
+				sw.WriteLine("P 2 0 1 0  50 50  85 85 N");
+				sw.WriteLine("P 3 0 1 1  -40 40  40 0  -40 -40 F");
+				sw.WriteLine("P 3 0 1 0  30 60  45 85  20 70 F");
+				sw.WriteLine("P 3 0 1 0  70 60  85 85  60 70 F");
+				sw.WriteLine("X A 1 -100 0 60 R 40 40 1 1 P");
+				sw.WriteLine("X K 2 100 0 60 L 40 40 1 1 P");
+				sw.WriteLine("ENDDRAW");
+				sw.WriteLine("ENDDEF");
+			}
+
+			private List<string> names_led_2pin;
+
+			private readonly static string DEFAULT_FILE_NAME;
+			private readonly static string LABEL;
+			private readonly static string[] TAGS;
+		}
+
+		class ConMale : KiSchemaLibFile
+		{
+			static ConMale()
+			{
+				DEFAULT_FILE_NAME = "ConMale";
+				LABEL = "";
+			}
+			public ConMale()
+				: this(ConMale.DEFAULT_FILE_NAME)
+			{
+
+			}
+			public ConMale(string fname)
+				: base(fname)
+			{
+
+			}
+
+			private const int MAX_SINGLE_PIN = 99;
+			private const int MAX_DOUBLE_PIN = 99;
+
+			public override string FileName { get { return this.filename; } }
+			public override string Label { get { throw new NotImplementedException(); } }
+
+			public override void WriteFile(FolderBrowserDialog fbd)
+			{
+				using (StreamWriter sw = new StreamWriter(@fbd.SelectedPath + "\\" + FileName + ".lib"))
+				{
+					WriteHeader(sw);
+					WriteComponents(sw);
+					WriteFooter(sw);
+				}
+			}
+
+			private void WriteComponents(StreamWriter sw)
+			{
+				PlotMaleSingle(sw);
+				PlotMaleDouble(sw);
+			}
+
+			private void PlotMaleSingle(StreamWriter sw)
+			{
+				for (int pin = 1; pin <= MAX_SINGLE_PIN; pin++)
+				{
+					string component_name = "con-male-single-" + pin.ToString("D2");
+					sw.WriteLine("#");
+					sw.WriteLine("# {0}", component_name);
+					sw.WriteLine("#");
+					sw.WriteLine("DEF {0} CN 0 1 Y N 1 F N", component_name);
+					sw.WriteLine("F0 \"CN\" -50 {0} 40 H V L CNN", 50 * pin + 30);
+					sw.WriteLine("F1 \"{0}\" 50 {1} 40 H V C CNN", component_name, -50 * pin - 40);
+					sw.WriteLine("F2 \"~\" -50 {0} 60 H V C CNN", 50 * (pin - 1));
+					sw.WriteLine("F3 \"~\" -50 {0} 60 H V C CNN", 50 * (pin - 1));
+					sw.WriteLine("DRAW");
+					sw.WriteLine("S -50 {0} 150 -{0} 0 1 0 f", 50 * pin);		//外枠
+					for (int pinid = 1; pinid <= pin; pinid++)
 					{
-						int pin_y = 25 * pin - 50 - (int)((double)pinid * 0.5) * 100;
-						sw.WriteLine("X {0} {0} -300 {1} {2} R 50 50 1 1 P", pinid, pin_y, 200 - WIDTH);		//ピン
-						sw.WriteLine("C -100 {0} {1} 0 1 1 F", pin_y, WIDTH);
-						sw.WriteLine("C -50 {0} {1} 0 1 1 F", pin_y, WIDTH);
-						sw.WriteLine("S -100 {0} -50 {1} 0 1 1 F", pin_y - WIDTH, pin_y + WIDTH);
-					}
-					else
-					{
-						int pin_y = 25 * pin - 50 - (pinid / 2 - 1) * 100;
-						sw.WriteLine("X {0} {0} 300 {1} {2} L 50 50 1 1 P", pinid, pin_y, 200 - WIDTH);		//ピン
-						sw.WriteLine("C 100 {0} {1} 0 1 1 F", pin_y, WIDTH);
+						int pin_y = 50 * pin - 50 - (pinid - 1) * 100;
+						const int WIDTH = 15;
+						sw.WriteLine("X {0} {0} -200 {1} {2} R 50 50 1 1 P", pinid, pin_y, 200 - WIDTH);		//ピン
+						sw.WriteLine("C 0 {0} {1} 0 1 1 F", pin_y, WIDTH);
 						sw.WriteLine("C 50 {0} {1} 0 1 1 F", pin_y, WIDTH);
-						sw.WriteLine("S 50 {0} 100 {1} 0 1 1 F", pin_y - WIDTH, pin_y + WIDTH);
+						sw.WriteLine("S 0 {0} 50 {1} 0 1 1 F", pin_y - WIDTH, pin_y + WIDTH);
 					}
+					sw.WriteLine("ENDDRAW");
+					sw.WriteLine("ENDDEF");
 				}
-				sw.WriteLine("ENDDRAW");
-				sw.WriteLine("ENDDEF");
 			}
-		}
-	}
 
-	class KiLib_ConFemale : KiLib
-	{
-		public KiLib_ConFemale(string fname)
-			: base(fname, "")
-		{
-
-		}
-
-		private const int MAX_SINGLE_PIN = 99;
-		private const int MAX_DOUBLE_PIN = 99;
-
-		public override string FileName
-		{
-			get
+			private void PlotMaleDouble(StreamWriter sw)
 			{
-				return this.filename;
-			}
-		}
-		public override void Plot(StreamWriter sw)
-		{
-			PlotFemaleSingle(sw);
-			PlotFemaleDouble(sw);
-		}
-
-		private void PlotFemaleSingle(StreamWriter sw)
-		{
-			for (int pin = 1; pin <= MAX_SINGLE_PIN; pin++)
-			{
-				string component_name = "con-female-single-" + pin.ToString("D2");
-				sw.WriteLine("#");
-				sw.WriteLine("# {0}", component_name);
-				sw.WriteLine("#");
-				sw.WriteLine("DEF {0} CN 0 1 Y N 1 F N", component_name);
-				sw.WriteLine("F0 \"CN\" -50 {0} 40 H V L CNN", 50 * pin + 30);
-				sw.WriteLine("F1 \"{0}\" 50 {1} 40 H V C CNN", component_name, -50 * pin - 40);
-				sw.WriteLine("F2 \"~\" -50 {0} 60 H V C CNN", 50 * (pin - 1));
-				sw.WriteLine("F3 \"~\" -50 {0} 60 H V C CNN", 50 * (pin - 1));
-				sw.WriteLine("DRAW");
-				sw.WriteLine("S -50 {0} 150 -{0} 0 1 0 f", 50 * pin);		//外枠
-				for (int pinid = 1; pinid <= pin; pinid++)
+				for (int pin = 2; pin <= MAX_DOUBLE_PIN; pin += 2)
 				{
-					int pin_y = 50 * pin - 50 - (pinid - 1) * 100;
-					const int WIDTH = 18;
-					sw.WriteLine("X {0} {0} -200 {1} {2} R 50 50 1 1 P", pinid, pin_y, 200 - WIDTH);		//ピン
-					sw.WriteLine("A 0 {0} {1} 901 -901 0 1 0 N 0 {2} 0 {3}", pin_y, WIDTH, pin_y + WIDTH, pin_y - WIDTH);
-					sw.WriteLine("P 2 0 1 0  0 {0}  25 {0} F", pin_y + WIDTH);
-					sw.WriteLine("P 2 0 1 0  0 {0}  25 {0} F", pin_y - WIDTH);
+					string component_name = "con-male-double-" + pin.ToString("D2");
+					sw.WriteLine("#");
+					sw.WriteLine("# {0}", component_name);
+					sw.WriteLine("#");
+					sw.WriteLine("DEF {0} CN 0 1 Y N 1 F N", component_name);
+					sw.WriteLine("F0 \"CN\" -150 {0} 40 H V L CNN", 25 * pin + 30);
+					sw.WriteLine("F1 \"{0}\" 0 {1} 40 H V C CNN", component_name, -25 * pin - 40);
+					sw.WriteLine("F2 \"~\" -50 {0} 60 H V C CNN", 25 * (pin - 1));
+					sw.WriteLine("F3 \"~\" -50 {0} 60 H V C CNN", 25 * (pin - 1));
+					sw.WriteLine("DRAW");
+					sw.WriteLine("S -150 {0} 150 -{0} 0 1 0 f", 25 * pin);		//外枠
+					for (int pinid = 1; pinid <= pin; pinid++)
+					{
+						const int WIDTH = 15;
+						if (pinid % 2 == 1)
+						{
+							int pin_y = 25 * pin - 50 - (int)((double)pinid * 0.5) * 100;
+							sw.WriteLine("X {0} {0} -300 {1} {2} R 50 50 1 1 P", pinid, pin_y, 200 - WIDTH);		//ピン
+							sw.WriteLine("C -100 {0} {1} 0 1 1 F", pin_y, WIDTH);
+							sw.WriteLine("C -50 {0} {1} 0 1 1 F", pin_y, WIDTH);
+							sw.WriteLine("S -100 {0} -50 {1} 0 1 1 F", pin_y - WIDTH, pin_y + WIDTH);
+						}
+						else
+						{
+							int pin_y = 25 * pin - 50 - (pinid / 2 - 1) * 100;
+							sw.WriteLine("X {0} {0} 300 {1} {2} L 50 50 1 1 P", pinid, pin_y, 200 - WIDTH);		//ピン
+							sw.WriteLine("C 100 {0} {1} 0 1 1 F", pin_y, WIDTH);
+							sw.WriteLine("C 50 {0} {1} 0 1 1 F", pin_y, WIDTH);
+							sw.WriteLine("S 50 {0} 100 {1} 0 1 1 F", pin_y - WIDTH, pin_y + WIDTH);
+						}
+					}
+					sw.WriteLine("ENDDRAW");
+					sw.WriteLine("ENDDEF");
 				}
-				sw.WriteLine("ENDDRAW");
-				sw.WriteLine("ENDDEF");
 			}
+
+			private readonly static string DEFAULT_FILE_NAME;
+			private readonly static string LABEL;
+			private readonly static string[] TAGS;
 		}
 
-		private void PlotFemaleDouble(StreamWriter sw)
+		class ConFemale : KiSchemaLibFile
 		{
-			for (int pin = 2; pin <= MAX_DOUBLE_PIN; pin += 2)
+			static ConFemale()
 			{
-				string component_name = "con-female-double-" + pin.ToString("D2");
-				sw.WriteLine("#");
-				sw.WriteLine("# {0}", component_name);
-				sw.WriteLine("#");
-				sw.WriteLine("DEF {0} CN 0 1 Y N 1 F N", component_name);
-				sw.WriteLine("F0 \"CN\" -150 {0} 40 H V L CNN", 25 * pin + 30);
-				sw.WriteLine("F1 \"{0}\" 0 {1} 40 H V C CNN", component_name, -25 * pin - 40);
-				sw.WriteLine("F2 \"~\" -50 {0} 60 H V C CNN", 25 * (pin - 1));
-				sw.WriteLine("F3 \"~\" -50 {0} 60 H V C CNN", 25 * (pin - 1));
-				sw.WriteLine("DRAW");
-				sw.WriteLine("S -150 {0} 150 -{0} 0 1 0 f", 25 * pin);		//外枠
-				for (int pinid = 1; pinid <= pin; pinid++)
-				{
-					const int WIDTH = 18;
-					if (pinid % 2 == 1)
-					{
-						int pin_y = 25 * pin - 50 - (int)((double)pinid * 0.5) * 100;
-						sw.WriteLine("X {0} {0} -300 {1} {2} R 50 50 1 1 P", pinid, pin_y, 200 - WIDTH);		//ピン
-						sw.WriteLine("A -100 {0} {1} 901 -901 0 1 0 N -100 {2} -100 {3}", pin_y, WIDTH, pin_y + WIDTH, pin_y - WIDTH);
-						sw.WriteLine("P 2 0 1 0  -100 {0}  -75 {0} F", pin_y + WIDTH);
-						sw.WriteLine("P 2 0 1 0  -100 {0}  -75 {0} F", pin_y - WIDTH);
-					}
-					else
-					{
-						int pin_y = 25 * pin - 50 - (pinid / 2 - 1) * 100;
-						sw.WriteLine("X {0} {0} 300 {1} {2} L 50 50 1 1 P", pinid, pin_y, 200 - WIDTH);		//ピン
-						sw.WriteLine("A 100 {0} {1} 899 -899 0 1 0 N 100 {2} 100 {3}", pin_y, WIDTH, pin_y + WIDTH, pin_y - WIDTH);
-						sw.WriteLine("P 2 0 1 0  75 {0}  100 {0} F", pin_y + WIDTH);
-						sw.WriteLine("P 2 0 1 0  75 {0}  100 {0} F", pin_y - WIDTH);
-					}
-				}
-				sw.WriteLine("ENDDRAW");
-				sw.WriteLine("ENDDEF");
+				DEFAULT_FILE_NAME = "ConFemale";
+				LABEL = "";
 			}
-		}
-	}
+			public ConFemale()
+				: this(ConFemale.DEFAULT_FILE_NAME)
+			{
 
+			}
+			public ConFemale(string fname)
+				: base(fname)
+			{
+
+			}
+
+			private const int MAX_SINGLE_PIN = 99;
+			private const int MAX_DOUBLE_PIN = 99;
+
+			public override string FileName { get { return this.filename; } }
+			public override string Label { get { throw new NotImplementedException(); } }
+
+			public override void WriteFile(FolderBrowserDialog fbd)
+			{
+				using (StreamWriter sw = new StreamWriter(@fbd.SelectedPath + "\\" + FileName + ".lib"))
+				{
+					WriteHeader(sw);
+					WriteComponents(sw);
+					WriteFooter(sw);
+				}
+			}
+
+			private void WriteComponents(StreamWriter sw)
+			{
+				PlotFemaleSingle(sw);
+				PlotFemaleDouble(sw);
+			}
+
+			private void PlotFemaleSingle(StreamWriter sw)
+			{
+				for (int pin = 1; pin <= MAX_SINGLE_PIN; pin++)
+				{
+					string component_name = "con-female-single-" + pin.ToString("D2");
+					sw.WriteLine("#");
+					sw.WriteLine("# {0}", component_name);
+					sw.WriteLine("#");
+					sw.WriteLine("DEF {0} CN 0 1 Y N 1 F N", component_name);
+					sw.WriteLine("F0 \"CN\" -50 {0} 40 H V L CNN", 50 * pin + 30);
+					sw.WriteLine("F1 \"{0}\" 50 {1} 40 H V C CNN", component_name, -50 * pin - 40);
+					sw.WriteLine("F2 \"~\" -50 {0} 60 H V C CNN", 50 * (pin - 1));
+					sw.WriteLine("F3 \"~\" -50 {0} 60 H V C CNN", 50 * (pin - 1));
+					sw.WriteLine("DRAW");
+					sw.WriteLine("S -50 {0} 150 -{0} 0 1 0 f", 50 * pin);		//外枠
+					for (int pinid = 1; pinid <= pin; pinid++)
+					{
+						int pin_y = 50 * pin - 50 - (pinid - 1) * 100;
+						const int WIDTH = 18;
+						sw.WriteLine("X {0} {0} -200 {1} {2} R 50 50 1 1 P", pinid, pin_y, 200 - WIDTH);		//ピン
+						sw.WriteLine("A 0 {0} {1} 901 -901 0 1 0 N 0 {2} 0 {3}", pin_y, WIDTH, pin_y + WIDTH, pin_y - WIDTH);
+						sw.WriteLine("P 2 0 1 0  0 {0}  25 {0} F", pin_y + WIDTH);
+						sw.WriteLine("P 2 0 1 0  0 {0}  25 {0} F", pin_y - WIDTH);
+					}
+					sw.WriteLine("ENDDRAW");
+					sw.WriteLine("ENDDEF");
+				}
+			}
+
+			private void PlotFemaleDouble(StreamWriter sw)
+			{
+				for (int pin = 2; pin <= MAX_DOUBLE_PIN; pin += 2)
+				{
+					string component_name = "con-female-double-" + pin.ToString("D2");
+					sw.WriteLine("#");
+					sw.WriteLine("# {0}", component_name);
+					sw.WriteLine("#");
+					sw.WriteLine("DEF {0} CN 0 1 Y N 1 F N", component_name);
+					sw.WriteLine("F0 \"CN\" -150 {0} 40 H V L CNN", 25 * pin + 30);
+					sw.WriteLine("F1 \"{0}\" 0 {1} 40 H V C CNN", component_name, -25 * pin - 40);
+					sw.WriteLine("F2 \"~\" -50 {0} 60 H V C CNN", 25 * (pin - 1));
+					sw.WriteLine("F3 \"~\" -50 {0} 60 H V C CNN", 25 * (pin - 1));
+					sw.WriteLine("DRAW");
+					sw.WriteLine("S -150 {0} 150 -{0} 0 1 0 f", 25 * pin);		//外枠
+					for (int pinid = 1; pinid <= pin; pinid++)
+					{
+						const int WIDTH = 18;
+						if (pinid % 2 == 1)
+						{
+							int pin_y = 25 * pin - 50 - (int)((double)pinid * 0.5) * 100;
+							sw.WriteLine("X {0} {0} -300 {1} {2} R 50 50 1 1 P", pinid, pin_y, 200 - WIDTH);		//ピン
+							sw.WriteLine("A -100 {0} {1} 901 -901 0 1 0 N -100 {2} -100 {3}", pin_y, WIDTH, pin_y + WIDTH, pin_y - WIDTH);
+							sw.WriteLine("P 2 0 1 0  -100 {0}  -75 {0} F", pin_y + WIDTH);
+							sw.WriteLine("P 2 0 1 0  -100 {0}  -75 {0} F", pin_y - WIDTH);
+						}
+						else
+						{
+							int pin_y = 25 * pin - 50 - (pinid / 2 - 1) * 100;
+							sw.WriteLine("X {0} {0} 300 {1} {2} L 50 50 1 1 P", pinid, pin_y, 200 - WIDTH);		//ピン
+							sw.WriteLine("A 100 {0} {1} 899 -899 0 1 0 N 100 {2} 100 {3}", pin_y, WIDTH, pin_y + WIDTH, pin_y - WIDTH);
+							sw.WriteLine("P 2 0 1 0  75 {0}  100 {0} F", pin_y + WIDTH);
+							sw.WriteLine("P 2 0 1 0  75 {0}  100 {0} F", pin_y - WIDTH);
+						}
+					}
+					sw.WriteLine("ENDDRAW");
+					sw.WriteLine("ENDDEF");
+				}
+			}
+
+			private readonly static string DEFAULT_FILE_NAME;
+			private readonly static string LABEL;
+			private readonly static string[] TAGS;
+		}
+
+	}
 }
