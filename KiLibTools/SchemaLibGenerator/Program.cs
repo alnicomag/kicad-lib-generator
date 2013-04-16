@@ -137,6 +137,201 @@ namespace SchemaLibGenerator
 			}
 		}
 
+		/// <summary>
+		/// Field of SchematicLibrariesFiles (contains UserFields).
+		/// </summary>
+		public class SchemaField
+		{
+			public SchemaField(int id)
+				: this(id, "", "~", 0, 0, 60, true)
+			{
+
+			}
+			public SchemaField(int id, string value)
+				: this(id, "", value, 0, 0, 60, true)
+			{
+
+			}
+			public SchemaField(int id, string name, string value)
+				: this(id, name, value, 0, 0, 60, true)
+			{
+
+			}
+			public SchemaField(int id, string name, string value, int x, int y, int size, bool reserved)
+			{
+				ID = id;
+				Name = name;
+				Value = value;
+				X = x;
+				Y = y;
+				Size = size;
+				Visible = Visible.V;
+				Orient = Orientation.H;
+				HAlign = AlignH.C;
+				VAlign = AlignV.C;
+				FontShape = FontShape.NN;
+				Reserved = reserved;
+			}
+
+			public bool Reserved
+			{
+				get { return reserved; }
+				set
+				{
+					reserved = value;
+					if (value)
+					{
+						Name = "";
+					}
+				}
+			}
+			public int ID { get { return id; } set { id = value; } }
+			public string Name { get { return name; } set { name = value; } }
+			public string Value { get { return value; } set { this.value = value; } }
+			public int X { get { return x; } set { x = value; } }
+			public int Y { get { return y; } set { y = value; } }
+			public int Size { get { return size; } set { size = value; } }
+			public Visible Visible { get { return visi; } set { visi = value; } }
+			public Orientation Orient { get { return orient; } set { orient = value; } }
+			public AlignH HAlign { get { return h_align; } set { h_align = value; } }
+			public AlignV VAlign { get { return v_align; } set { v_align = value; } }
+			public FontShape FontShape { get { return fontshape; } set { fontshape = value; } }
+
+			public string ToString()
+			{
+				string field;
+				field = "F" + ID.ToString() + " "
+					+ "\"" + Value + "\" "
+					+ X.ToString() + " "
+					+ Y.ToString() + " "
+					+ Size.ToString() + " "
+					+ Orient.ToString() + " "
+					+ Visible.ToString() + " "
+					+ HAlign.ToString() + " "
+					+ VAlign.ToString() + FontShape.ToString();
+				if (!Reserved)
+				{
+					field += " \"" + Name + "\"";
+				}
+
+				return field;
+			}
+
+			public void SetLibField(string line)
+			{
+				List<string> tempstrs = LineParse(line);
+
+				ID = int.Parse(tempstrs[0].Substring(1, tempstrs[0].Length - 1));
+				Value = tempstrs[1];
+				X = int.Parse(tempstrs[2]);
+				Y = int.Parse(tempstrs[3]);
+				Size = int.Parse(tempstrs[4]);
+				Orient = (tempstrs[5] == Orientation.H.ToString() ? Orientation.H : Orientation.V);
+				Visible = (tempstrs[6] == Visible.I.ToString() ? Visible.I : Visible.V);
+				HAlign = (tempstrs[7] == AlignH.C.ToString() ? AlignH.C : tempstrs[7] == AlignH.L.ToString() ? AlignH.L : AlignH.R);
+				VAlign = (tempstrs[8].Substring(0, 1) == AlignV.C.ToString() ? AlignV.C : tempstrs[8].Substring(0, 1) == AlignV.B.ToString() ? AlignV.B : AlignV.T);
+
+				string a = tempstrs[8].Substring(1, 2);
+				if (a == FontShape.NN.ToString())
+				{
+					FontShape = FontShape.NN;
+				}
+				else if (a == FontShape.NB.ToString())
+				{
+					FontShape = FontShape.NB;
+				}
+				else if (a == FontShape.IN.ToString())
+				{
+					FontShape = FontShape.IN;
+				}
+				else if (a == FontShape.IB.ToString())
+				{
+					FontShape = FontShape.IB;
+				}
+
+				if (tempstrs.Count == 10)
+				{
+					Name = tempstrs[9];
+					Reserved = false;
+				}
+			}
+
+			private List<string> LineParse(string line)
+			{
+				List<string> tempstrs = new List<string>();
+
+				bool in_double_quotation = false;
+				int readcount = 0;
+				tempstrs.Add("");
+				while (readcount < line.Length)
+				{
+					if ((line[readcount] == ' ') & (!in_double_quotation))
+					{
+						tempstrs.Add("");
+					}
+					else
+					{
+						if (line[readcount] == '\"')
+						{
+							in_double_quotation = !in_double_quotation;
+						}
+						else
+						{
+							tempstrs[tempstrs.Count - 1] += line[readcount];
+						}
+					}
+					readcount++;
+				}
+
+				return tempstrs;
+			}
+
+			private int id;					//フィールド番号
+			private string name;			//フィールド名
+			private string value;			//フィールド値
+			private int x;					//[mil]
+			private int y;					//[mil]
+			private int size;				//[mil]
+
+			private Visible visi;
+			private Orientation orient;
+			private AlignH h_align;
+			private AlignV v_align;
+			private FontShape fontshape;
+
+			private bool reserved;
+		}
+
+		public enum Orientation
+		{
+			H,
+			V
+		}
+		public enum Visible
+		{
+			V,
+			I
+		}
+		public enum AlignH
+		{
+			C,
+			R,
+			L
+		}
+		public enum AlignV
+		{
+			C,
+			B,
+			T
+		}
+		public enum FontShape
+		{
+			NN,
+			IN,
+			NB,
+			IB
+		}
+
 		class Fields
 		{
 			public Fields(string name, string footprint, string vendor)
