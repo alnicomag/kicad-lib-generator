@@ -866,7 +866,7 @@ photo,led,2pin,LED(3225M),
 d,diode1,recti,,
 d,diode2,zener,,
 d,diode3,sbd,,
-## 一般整流用ダイオード,,,,
+## General Purpose Rectifier Diode,,,,
 d,TPC6K01,recti,VS-6,TOSHIBA
 d,HMG01,recti,HM-FLAT,TOSHIBA
 d,CRG01,recti,S-FLAT,TOSHIBA
@@ -948,7 +948,7 @@ d,CUS05,sbd,US-FLAT,TOSHIBA
 d,CUS06,sbd,US-FLAT,TOSHIBA
 d,CUS10I30A,sbd,US-FLAT,TOSHIBA
 d,CUS15I30A,sbd,US-FLAT,TOSHIBA
-## 小信号用SBD,,,,
+## SBD for small-signal,,,,
 d,1SS294,sbd,S-Mini,TOSHIBA
 d,1SS319,sbd,SMQ,TOSHIBA
 d,1SS321,sbd,S-Mini,TOSHIBA
@@ -1019,7 +1019,7 @@ d,HN2S03FU,sbd,US6,TOSHIBA
 d,HN2S03T,sbd,TESQ,TOSHIBA
 d,HN2S04FU,sbd,US6,TOSHIBA
 d,HN2S05FU,sbd,US6,TOSHIBA
-## 高周波用SBD,,,,
+## SBD for high frequency,,,,
 d,1SS154,sbd,S-Mini,TOSHIBA
 d,1SS271,sbd,S-Mini,TOSHIBA
 d,1SS295,sbd,S-Mini,TOSHIBA

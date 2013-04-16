@@ -140,35 +140,30 @@ namespace SchemaLibGenerator
 		/// <summary>
 		/// Field of SchematicLibrariesFiles (contains UserFields).
 		/// </summary>
-		public class SchemaField
+		public class Field
 		{
-			public SchemaField(int id)
-				: this(id, "", "~", 0, 0, 60, true)
+			public Field(int fieldnumber)
+				: this(fieldnumber, "~", "", 0, 0, 45, true)
 			{
 
 			}
-			public SchemaField(int id, string value)
-				: this(id, "", value, 0, 0, 60, true)
+			public Field(int fieldnumber, string text)
+				: this(fieldnumber, text, "", 0, 0, 45, true)
 			{
 
 			}
-			public SchemaField(int id, string name, string value)
-				: this(id, name, value, 0, 0, 60, true)
+			public Field(int fieldnumber, string text, string name, int x, int y, int size, bool reserved)
 			{
-
-			}
-			public SchemaField(int id, string name, string value, int x, int y, int size, bool reserved)
-			{
-				ID = id;
+				FieldNumber = fieldnumber;
+				Text = text;
 				Name = name;
-				Value = value;
 				X = x;
 				Y = y;
 				Size = size;
 				Visible = Visible.V;
 				Orient = Orientation.H;
-				HAlign = AlignH.C;
-				VAlign = AlignV.C;
+				HAlign = HorizontalAlign.C;
+				VAlign = VerticalAlign.C;
 				FontShape = FontShape.NN;
 				Reserved = reserved;
 			}
@@ -185,23 +180,23 @@ namespace SchemaLibGenerator
 					}
 				}
 			}
-			public int ID { get { return id; } set { id = value; } }
+			public int FieldNumber { get { return fieldnumber; } set { fieldnumber = value; } }
 			public string Name { get { return name; } set { name = value; } }
-			public string Value { get { return value; } set { this.value = value; } }
+			public string Text { get { return text; } set { this.text = value; } }
 			public int X { get { return x; } set { x = value; } }
 			public int Y { get { return y; } set { y = value; } }
 			public int Size { get { return size; } set { size = value; } }
 			public Visible Visible { get { return visi; } set { visi = value; } }
 			public Orientation Orient { get { return orient; } set { orient = value; } }
-			public AlignH HAlign { get { return h_align; } set { h_align = value; } }
-			public AlignV VAlign { get { return v_align; } set { v_align = value; } }
+			public HorizontalAlign HAlign { get { return h_align; } set { h_align = value; } }
+			public VerticalAlign VAlign { get { return v_align; } set { v_align = value; } }
 			public FontShape FontShape { get { return fontshape; } set { fontshape = value; } }
 
 			public string ToString()
 			{
 				string field;
-				field = "F" + ID.ToString() + " "
-					+ "\"" + Value + "\" "
+				field = "F" + FieldNumber.ToString() + " "
+					+ "\"" + Text + "\" "
 					+ X.ToString() + " "
 					+ Y.ToString() + " "
 					+ Size.ToString() + " "
@@ -217,19 +212,20 @@ namespace SchemaLibGenerator
 				return field;
 			}
 
+			[Obsolete]
 			public void SetLibField(string line)
 			{
 				List<string> tempstrs = LineParse(line);
 
-				ID = int.Parse(tempstrs[0].Substring(1, tempstrs[0].Length - 1));
-				Value = tempstrs[1];
+				FieldNumber = int.Parse(tempstrs[0].Substring(1, tempstrs[0].Length - 1));
+				Text = tempstrs[1];
 				X = int.Parse(tempstrs[2]);
 				Y = int.Parse(tempstrs[3]);
 				Size = int.Parse(tempstrs[4]);
 				Orient = (tempstrs[5] == Orientation.H.ToString() ? Orientation.H : Orientation.V);
 				Visible = (tempstrs[6] == Visible.I.ToString() ? Visible.I : Visible.V);
-				HAlign = (tempstrs[7] == AlignH.C.ToString() ? AlignH.C : tempstrs[7] == AlignH.L.ToString() ? AlignH.L : AlignH.R);
-				VAlign = (tempstrs[8].Substring(0, 1) == AlignV.C.ToString() ? AlignV.C : tempstrs[8].Substring(0, 1) == AlignV.B.ToString() ? AlignV.B : AlignV.T);
+				HAlign = (tempstrs[7] == HorizontalAlign.C.ToString() ? HorizontalAlign.C : tempstrs[7] == HorizontalAlign.L.ToString() ? HorizontalAlign.L : HorizontalAlign.R);
+				VAlign = (tempstrs[8].Substring(0, 1) == VerticalAlign.C.ToString() ? VerticalAlign.C : tempstrs[8].Substring(0, 1) == VerticalAlign.B.ToString() ? VerticalAlign.B : VerticalAlign.T);
 
 				string a = tempstrs[8].Substring(1, 2);
 				if (a == FontShape.NN.ToString())
@@ -256,6 +252,7 @@ namespace SchemaLibGenerator
 				}
 			}
 
+			[Obsolete]
 			private List<string> LineParse(string line)
 			{
 				List<string> tempstrs = new List<string>();
@@ -286,39 +283,49 @@ namespace SchemaLibGenerator
 				return tempstrs;
 			}
 
-			private int id;					//フィールド番号
-			private string name;			//フィールド名
-			private string value;			//フィールド値
-			private int x;					//[mil]
-			private int y;					//[mil]
-			private int size;				//[mil]
+			private int fieldnumber;					//フィールド番号
+			private string name;			//フィールド名称
+			private string text;			//フィールド値（表示される文字列）
+			private int x;					//位置[mil]
+			private int y;					//位置[mil]
+			private int size;				//文字サイズ[mil]
 
 			private Visible visi;
 			private Orientation orient;
-			private AlignH h_align;
-			private AlignV v_align;
+			private HorizontalAlign h_align;
+			private VerticalAlign v_align;
 			private FontShape fontshape;
 
 			private bool reserved;
 		}
 
+		
 		public enum Orientation
 		{
 			H,
 			V
 		}
+		
+		/*
+		public static class Orientation
+		{
+			public static readonly string Horizon = "H";
+			public static readonly string Vertical = "V";
+		}
+		 * */
+
 		public enum Visible
 		{
 			V,
 			I
 		}
-		public enum AlignH
+		public enum HorizontalAlign
 		{
 			C,
 			R,
 			L
 		}
-		public enum AlignV
+		public enum VerticalAlign
 		{
 			C,
 			B,
@@ -332,19 +339,31 @@ namespace SchemaLibGenerator
 			IB
 		}
 
+		enum FieldNumberList : int
+		{
+			Reference = 0,
+			Value,
+			PCBFootprint,
+			UserDocLink,
+			Vendor
+		}
+
 		class Fields
 		{
-			public Fields(string name, string footprint, string vendor)
+			public Fields(string component_name, string reference, string footprint, string vendor)
 			{
-				ComponentName = name;
-				PCBFootprint = footprint;
-				Vendor = vendor;
+				ComponentName = component_name;
+				Reference = new Field((int)FieldNumberList.Reference, reference);
+				PCBFootprint = new Field((int)FieldNumberList.PCBFootprint, footprint);
+				UserDocLink = new Field((int)FieldNumberList.UserDocLink);
+				Vendor = new Field((int)FieldNumberList.Vendor, vendor) { Name = "vendor" };
 			}
 			public string ComponentName { get; set; }
-			public string Value { get; set; }
-			public string PCBFootprint { get; set; }
-			public string UserDocLink { get; set; }
-			public string Vendor { get; set; }
+			public Field Reference { get; set; }
+			public Field Value { get; set; }
+			public Field PCBFootprint { get; set; }
+			public Field UserDocLink { get; set; }
+			public Field Vendor { get; set; }
 		}
 
 
@@ -361,7 +380,7 @@ namespace SchemaLibGenerator
 		class ComponentOfPowerSupply : Fields
 		{
 			public ComponentOfPowerSupply(string name, SymbolTagOfPowerSupply tag, string footprint, string vendor)
-				: base(name, footprint, vendor)
+				: base(name, "#PWR",footprint, vendor)
 			{
 				this.tag = tag;
 			}
@@ -446,7 +465,7 @@ namespace SchemaLibGenerator
 				sw.WriteLine("DEF {0} #PWR 0 0 N N 1 F P", comp.ComponentName);
 				sw.WriteLine("F0 \"#PWR\" 0 180 40 H I C CNN");
 				sw.WriteLine("F1 \"{0}\" 0 125 40 H V C CNN", comp.ComponentName);
-				sw.WriteLine("F2 \"{0}\" 0 0 60 H V C CNN",comp.PCBFootprint);
+				sw.WriteLine("F2 \"{0}\" 0 0 60 H V C CNN", comp.PCBFootprint.Text);
 				sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
 				sw.WriteLine("DRAW");
 
@@ -464,7 +483,7 @@ namespace SchemaLibGenerator
 				sw.WriteLine("DEF {0} #PWR 0 0 N N 1 F P", comp.ComponentName);
 				sw.WriteLine("F0 \"#PWR\" 0 180 40 H I C CNN");
 				sw.WriteLine("F1 \"{0}\" 0 125 40 H V C CNN", comp.ComponentName);
-				sw.WriteLine("F2 \"{0}\" 0 0 60 H V C CNN",comp.PCBFootprint);
+				sw.WriteLine("F2 \"{0}\" 0 0 60 H V C CNN",comp.PCBFootprint.Text);
 				sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
 				sw.WriteLine("DRAW");
 
@@ -581,7 +600,7 @@ namespace SchemaLibGenerator
 		class ComponentOfResistor : Fields
 		{
 			public ComponentOfResistor(string name, SymbolTagOfResistor tag, string footprint, string vendor)
-				: base(name, footprint, vendor)
+				: base(name, "R", footprint, vendor)
 			{
 				this.tag = tag;
 			}
