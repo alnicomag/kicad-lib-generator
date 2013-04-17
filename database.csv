@@ -851,24 +851,27 @@ mosfet,TPCP8110,p,,
 mosfet,TPCP8111,p,,
 mosfet,TPCP8305,p,,
 mosfet,TPCP8306,p,,
-##,,,,
+## ============================================,,,,
 ## =============== photo device ===============,,,,
-##,,,,
+## ============================================,,,,
 photo,led,2pin,LED(phi3),
 photo,led,2pin,LED(phi5),
 photo,led,2pin,LED(1608M),
 photo,led,2pin,LED(2012M),
 photo,led,2pin,LED(3216M),
 photo,led,2pin,LED(3225M),
-##,,,,
+## =====================================,,,,
 ## =============== diode ===============,,,,
-##,,,,
+## =====================================,,,,
 d,diode1,recti,,
 d,diode2,zener,,
 d,diode3,sbd,,
+d,diode4,undef,,
+##
 ## General Purpose Rectifier Diode,,,,
-d,TPC6K01,recti,VS-6,TOSHIBA
-d,HMG01,recti,HM-FLAT,TOSHIBA
+##
+d,TPC6K01,undef,VS-6,TOSHIBA
+d,HMG01,undef,HM-FLAT,TOSHIBA
 d,CRG01,recti,S-FLAT,TOSHIBA
 d,CRG02,recti,S-FLAT,TOSHIBA
 d,CMC02,recti,M-FLAT,TOSHIBA
@@ -882,7 +885,9 @@ d,CRG05,recti,S-FLAT,TOSHIBA
 d,CRG09,recti,S-FLAT,TOSHIBA
 d,CMG02,recti,M-FLAT,TOSHIBA
 d,CMG03,recti,M-FLAT,TOSHIBA
+##
 ## S-FRD,,,,
+##
 d,CMF03,recti,M-FLAT,TOSHIBA
 d,CMF04,recti,M-FLAT,TOSHIBA
 d,CMF05,recti,M-FLAT,TOSHIBA
@@ -890,7 +895,9 @@ d,CRF02,recti,S-FLAT,TOSHIBA
 d,CRF03,recti,S-FLAT,TOSHIBA
 d,CMF02,recti,M-FLAT,TOSHIBA
 d,CMF01,recti,M-FLAT,TOSHIBA
+##
 ## HED,,,,
+##
 d,CRH02,recti,S-FLAT,TOSHIBA
 d,CMH04,recti,M-FLAT,TOSHIBA
 d,CMH05A,recti,M-FLAT,TOSHIBA
@@ -903,7 +910,9 @@ d,CMH01,recti,M-FLAT,TOSHIBA
 d,CMH02A,recti,M-FLAT,TOSHIBA
 d,CMH02,recti,M-FLAT,TOSHIBA
 d,CLH05,recti,L-FLAT,TOSHIBA
+##
 ## SBD,,,,
+##
 d,CMS01,sbd,M-FLAT,TOSHIBA
 d,CMS03,sbd,M-FLAT,TOSHIBA
 d,CMS04,sbd,M-FLAT,TOSHIBA
@@ -948,7 +957,9 @@ d,CUS05,sbd,US-FLAT,TOSHIBA
 d,CUS06,sbd,US-FLAT,TOSHIBA
 d,CUS10I30A,sbd,US-FLAT,TOSHIBA
 d,CUS15I30A,sbd,US-FLAT,TOSHIBA
+##
 ## SBD for small-signal,,,,
+##
 d,1SS294,sbd,S-Mini,TOSHIBA
 d,1SS319,sbd,SMQ,TOSHIBA
 d,1SS321,sbd,S-Mini,TOSHIBA
@@ -1019,7 +1030,9 @@ d,HN2S03FU,sbd,US6,TOSHIBA
 d,HN2S03T,sbd,TESQ,TOSHIBA
 d,HN2S04FU,sbd,US6,TOSHIBA
 d,HN2S05FU,sbd,US6,TOSHIBA
+##
 ## SBD for high frequency,,,,
+##
 d,1SS154,sbd,S-Mini,TOSHIBA
 d,1SS271,sbd,S-Mini,TOSHIBA
 d,1SS295,sbd,S-Mini,TOSHIBA
@@ -1029,3 +1042,76 @@ d,JDH2S02FS,sbd,fSC,TOSHIBA
 d,JDH2S02SC,sbd,SC2,TOSHIBA
 d,JDH3D01FV,sbd,VESM,TOSHIBA
 d,JDH3D01S,sbd,SSM,TOSHIBA
+##
+## Zener
+##
+d,CRY62,zener,S-FLAT,TOSHIBA
+d,CRY68,zener,S-FLAT,TOSHIBA
+d,CRY75,zener,S-FLAT,TOSHIBA
+d,CRY82,zener,S-FLAT,TOSHIBA
+d,CRY91,zener,S-FLAT,TOSHIBA
+d,CRZ10,zener,S-FLAT,TOSHIBA
+d,CRZ11,zener,S-FLAT,TOSHIBA
+d,CMZ12,zener,M-FLAT,TOSHIBA
+d,CMZB12,zener,M-FLAT,TOSHIBA
+d,CRZ12,zener,S-FLAT,TOSHIBA
+d,CMZ13,zener,M-FLAT,TOSHIBA
+d,CMZB13,zener,M-FLAT,TOSHIBA
+d,CRZ13,zener,S-FLAT,TOSHIBA
+d,CMZ15,zener,M-FLAT,TOSHIBA
+d,CMZB15,zener,M-FLAT,TOSHIBA
+d,CRZ15,zener,S-FLAT,TOSHIBA
+d,CMZ16,zener,M-FLAT,TOSHIBA
+d,CMZB16,zener,M-FLAT,TOSHIBA
+d,CRZ16,zener,S-FLAT,TOSHIBA
+d,CMZ18,zener,M-FLAT,TOSHIBA
+d,CMZB18,zener,M-FLAT,TOSHIBA
+d,CRZ18,zener,S-FLAT,TOSHIBA
+d,CMZ20,zener,M-FLAT,TOSHIBA
+d,CMZB20,zener,M-FLAT,TOSHIBA
+d,CRZ20,zener,S-FLAT,TOSHIBA
+d,CMZ22,zener,M-FLAT,TOSHIBA
+d,CMZB22,zener,M-FLAT,TOSHIBA
+d,CRZ22,zener,S-FLAT,TOSHIBA
+d,CMZ24,zener,M-FLAT,TOSHIBA
+d,CMZB24,zener,M-FLAT,TOSHIBA
+d,CRZ24,zener,S-FLAT,TOSHIBA
+d,CMZ27,zener,M-FLAT,TOSHIBA
+d,CMZB27,zener,M-FLAT,TOSHIBA
+d,CRZ27,zener,S-FLAT,TOSHIBA
+d,CMZ30,zener,M-FLAT,TOSHIBA
+d,CMZB30,zener,M-FLAT,TOSHIBA
+d,CRZ30,zener,S-FLAT,TOSHIBA
+d,CMZ33,zener,M-FLAT,TOSHIBA
+d,CMZB33,zener,M-FLAT,TOSHIBA
+d,CRZ33,zener,S-FLAT,TOSHIBA
+d,CMZ36,zener,M-FLAT,TOSHIBA
+d,CMZB36,zener,M-FLAT,TOSHIBA
+d,CRZ36,zener,S-FLAT,TOSHIBA
+d,CMZ39,zener,M-FLAT,TOSHIBA
+d,CMZB39,zener,M-FLAT,TOSHIBA
+d,CRZ39,zener,S-FLAT,TOSHIBA
+d,CMZ43,zener,M-FLAT,TOSHIBA
+d,CMZ47,zener,M-FLAT,TOSHIBA
+d,CMZB43,zener,M-FLAT,TOSHIBA
+d,CRZ43,zener,S-FLAT,TOSHIBA
+d,CMZB47,zener,M-FLAT,TOSHIBA
+d,CRZ47,zener,S-FLAT,TOSHIBA
+d,CMZ51,zener,M-FLAT,TOSHIBA
+d,CMZB51,zener,M-FLAT,TOSHIBA
+d,CMZ53,zener,M-FLAT,TOSHIBA
+d,CMZB53,zener,M-FLAT,TOSHIBA
+d,CMZB68,zener,M-FLAT,TOSHIBA
+d,CMZB75,zener,M-FLAT,TOSHIBA
+d,CMZB82,zener,M-FLAT,TOSHIBA
+d,CMZB100,zener,M-FLAT,TOSHIBA
+d,CMZB110,zener,M-FLAT,TOSHIBA
+d,CMZB150,zener,M-FLAT,TOSHIBA
+d,CMZB180,zener,M-FLAT,TOSHIBA
+d,CMZB200,zener,M-FLAT,TOSHIBA
+d,CMZB220,zener,M-FLAT,TOSHIBA
+d,CMZB240,zener,M-FLAT,TOSHIBA
+d,CMZB270,zener,M-FLAT,TOSHIBA
+d,CMZB300,zener,M-FLAT,TOSHIBA
+d,CMZB330,zener,M-FLAT,TOSHIBA
+d,CMZB390,zener,M-FLAT,TOSHIBA
