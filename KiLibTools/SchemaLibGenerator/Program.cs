@@ -168,6 +168,36 @@ namespace SchemaLibGenerator
 				Reserved = reserved;
 			}
 
+			
+			/// <summary>
+			/// フィールド番号
+			/// </summary>
+			public int FieldNumber { get; set; }
+			/// <summary>
+			/// フィールド名称
+			/// </summary>
+			public string Name { get; set; }
+			/// <summary>
+			/// フィールド値（表示される文字列）
+			/// </summary>
+			public string Text { get; set; }
+			/// <summary>
+			/// 位置[mil]
+			/// </summary>
+			public int X { get; set; }
+			/// <summary>
+			/// 位置[mil]
+			/// </summary>
+			public int Y { get; set; }
+			/// <summary>
+			/// 文字サイズ[mil]
+			/// </summary>
+			public int Size { get; set; }
+			public Visible Visible { get; set; }
+			public Orientation Orient { get; set; }
+			public HorizontalAlign HAlign { get; set; }
+			public VerticalAlign VAlign { get; set; }
+			public FontShape FontShape { get; set; }
 			public bool Reserved
 			{
 				get { return reserved; }
@@ -180,17 +210,6 @@ namespace SchemaLibGenerator
 					}
 				}
 			}
-			public int FieldNumber { get { return fieldnumber; } set { fieldnumber = value; } }
-			public string Name { get { return name; } set { name = value; } }
-			public string Text { get { return text; } set { this.text = value; } }
-			public int X { get { return x; } set { x = value; } }
-			public int Y { get { return y; } set { y = value; } }
-			public int Size { get { return size; } set { size = value; } }
-			public Visible Visible { get { return visi; } set { visi = value; } }
-			public Orientation Orient { get { return orient; } set { orient = value; } }
-			public HorizontalAlign HAlign { get { return h_align; } set { h_align = value; } }
-			public VerticalAlign VAlign { get { return v_align; } set { v_align = value; } }
-			public FontShape FontShape { get { return fontshape; } set { fontshape = value; } }
 
 			public string ToString()
 			{
@@ -282,19 +301,6 @@ namespace SchemaLibGenerator
 
 				return tempstrs;
 			}
-
-			private int fieldnumber;					//フィールド番号
-			private string name;			//フィールド名称
-			private string text;			//フィールド値（表示される文字列）
-			private int x;					//位置[mil]
-			private int y;					//位置[mil]
-			private int size;				//文字サイズ[mil]
-
-			private Visible visi;
-			private Orientation orient;
-			private HorizontalAlign h_align;
-			private VerticalAlign v_align;
-			private FontShape fontshape;
 
 			private bool reserved;
 		}
