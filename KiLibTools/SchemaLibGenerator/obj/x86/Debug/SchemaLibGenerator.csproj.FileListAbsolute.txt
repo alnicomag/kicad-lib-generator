@@ -30,3 +30,6 @@ C:\Users\tatsuya\Documents\GitHub\kicad-lib-generator\KiLibTools\SchemaLibGenera
 C:\Users\t_sanada\Documents\GitHub\kicad-lib-generator\KiLibTools\SchemaLibGenerator\bin\Debug\SchemaLibGenerator.exe.config
 C:\Users\t_sanada\Documents\GitHub\kicad-lib-generator\KiLibTools\SchemaLibGenerator\obj\x86\Debug\SchemaLibGenerator.exe
 C:\Users\t_sanada\Documents\GitHub\kicad-lib-generator\KiLibTools\SchemaLibGenerator\obj\x86\Debug\SchemaLibGenerator.pdb
+C:\Users\shun\Documents\GitHub\kicad-lib-generator\KiLibTools\SchemaLibGenerator\bin\Debug\SchemaLibGenerator.exe.config
+C:\Users\shun\Documents\GitHub\kicad-lib-generator\KiLibTools\SchemaLibGenerator\obj\x86\Debug\SchemaLibGenerator.exe
+C:\Users\shun\Documents\GitHub\kicad-lib-generator\KiLibTools\SchemaLibGenerator\obj\x86\Debug\SchemaLibGenerator.pdb

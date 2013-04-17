@@ -45,9 +45,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Capacitor.cs" />
     <Compile Include="Class1.cs" />
+    <Compile Include="PowerSupply.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resistor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
