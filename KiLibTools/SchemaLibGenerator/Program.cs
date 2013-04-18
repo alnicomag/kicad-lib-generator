@@ -337,14 +337,6 @@ namespace SchemaLibGenerator
 			V
 		}
 
-		/*
-		public static class Orientation
-		{
-			public static readonly string Horizon = "H";
-			public static readonly string Vertical = "V";
-		}
-		 * */
-
 		public enum Visible
 		{
 			V,

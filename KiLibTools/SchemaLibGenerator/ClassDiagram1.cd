@@ -1,0 +1,313 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="SchemaLibGenerator.KiSchemaLib.ComponentOfCapacitor" Collapsed="true">
+    <Position X="0.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Capacitor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SchemaLibGenerator.KiSchemaLib.Capacitor" Collapsed="true">
+    <Position X="10.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAARBAAAEIAAAAAAAgAAAAAAAEIABAAAAAAACABAQAA=</HashCode>
+      <FileName>Capacitor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SchemaLibGenerator.KiSchemaLib.Inductor" Collapsed="true">
+    <Position X="12.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEATIgAAEIAAAQAAAgAAAAAAAAAAAAAAAAQACABAAAA=</HashCode>
+      <FileName>Capacitor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SchemaLibGenerator.KiSchemaLib.Diode" Collapsed="true">
+    <Position X="14.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CABRAAAAEIhAAAIAAgAAAAAAAACAAAAAAAQICABAAAA=</HashCode>
+      <FileName>Capacitor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SchemaLibGenerator.KiSchemaLib.Transistor" Collapsed="true">
+    <Position X="21.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAARAAAAFIgAQAAAAgAAAAAAAAAAAAAAAAQACABAACA=</HashCode>
+      <FileName>Capacitor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SchemaLibGenerator.KiSchemaLib.MOSFET" Collapsed="true">
+    <Position X="23.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAARAAAAEIAAAAACAwAAAAAAAAAAAABAAAQACABAAAg=</HashCode>
+      <FileName>Capacitor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SchemaLibGenerator.KiSchemaLib.JFET" Collapsed="true">
+    <Position X="1.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAARAAAAEAAAAAAAAgIAAAAAAAAAAAAAAARACABAAAA=</HashCode>
+      <FileName>Capacitor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SchemaLibGenerator.KiSchemaLib.Photo" Collapsed="true">
+    <Position X="5.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIRAAAAEIAAAAAAAgAAAAAAAAAAAAAAAAQADABAAAA=</HashCode>
+      <FileName>Capacitor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SchemaLibGenerator.KiSchemaLib.ComponentOfPowerSupply" Collapsed="true">
+    <Position X="2.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>PowerSupply.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SchemaLibGenerator.KiSchemaLib.PowerSupply" Collapsed="true">
+    <Position X="17" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAExAAAAEIAEAAAAEgQAAAAAAAAADAAAAgAgCABAQBA=</HashCode>
+      <FileName>PowerSupply.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SchemaLibGenerator.KiSchemaLib.KiSchemaLibFile" Collapsed="true">
+    <Position X="12.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAEAAAAAAAAAAAAAAAAAAAAIAAAAAgCABAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SchemaLibGenerator.KiSchemaLib.Field" Collapsed="true">
+    <Position X="28" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAEAAgAAgAgAAMAAAEAAQAgAAAAAAIAAAACAAyYAQ=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SchemaLibGenerator.KiSchemaLib.Fields" Collapsed="true">
+    <Position X="2.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAKBAAAAAAAAAAAAAAAAAAAAAABAAAAgAAAAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SchemaLibGenerator.KiSchemaLib.ConMale" Collapsed="true">
+    <Position X="3.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAARAAAAEAAAAAAAAgAAAAAAAAAAIAAAAAQACAhAAAQ=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SchemaLibGenerator.KiSchemaLib.ConFemale" Collapsed="true">
+    <Position X="8" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAARAAAAEAAAAACAAgAAAAAAABAAIAAAAAQACABAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SchemaLibGenerator.KiSchemaLib.ComponentOfResistor" Collapsed="true">
+    <Position X="5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Resistor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SchemaLibGenerator.KiSchemaLib.Resistor" Collapsed="true">
+    <Position X="19.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAARAAAAEIAAAAAAAgAAAAAAIAgABAAAAAAACABgQAA=</HashCode>
+      <FileName>Resistor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KiSchemaLib.KiSchemaLibFile" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="31.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAACAQAAAACAAAAAQIQAAAIAAAAAAAACAAAAA=</HashCode>
+      <FileName>Class1.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="KiSchemaLib.SchemaComponent" Collapsed="true">
+    <Position X="28" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAoAEABAAgAEAAAIgBAQQAAAEhAACAAAAAhgAEkA=</HashCode>
+      <FileName>Class1.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KiSchemaLib.SchemaField" Collapsed="true">
+    <Position X="26.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CFABEAAAAAgIgAAMAIAAAAQAgAAEACAIAABgAAAyYgA=</HashCode>
+      <FileName>Class1.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KiSchemaLib.SchemaDrawArc" Collapsed="true">
+    <Position X="29.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIgAEAEACAAggAAEAAAAAAAAAAAAAAAAAABAAAAAAAA=</HashCode>
+      <FileName>Class1.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KiSchemaLib.SchemaDrawCircle" Collapsed="true">
+    <Position X="31.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAEAEACAAggAAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Class1.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KiSchemaLib.SchemaLibDrawPolyline" Collapsed="true">
+    <Position X="29.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAEAAAAggAAEAAAAAAAAAAAAAAAAAAAAAAAAIAA=</HashCode>
+      <FileName>Class1.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KiSchemaLib.SchemaLibDrawRectangle" Collapsed="true">
+    <Position X="31.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAEAAAAggBAAAAAQAAgAAAAIAAAACACAAAAAgAA=</HashCode>
+      <FileName>Class1.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KiSchemaLib.SchemaLibDrawText" Collapsed="true">
+    <Position X="26.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAggAAEAAAAAAAAAAAAAAAIAAAAAAAAAAA=</HashCode>
+      <FileName>Class1.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KiSchemaLib.SchemaLibDrawPin" Collapsed="true">
+    <Position X="28" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Class1.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KiSchemaLib.Etype" Collapsed="true">
+    <Position X="26.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAFAAAAAAAAAAAIEAAQEAAAQCAAAAAAAAAAAQA=</HashCode>
+      <FileName>Class1.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KiSchemaLib.Gstyle" Collapsed="true">
+    <Position X="29.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAMAAAIAAAIAAAAAAEAAAQAAAAAAAABAgA=</HashCode>
+      <FileName>Class1.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SchemaLibGenerator.Program" Collapsed="true">
+    <Position X="26.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="KiSchemaLib.Point" Collapsed="true">
+    <Position X="26.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABgAAAAAAA=</HashCode>
+      <FileName>Class1.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Enum Name="SchemaLibGenerator.KiSchemaLib.SymbolTagOfCapacitor" Collapsed="true">
+    <Position X="26.25" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAIAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Capacitor.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SchemaLibGenerator.KiSchemaLib.SymbolTagOfPowerSupply" Collapsed="true">
+    <Position X="28" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAIAAAAAIAAAAAAAAABAAIAAAAAAAAQAAAAAAA=</HashCode>
+      <FileName>PowerSupply.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SchemaLibGenerator.KiSchemaLib.Orientation" Collapsed="true">
+    <Position X="29.75" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAQAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SchemaLibGenerator.KiSchemaLib.Visible" Collapsed="true">
+    <Position X="26.25" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAQAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SchemaLibGenerator.KiSchemaLib.HorizontalAlign" Collapsed="true">
+    <Position X="28" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAQAAQA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SchemaLibGenerator.KiSchemaLib.VerticalAlign" Collapsed="true">
+    <Position X="31.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAEEAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SchemaLibGenerator.KiSchemaLib.FontShape" Collapsed="true">
+    <Position X="31.5" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAABgA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SchemaLibGenerator.KiSchemaLib.FieldNumberList" Collapsed="true">
+    <Position X="29.75" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAKBAAAAAAAAAAAAAAAAAAAAAABAAAAgAAAAAAA=</HashCode>
+      <FileName>Program.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="SchemaLibGenerator.KiSchemaLib.SymbolTagOfResistor" Collapsed="true">
+    <Position X="29.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAEAAAAQAQAAAAAAAAAAAAAAAAAAAAAAAQAAAAAA=</HashCode>
+      <FileName>Resistor.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="KiSchemaLib.Orientation" Collapsed="true">
+    <Position X="31.5" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAQAAA=</HashCode>
+      <FileName>Class1.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="KiSchemaLib.Visible" Collapsed="true">
+    <Position X="28" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAQAAA=</HashCode>
+      <FileName>Class1.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="KiSchemaLib.AlignH" Collapsed="true">
+    <Position X="26.25" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAQAAQA=</HashCode>
+      <FileName>Class1.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="KiSchemaLib.AlignV" Collapsed="true">
+    <Position X="28" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAEEAAA=</HashCode>
+      <FileName>Class1.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="KiSchemaLib.FontShape" Collapsed="true">
+    <Position X="26.25" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAABgA=</HashCode>
+      <FileName>Class1.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="メイリオ" Size="9" />
+</ClassDiagram>
