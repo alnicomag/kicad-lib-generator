@@ -10,3 +10,5 @@ C:\Users\t_sanada\Documents\GitHub\MyKiCadLibSet\KiLibTools\ComponentNameGetter\
 C:\Users\t_sanada\Documents\GitHub\MyKiCadLibSet\KiLibTools\ComponentNameGetter\obj\x86\Debug\ResolveAssemblyReference.cache
 C:\Users\t_sanada\Documents\GitHub\MyKiCadLibSet\KiLibTools\ComponentNameGetter\obj\x86\Debug\ComponentNameGetter.exe
 C:\Users\t_sanada\Documents\GitHub\MyKiCadLibSet\KiLibTools\ComponentNameGetter\obj\x86\Debug\ComponentNameGetter.pdb
+C:\Users\tatsuya\Documents\GitHub\kicad-lib-generator\KiLibTools\ComponentNameGetter\obj\x86\Debug\ComponentNameGetter.exe
+C:\Users\tatsuya\Documents\GitHub\kicad-lib-generator\KiLibTools\ComponentNameGetter\obj\x86\Debug\ComponentNameGetter.pdb

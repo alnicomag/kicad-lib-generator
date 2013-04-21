@@ -1,4 +1,4 @@
-update=2013/04/13 9:43:53
+update=2013/04/20 3:58:56
 version=1
 last_client=eeschema
 [cvpcb]
@@ -40,7 +40,7 @@ LibName11=valves
 version=1
 [eeschema]
 version=1
-LibDir=SchemaLib
+LibDir=../SchemaLib
 NetFmtName=PcbnewAdvanced
 RptD_X=0
 RptD_Y=100

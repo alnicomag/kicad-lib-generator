@@ -16,8 +16,8 @@ namespace SchemaLibGenerator
 
 		class ComponentOfCapacitor : Fields
 		{
-			public ComponentOfCapacitor(string name, SymbolTagOfCapacitor tag, string footprint, string vendor)
-				: base(name, "C", footprint, vendor)
+			public ComponentOfCapacitor(string name, string reference, string footprint, string vendor, SymbolTagOfCapacitor tag)
+				: base(name, reference, footprint, vendor)
 			{
 				this.tag = tag;
 			}
@@ -51,15 +51,15 @@ namespace SchemaLibGenerator
 			public override string FileName { get { return this.filename; } }
 			public override string Label { get { return Capacitor.LABEL; } }
 
-			public void AddComponentName(string name, params string[] tags)
+			public void AddComponentName(List<string> args)
 			{
 				try
 				{
-					for (int i = 0; i < Enum.GetNames(typeof(SymbolTagOfResistor)).Length; i++)
+					for (int i = 0; i < Enum.GetNames(typeof(SymbolTagOfCapacitor)).Length; i++)
 					{
-						if (tags[0] == i.ToString())
+						if (args[0] == i.ToString())
 						{
-							component.Add(new ComponentOfCapacitor(name, (SymbolTagOfCapacitor)i, tags[1], tags[2]));
+							component.Add(new ComponentOfCapacitor(args[1], args[2], args[3], args[4], (SymbolTagOfCapacitor)i));
 						}
 					}
 				}
@@ -99,7 +99,7 @@ namespace SchemaLibGenerator
 				sw.WriteLine("DEF {0} C 0 10 N N 1 F N", comp.ComponentName);
 				sw.WriteLine("F0 \"C\" 50 70 45 H V L CNN");
 				sw.WriteLine("F1 \"{0}\" 50 -75 45 H V L CNN", comp.ComponentName);
-				sw.WriteLine("F2 \"{0}\" 38 -150 30 H V C CNN", comp.PCBFootprint);
+				sw.WriteLine("F2 \"{0}\" 38 -150 30 H V C CNN", comp.PCBFootprint.Text);
 				sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
 				sw.WriteLine("DRAW");
 				sw.WriteLine("S -60 -30 60 -15 0 1 1 F");
@@ -117,7 +117,7 @@ namespace SchemaLibGenerator
 				sw.WriteLine("DEF {0} C 0 10 N N 1 F N", comp.ComponentName);
 				sw.WriteLine("F0 \"C\" 50 70 45 H V L CNN");
 				sw.WriteLine("F1 \"{0}\" 50 -75 45 H V L CNN", comp.ComponentName);
-				sw.WriteLine("F2 \"{0}\" 38 -150 30 H V C CNN", comp.PCBFootprint);
+				sw.WriteLine("F2 \"{0}\" 38 -150 30 H V C CNN", comp.PCBFootprint.Text);
 				sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
 				sw.WriteLine("DRAW");
 				sw.WriteLine("T 0 -30 55 30 0 0 0 +  Normal 0 C C");
@@ -139,7 +139,7 @@ namespace SchemaLibGenerator
 				sw.WriteLine("DEF {0} C 0 10 N N 1 F N", comp.ComponentName);
 				sw.WriteLine("F0 \"C\" 50 70 45 H V L CNN");
 				sw.WriteLine("F1 \"{0}\" 50 -75 45 H V L CNN", comp.ComponentName);
-				sw.WriteLine("F2 \"{0}\" 38 -150 30 H V C CNN", comp.PCBFootprint);
+				sw.WriteLine("F2 \"{0}\" 38 -150 30 H V C CNN", comp.PCBFootprint.Text);
 				sw.WriteLine("F3 \"~\" 0 0 60 H V C CNN");
 				sw.WriteLine("DRAW");
 				sw.WriteLine("S -60 -35 60 -20 0 1 1 F");

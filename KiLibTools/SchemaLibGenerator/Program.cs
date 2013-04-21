@@ -51,11 +51,15 @@ namespace SchemaLibGenerator
 						}
 						else if (divline[0] == r.Label)
 						{
-							r.AddComponentName(divline[1], divline[2], divline[3], divline[4]);
+							List<string> aa = new List<string>(divline);
+							aa.RemoveAt(0);
+							r.AddComponentName(aa);
 						}
 						else if (divline[0] == c.Label)
 						{
-							c.AddComponentName(divline[1], divline[2], divline[3], divline[4]);
+							List<string> aa = new List<string>(divline);
+							aa.RemoveAt(0);
+							c.AddComponentName(aa);
 						}
 						else if (divline[0] == tr.Label)
 						{
@@ -377,6 +381,7 @@ namespace SchemaLibGenerator
 			{
 				ComponentName = component_name;
 				Reference = new Field((int)FieldNumberList.Reference, reference);
+				Value = new Field((int)FieldNumberList.Value, component_name);
 				PCBFootprint = new Field((int)FieldNumberList.PCBFootprint, footprint);
 				UserDocLink = new Field((int)FieldNumberList.UserDocLink);
 				Vendor = new Field((int)FieldNumberList.Vendor, vendor) { Name = "vendor" };

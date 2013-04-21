@@ -17,8 +17,8 @@ namespace SchemaLibGenerator
 
 		class ComponentOfResistor : Fields
 		{
-			public ComponentOfResistor(string name, SymbolTagOfResistor tag, string footprint, string vendor)
-				: base(name, "R", footprint, vendor)
+			public ComponentOfResistor(string name, string reference, string footprint, string vendor, SymbolTagOfResistor tag)
+				: base(name, reference, footprint, vendor)
 			{
 				this.tag = tag;
 			}
@@ -53,15 +53,15 @@ namespace SchemaLibGenerator
 			public override string FileName { get { return this.filename; } }
 			public override string Label { get { return Resistor.LABEL; } }
 
-			public void AddComponentName(string name, params string[] tags)
+			public void AddComponentName(List<string> args)
 			{
 				try
 				{
 					for (int i = 0; i < Enum.GetNames(typeof(SymbolTagOfResistor)).Length; i++)
 					{
-						if (tags[0] == i.ToString())
+						if (args[0] == i.ToString())
 						{
-							component.Add(new ComponentOfResistor(name, (SymbolTagOfResistor)i, tags[1], tags[2]));
+							component.Add(new ComponentOfResistor(args[1], args[2], args[3], args[4], (SymbolTagOfResistor)i));
 						}
 					}
 				}
@@ -70,6 +70,7 @@ namespace SchemaLibGenerator
 
 				}
 			}
+
 
 			public override void WriteFile(FolderBrowserDialog fbd)
 			{
@@ -101,7 +102,7 @@ namespace SchemaLibGenerator
 				sw.WriteLine("DEF {0} R 0 0 N Y 1 F N", comp.ComponentName);
 				sw.WriteLine("F0 \"R\" -100 60 45 H V L CNN");
 				sw.WriteLine("F1 \"{0}\" 0 -70 45 H V C CNN", comp.ComponentName);
-				sw.WriteLine("F2 \"{0}\" -70 0 30 V V C CNN", comp.PCBFootprint);
+				sw.WriteLine("F2 \"{0}\" -70 0 30 V V C CNN", comp.PCBFootprint.Text);
 				sw.WriteLine("F3 \"~\" 0 0 30 H V C CNN");
 				sw.WriteLine("DRAW");
 				sw.WriteLine("S -100 30 100 -30 0 1 0 N");
@@ -118,7 +119,7 @@ namespace SchemaLibGenerator
 				sw.WriteLine("DEF {0} R 0 0 N Y 1 F N", comp.ComponentName);
 				sw.WriteLine("F0 \"R\" -125 60 45 H V L CNN");
 				sw.WriteLine("F1 \"{0}\" 0 -70 45 H V C CNN", comp.ComponentName);
-				sw.WriteLine("F2 \"{0}\" -70 0 30 V V C CNN", comp.PCBFootprint);
+				sw.WriteLine("F2 \"{0}\" -70 0 30 V V C CNN", comp.PCBFootprint.Text);
 				sw.WriteLine("F3 \"~\" 0 0 30 H V C CNN");
 				sw.WriteLine("DRAW");
 				sw.WriteLine("P 8 0 1 0  -105 0  -87 30  -52 -30  -17 30  17 -30  52 30  87 -30  105 0 N");
