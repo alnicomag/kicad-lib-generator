@@ -61,6 +61,10 @@ namespace SchemaLibGenerator
 							aa.RemoveAt(0);
 							c.AddComponentName(aa);
 						}
+						else if (divline[0] == d.Label)
+						{
+							d.AddComponentName(divline[3], new string[] { divline[1], divline[2] });
+						}
 						else if (divline[0] == tr.Label)
 						{
 							tr.AddComponentName(divline[3], new string[] { divline[1], divline[2] });
@@ -73,10 +77,7 @@ namespace SchemaLibGenerator
 						{
 							pd.AddComponentName(divline[3], new string[] { divline[1], divline[2] });
 						}
-						else if (divline[0] == d.Label)
-						{
-							d.AddComponentName(divline[3], new string[] { divline[1], divline[2] });
-						}
+						
 					}
 				}
 			}
