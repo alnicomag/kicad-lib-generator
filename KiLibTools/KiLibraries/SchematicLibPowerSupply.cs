@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 
-namespace SchemaLibGenerator
+
+namespace KiLibraries
 {
-	namespace KiSchemaLib
+	namespace SchematicLib
 	{
-		enum SymbolTagOfPowerSupply
+
+		public enum SymbolTagOfPowerSupply : int
 		{
-			PositiveCircle,
+			PositiveCircle = 0,
 			NegativeCircle,
 			PositiveBar,
 			NegativeBar,
@@ -17,7 +19,7 @@ namespace SchemaLibGenerator
 			Earth
 		}
 
-		class ComponentOfPowerSupply : Fields
+		public class ComponentOfPowerSupply : Fields
 		{
 			public ComponentOfPowerSupply(string name, SymbolTagOfPowerSupply tag, string footprint, string vendor)
 				: base(name, "#PWR", footprint, vendor)
@@ -27,7 +29,7 @@ namespace SchemaLibGenerator
 			public SymbolTagOfPowerSupply tag;
 		}
 
-		class PowerSupply : KiSchemaLibFile
+		public class PowerSupply : KiSchemaLibFile
 		{
 			static PowerSupply()
 			{

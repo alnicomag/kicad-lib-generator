@@ -33,3 +33,5 @@ C:\Users\shun\Documents\GitHub\kicad-lib-generator\KiLibTools\SchemaLibGenerator
 C:\Users\shun\Documents\GitHub\kicad-lib-generator\KiLibTools\SchemaLibGenerator\obj\x86\Debug\SchemaLibGenerator.exe
 C:\Users\shun\Documents\GitHub\kicad-lib-generator\KiLibTools\SchemaLibGenerator\obj\x86\Debug\SchemaLibGenerator.pdb
 C:\Users\tatsuya\Documents\GitHub\kicad-lib-generator\KiLibTools\SchemaLibGenerator\obj\x86\Debug\SchemaLibGenerator.csprojResolveAssemblyReference.cache
+C:\Users\tatsuya\Documents\GitHub\kicad-lib-generator\KiLibTools\SchemaLibGenerator\bin\Debug\KiLibraries.dll
+C:\Users\tatsuya\Documents\GitHub\kicad-lib-generator\KiLibTools\SchemaLibGenerator\bin\Debug\KiLibraries.pdb

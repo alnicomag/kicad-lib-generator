@@ -1,0 +1,5 @@
+C:\Users\tatsuya\Documents\GitHub\kicad-lib-generator\KiLibTools\KiLibraries\bin\Debug\KiLibraries.dll
+C:\Users\tatsuya\Documents\GitHub\kicad-lib-generator\KiLibTools\KiLibraries\bin\Debug\KiLibraries.pdb
+C:\Users\tatsuya\Documents\GitHub\kicad-lib-generator\KiLibTools\KiLibraries\obj\Debug\KiLibraries.csprojResolveAssemblyReference.cache
+C:\Users\tatsuya\Documents\GitHub\kicad-lib-generator\KiLibTools\KiLibraries\obj\Debug\KiLibraries.dll
+C:\Users\tatsuya\Documents\GitHub\kicad-lib-generator\KiLibTools\KiLibraries\obj\Debug\KiLibraries.pdb

@@ -1,21 +1,22 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 
-namespace SchemaLibGenerator
+
+namespace KiLibraries
 {
-	namespace KiSchemaLib
+	namespace SchematicLib
 	{
-		enum SymbolTagOfResistor
+		public enum SymbolTagOfResistor : int
 		{
-			FixedIEC,
+			FixedIEC = 0,
 			FixedAmerican,
 			VariableIEC,
 			VariableAmerican
 		}
 
-		class ComponentOfResistor : Fields
+		public class ComponentOfResistor : Fields
 		{
 			public ComponentOfResistor(string name, string reference, string footprint, string vendor, SymbolTagOfResistor tag)
 				: base(name, reference, footprint, vendor)
@@ -25,7 +26,7 @@ namespace SchemaLibGenerator
 			public SymbolTagOfResistor tag;
 		}
 
-		class Resistor : KiSchemaLibFile
+		public class Resistor : KiSchemaLibFile
 		{
 			static Resistor()
 			{
@@ -142,5 +143,6 @@ namespace SchemaLibGenerator
 			private readonly static string DEFAULT_FILE_NAME;
 			private readonly static string LABEL;
 		}
+
 	}
 }

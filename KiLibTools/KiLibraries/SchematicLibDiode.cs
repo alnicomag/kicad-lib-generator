@@ -1,12 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
 
-namespace SchemaLibGenerator
+
+namespace KiLibraries
 {
-	namespace KiSchemaLib
+	namespace SchematicLib
 	{
-		enum SymbolTagOfDiode
+		public enum SymbolTagOfDiode
 		{
 			Recti,
 			Zener,
@@ -14,7 +16,7 @@ namespace SchemaLibGenerator
 			Undef
 		}
 
-		class ComponentOfDiode : Fields
+		public class ComponentOfDiode : Fields
 		{
 			public ComponentOfDiode(string name, string reference, string footprint, string vendor, SymbolTagOfDiode tag)
 				: base(name, reference, footprint, vendor)
@@ -24,7 +26,7 @@ namespace SchemaLibGenerator
 			public SymbolTagOfDiode tag;
 		}
 
-		class Diode : KiSchemaLibFile
+		public class Diode : KiSchemaLibFile
 		{
 			static Diode()
 			{
@@ -163,5 +165,7 @@ namespace SchemaLibGenerator
 			private readonly static string LABEL;
 			private readonly static string[] TAGS;
 		}
+
+
 	}
 }
