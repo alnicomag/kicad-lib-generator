@@ -934,5 +934,202 @@ namespace KiLibraries
 			private readonly static string LABEL;
 			private readonly static string[] TAGS;
 		}
+
+
+		namespace DrawSection
+		{
+			/// <summary>
+			/// 複数の点を順次結ぶ折れ線
+			/// </summary>
+			public class Polyline
+			{
+				/// <summary>
+				/// KiCadで決められたフォーマットを満たす文字列からPolylineクラスを初期化する．
+				/// </summary>
+				/// <param name="line"></param>
+				public Polyline(string line)
+				{
+					string[] divstrs = line.Split(' ');
+					int number_of_points = int.Parse(divstrs[1]);
+
+				}
+				public string ToString()
+				{
+					throw new NotImplementedException();
+				}
+
+				private int unit;		//複数パーツに分かれたコンポーネントであればその番号，単数パーツのみのコンポーネントでは0
+				private int convert;		//ド・モルガン表現をする場合はどちらの表現か（1or2），ド・モルガン表現なしなら0
+				private int thickness;
+				private List<Point> nodes;
+				private FillStyle cc;			//折れ線で囲まれた領域を塗りつぶするかどうか（N:なし,F:線の色で塗りつぶす,f:バックグラウンドカラーで塗りつぶす）
+			}
+
+			public class Rectangle
+			{
+				public Rectangle(string line)
+				{
+					string[] divstrs = line.Split(' ');
+					try
+					{
+						if (divstrs[0] == "X")
+						{
+							Top = Math.Max(int.Parse(divstrs[2]), int.Parse(divstrs[4]));
+							Bottom = Math.Min(int.Parse(divstrs[2]), int.Parse(divstrs[4]));
+							Left = Math.Min(int.Parse(divstrs[1]), int.Parse(divstrs[3]));
+							Right = Math.Max(int.Parse(divstrs[1]), int.Parse(divstrs[3]));
+						}
+						else
+						{
+							throw new ArgumentException();
+						}
+					}
+					catch (ArgumentOutOfRangeException)
+					{
+						throw new ArgumentException();
+					}
+				}
+
+				public int Top { get { return top; } set { top = value; } }
+				public int Bottom { get { return bottom; } set { bottom = value; } }
+				public int Left { get { return left; } set { left = value; } }
+				public int Right { get { return right; } set { right = value; } }
+
+				private int top;
+				private int bottom;
+				private int left;
+				private int right;
+
+				private string unit;
+				private string convert;
+				private int thickness;
+				private string cc;
+			}
+
+			public class Circle
+			{
+				public Circle()
+				{
+
+				}
+				public string ToString()
+				{
+					throw new NotImplementedException();
+				}
+				//	private int x;
+				//	private int y;
+				private Point center;
+				private int radius;
+				private string unit;
+				private string convert;
+				private int thickness;
+				private string cc;
+			}
+
+			public class Arc
+			{
+				public Arc()
+				{
+
+				}
+				public string ToString()
+				{
+					throw new NotImplementedException();
+				}
+
+				private Point center;
+				private int radius;
+				private int start_angle;
+				private int end_angle;
+				private string unit;
+				private string convert;
+				private int thickness;	//thickness of the outline or 0 to use the default line thickness.
+				private string cc;
+			}
+
+			public class Text
+			{
+
+				public Text()
+				{
+
+				}
+
+				public string ToString()
+				{
+					throw new NotImplementedException();
+				}
+
+				private int orientation;
+				private string unit;
+				private string convert;
+				private string text;
+			}
+
+			public class Pin
+			{
+				public Pin()
+				{
+
+				}
+
+				public string ToString()
+				{
+					throw new NotImplementedException();
+				}
+
+
+
+			}
+
+			public static class Etype
+			{
+				public readonly static string Input = "I";
+				public readonly static string Output = "O";
+				public readonly static string BiDi = "B";
+				public readonly static string Tristate = "T";
+				public readonly static string Passive = "P";
+				public readonly static string Unspecified = "U";
+				public readonly static string PowerInput = "W";
+				public readonly static string PowerOutput = "w";
+				public readonly static string OpenCollector = "C";
+				public readonly static string OpenEmittor = "E";
+				public readonly static string NotConnected = "N";
+			}
+
+			public static class Gstyle
+			{
+				public readonly static string Line = "";
+				public readonly static string Inverted = "I";
+				public readonly static string Clock = "C";
+				public readonly static string InvertedClock = "CI";
+				public readonly static string InputLow = "L";
+				public readonly static string ClockLow = "CL";
+				public readonly static string OutputLow = "V";
+				public readonly static string FallingEdgeClock = "F";
+				public readonly static string NonLogic = "X";
+			}
+
+			public enum FillStyle
+			{
+				N,F,f
+			}
+		}
+
+		
+		
+
+		public struct Point
+		{
+			public Point(int x, int y)
+			{
+				this.x = x;
+				this.y = y;
+			}
+			public int x;
+			public int y;
+		}
+	
+	
 	}
 }

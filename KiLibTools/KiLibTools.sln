@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SchemaLibGenerator", "Schem
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "KiLibraries", "KiLibraries\KiLibraries.csproj", "{E6ED9664-0251-497F-A964-4C115E762458}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SymbolViewer", "SymbolViewer\SymbolViewer.csproj", "{D32B2290-3494-4F13-B205-4B3756F8F8F0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -59,6 +61,16 @@ Global
 		{E6ED9664-0251-497F-A964-4C115E762458}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{E6ED9664-0251-497F-A964-4C115E762458}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{E6ED9664-0251-497F-A964-4C115E762458}.Release|x86.ActiveCfg = Release|Any CPU
+		{D32B2290-3494-4F13-B205-4B3756F8F8F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D32B2290-3494-4F13-B205-4B3756F8F8F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D32B2290-3494-4F13-B205-4B3756F8F8F0}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{D32B2290-3494-4F13-B205-4B3756F8F8F0}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{D32B2290-3494-4F13-B205-4B3756F8F8F0}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{D32B2290-3494-4F13-B205-4B3756F8F8F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D32B2290-3494-4F13-B205-4B3756F8F8F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D32B2290-3494-4F13-B205-4B3756F8F8F0}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{D32B2290-3494-4F13-B205-4B3756F8F8F0}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{D32B2290-3494-4F13-B205-4B3756F8F8F0}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

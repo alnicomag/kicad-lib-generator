@@ -1,0 +1,13 @@
+C:\Users\tatsuya\Documents\GitHub\kicad-lib-generator\KiLibTools\SymbolViewer\bin\Debug\SymbolViewer.exe.config
+C:\Users\tatsuya\Documents\GitHub\kicad-lib-generator\KiLibTools\SymbolViewer\bin\Debug\SymbolViewer.exe
+C:\Users\tatsuya\Documents\GitHub\kicad-lib-generator\KiLibTools\SymbolViewer\bin\Debug\SymbolViewer.pdb
+C:\Users\tatsuya\Documents\GitHub\kicad-lib-generator\KiLibTools\SymbolViewer\bin\Debug\OpenTK.dll
+C:\Users\tatsuya\Documents\GitHub\kicad-lib-generator\KiLibTools\SymbolViewer\bin\Debug\OpenTK.GLControl.dll
+C:\Users\tatsuya\Documents\GitHub\kicad-lib-generator\KiLibTools\SymbolViewer\bin\Debug\OpenTK.xml
+C:\Users\tatsuya\Documents\GitHub\kicad-lib-generator\KiLibTools\SymbolViewer\bin\Debug\OpenTK.GLControl.xml
+C:\Users\tatsuya\Documents\GitHub\kicad-lib-generator\KiLibTools\SymbolViewer\obj\Debug\SymbolViewer.csprojResolveAssemblyReference.cache
+C:\Users\tatsuya\Documents\GitHub\kicad-lib-generator\KiLibTools\SymbolViewer\obj\Debug\SymbolViewer.Properties.Resources.resources
+C:\Users\tatsuya\Documents\GitHub\kicad-lib-generator\KiLibTools\SymbolViewer\obj\Debug\SymbolViewer.csproj.GenerateResource.Cache
+C:\Users\tatsuya\Documents\GitHub\kicad-lib-generator\KiLibTools\SymbolViewer\obj\Debug\SymbolViewer.exe
+C:\Users\tatsuya\Documents\GitHub\kicad-lib-generator\KiLibTools\SymbolViewer\obj\Debug\SymbolViewer.pdb
+C:\Users\tatsuya\Documents\GitHub\kicad-lib-generator\KiLibTools\SymbolViewer\obj\Debug\SymbolViewer.Form1.resources
