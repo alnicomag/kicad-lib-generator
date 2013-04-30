@@ -10,6 +10,7 @@ using System.Windows.Forms;
 
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
+using System.IO;
 
 namespace SymbolViewer
 {
@@ -110,5 +111,25 @@ namespace SymbolViewer
 		{
 
 		}
+
+		private void ToolStripMenuItem_Open_Click(object sender, EventArgs e)
+		{
+			OpenFileDialog ofd = new OpenFileDialog()
+			{
+				Title = "開くコンポーネントライブラリファイルを選択してください",
+				InitialDirectory = @Directory.GetCurrentDirectory(),
+				Filter = "コンポーネントライブラリファイル(*.lib)|*.lib|すべてのファイル(*.*)|*.*",
+				FilterIndex = 1
+			};
+			ofd.ShowDialog();
+
+			Stream stream = ofd.OpenFile();
+
+			using (StreamReader sr = new StreamReader(stream))
+			{
+
+			}
+		}
+
 	}
 }

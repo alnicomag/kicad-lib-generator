@@ -938,56 +938,149 @@ namespace KiLibraries
 
 		namespace DrawSection
 		{
+			public abstract class DrawRecord
+			{
+				public DrawRecord(string record_name)
+				{
+					this.record_name = record_name;
+			//		this.unit_id = unit_id;
+			//		this.expression = expression;
+				}
+
+				public abstract string ToString() { return ""; }
+
+				public string RecordName { get { return record_name; } }
+				public int UnitID { get { return unit_id; } set { unit_id = value; } }
+				public ConvertExpression Expression { get { return expression; } set { expression = value; } }
+
+				protected readonly string record_name;
+				protected int unit_id;	// 所属するパーツ番号（1,2,...），単数パーツのみもしくは全パーツで共通の場合は0
+				protected ConvertExpression expression;
+			}
+
+
 			/// <summary>
 			/// 複数の点を順次結ぶ折れ線
+			/// 座標値を小数にも対応させるべき．．．
 			/// </summary>
-			public class Polyline
+			public class Polyline : DrawRecord
 			{
+				static Polyline()
+				{
+					RecordNamePolyline = "P";
+					DefaultThickness = 6;
+				}
 				/// <summary>
 				/// KiCadで決められたフォーマットを満たす文字列からPolylineクラスを初期化する．
 				/// </summary>
 				/// <param name="line"></param>
 				public Polyline(string line)
-				{
-					string[] divstrs = line.Split(' ');
-					int number_of_points = int.Parse(divstrs[1]);
-
-				}
-				public string ToString()
-				{
-					throw new NotImplementedException();
-				}
-
-				private int unit;		//複数パーツに分かれたコンポーネントであればその番号，単数パーツのみのコンポーネントでは0
-				private int convert;		//ド・モルガン表現をする場合はどちらの表現か（1or2），ド・モルガン表現なしなら0
-				private int thickness;
-				private List<Point> nodes;
-				private FillStyle cc;			//折れ線で囲まれた領域を塗りつぶするかどうか（N:なし,F:線の色で塗りつぶす,f:バックグラウンドカラーで塗りつぶす）
-			}
-
-			public class Rectangle
-			{
-				public Rectangle(string line)
+					: base(RecordNamePolyline)
 				{
 					string[] divstrs = line.Split(' ');
 					try
 					{
-						if (divstrs[0] == "X")
-						{
-							Top = Math.Max(int.Parse(divstrs[2]), int.Parse(divstrs[4]));
-							Bottom = Math.Min(int.Parse(divstrs[2]), int.Parse(divstrs[4]));
-							Left = Math.Min(int.Parse(divstrs[1]), int.Parse(divstrs[3]));
-							Right = Math.Max(int.Parse(divstrs[1]), int.Parse(divstrs[3]));
-						}
-						else
+						if (divstrs[0] != RecordName)
 						{
 							throw new ArgumentException();
 						}
+
+						int number_of_points = int.Parse(divstrs[1]);
+						// divstrs[1]に記述されている点の数と実際に存在するデータの数に齟齬がないかチェック
+						if (divstrs.Length != 6 + 2 * number_of_points)
+						{
+							throw new ArgumentException();
+						}
+
+						UnitID = int.Parse(divstrs[2]);
+						Expression = (ConvertExpression)(Enum.Parse(typeof(ConvertExpression), divstrs[3]));
+						Thickness = int.Parse(divstrs[4]);
+						for (int i = 0; i < number_of_points; i++)
+						{
+							nodes.Add(new Point<int>(int.Parse(divstrs[5 + i * 2]), int.Parse(divstrs[5 + i * 2 + 1])));
+						}
+						Fill = (FillStyle)(Enum.Parse(typeof(FillStyle), divstrs[5 + 2 * number_of_points]));
 					}
 					catch (ArgumentOutOfRangeException)
 					{
 						throw new ArgumentException();
 					}
+					catch (FormatException)
+					{
+						throw new ArgumentException();
+					}
+				}
+
+				public override string ToString()
+				{
+					throw new NotImplementedException();
+				}
+
+				public Point<int> this[int i]
+				{
+					get { return nodes[i]; }
+				}
+
+				public int Thickness { get { return thickness == 0 ? DefaultThickness : thickness; } set { thickness = value; } }
+				public FillStyle Fill { get { return fill; } set { fill = value; } }
+
+				private static readonly string RecordNamePolyline;
+				private static readonly int DefaultThickness;
+
+				private List<Point<int>> nodes;
+				private int thickness;
+				private FillStyle fill;
+			}
+
+			/// <summary>
+			/// 長方形
+			/// 座標値を小数にも対応させるべき．．．
+			/// </summary>
+			public class Rectangle : DrawRecord
+			{
+				static Rectangle()
+				{
+					RecordNameRectangle = "S";
+					DefaultThickness = 6;
+				}
+				/// <summary>
+				/// KiCadで決められたフォーマットを満たす文字列からRectangleクラスを初期化する．
+				/// </summary>
+				/// <param name="line"></param>
+				public Rectangle(string line)
+					: base(RecordNameRectangle)
+				{
+					string[] divstrs = line.Split(' ');
+					try
+					{
+						if ((divstrs.Length != 9) & (divstrs[0] != RecordName))
+						{
+							throw new ArgumentException();
+						}
+
+						Top = Math.Max(int.Parse(divstrs[2]), int.Parse(divstrs[4]));
+						Bottom = Math.Min(int.Parse(divstrs[2]), int.Parse(divstrs[4]));
+						Left = Math.Min(int.Parse(divstrs[1]), int.Parse(divstrs[3]));
+						Right = Math.Max(int.Parse(divstrs[1]), int.Parse(divstrs[3]));
+
+						UnitID = int.Parse(divstrs[5]);
+						Expression = (ConvertExpression)(Enum.Parse(typeof(ConvertExpression), divstrs[6]));
+						Thickness = int.Parse(divstrs[7]);
+						Fill = (FillStyle)(Enum.Parse(typeof(FillStyle), divstrs[8]));
+					}
+					catch (ArgumentOutOfRangeException)
+					{
+						throw new ArgumentException();
+					}
+					catch (FormatException)
+					{
+						throw new ArgumentException();
+					}
+				}
+
+				public override string ToString()
+				{
+					throw new NotImplementedException();
 				}
 
 				public int Top { get { return top; } set { top = value; } }
@@ -995,75 +1088,224 @@ namespace KiLibraries
 				public int Left { get { return left; } set { left = value; } }
 				public int Right { get { return right; } set { right = value; } }
 
+				public int Thickness { get { return thickness == 0 ? DefaultThickness : thickness; } set { thickness = value; } }
+				public FillStyle Fill { get { return fill; } set { fill = value; } }
+
+				private static readonly string RecordNameRectangle;
+				private static readonly int DefaultThickness;
+
 				private int top;
 				private int bottom;
 				private int left;
 				private int right;
 
-				private string unit;
-				private string convert;
 				private int thickness;
-				private string cc;
+				private FillStyle fill;
 			}
 
-			public class Circle
+			/// <summary>
+			/// 円
+			/// 座標値を小数にも対応させるべき．．．
+			/// </summary>
+			public class Circle : DrawRecord
 			{
-				public Circle()
+				static Circle()
 				{
-
+					RecordNameCircle = "C";
+					DefaultThickness = 6;
 				}
-				public string ToString()
+				/// <summary>
+				/// KiCadで決められたフォーマットを満たす文字列からCircleクラスを初期化する．
+				/// </summary>
+				/// <param name="line"></param>
+				public Circle(string line)
+					: base(RecordNameCircle)
+				{
+					string[] divstrs = line.Split(' ');
+					try
+					{
+						if (divstrs[0] != RecordName)
+						{
+							throw new ArgumentException();
+						}
+
+						Center = new Point<int>(int.Parse(divstrs[1]), int.Parse(divstrs[2]));
+						Radius = int.Parse(divstrs[3]);
+						UnitID = int.Parse(divstrs[4]);
+						Expression = (ConvertExpression)(Enum.Parse(typeof(ConvertExpression), divstrs[5]));
+						Thickness = int.Parse(divstrs[6]);
+						Fill = (FillStyle)(Enum.Parse(typeof(FillStyle), divstrs[7]));
+					}
+					catch (ArgumentOutOfRangeException)
+					{
+						throw new ArgumentException();
+					}
+					catch (FormatException)
+					{
+						throw new ArgumentException();
+					}
+				}
+
+				public override string ToString()
 				{
 					throw new NotImplementedException();
 				}
-				//	private int x;
-				//	private int y;
-				private Point center;
+
+				public Point<int> Center { get { return center; } set { center = value; } }
+				public int Radius { get { return radius; } set { radius = value; } }
+				public int Thickness { get { return thickness == 0 ? DefaultThickness : thickness; } set { thickness = value; } }
+				public FillStyle Fill { get { return fill; } set { fill = value; } }
+
+				private static readonly string RecordNameCircle;
+				private static readonly int DefaultThickness;
+
+				private Point<int> center;
 				private int radius;
-				private string unit;
-				private string convert;
 				private int thickness;
-				private string cc;
+				private FillStyle fill;
 			}
 
-			public class Arc
+			/// <summary>
+			/// 円弧
+			/// </summary>
+			public class Arc : DrawRecord
 			{
-				public Arc()
+				static Arc()
 				{
-
+					RecordNameArc = "A";
+					DefaultThickness = 6;
 				}
-				public string ToString()
+				/// <summary>
+				/// KiCadで決められたフォーマットを満たす文字列からArcクラスを初期化する．
+				/// </summary>
+				/// <param name="line"></param>
+				public Arc(string line)
+					: base(RecordNameArc)
+				{
+					string[] divstrs = line.Split(' ');
+					try
+					{
+						if (divstrs[0] != RecordName)
+						{
+							throw new ArgumentException();
+						}
+
+						Center = new Point<int>(int.Parse(divstrs[1]), int.Parse(divstrs[2]));
+						Radius = int.Parse(divstrs[3]);
+						StartAngle = double.Parse(divstrs[4]);
+						EndAngle = double.Parse(divstrs[5]);
+						UnitID = int.Parse(divstrs[6]);
+						Expression = (ConvertExpression)(Enum.Parse(typeof(ConvertExpression), divstrs[7]));
+						Thickness = int.Parse(divstrs[8]);
+						Fill = (FillStyle)(Enum.Parse(typeof(FillStyle), divstrs[9]));
+					}
+					catch (ArgumentOutOfRangeException)
+					{
+						throw new ArgumentException();
+					}
+					catch (FormatException)
+					{
+						throw new ArgumentException();
+					}
+				}
+
+				public override string ToString()
 				{
 					throw new NotImplementedException();
 				}
 
-				private Point center;
+				public Point<int> Center { get { return center; } set { center = value; } }
+				public int Radius { get { return radius; } set { radius = value; } }
+				public double StartAngle { get { return start_angle; } set { start_angle = value; } }
+				public double EndAngle { get { return end_angle; } set { end_angle = value; } }
+				public Point<double> StartPoint { get { throw new NotImplementedException(); } }
+				public Point<double> EndPoint { get { throw new NotImplementedException(); } }
+				public int Thickness { get { return thickness == 0 ? DefaultThickness : thickness; } set { thickness = value; } }
+				public FillStyle Fill { get { return fill; } set { fill = value; } }
+
+				private static readonly string RecordNameArc;
+				private static readonly int DefaultThickness;
+
+				private Point<int> center;
 				private int radius;
-				private int start_angle;
-				private int end_angle;
-				private string unit;
-				private string convert;
-				private int thickness;	//thickness of the outline or 0 to use the default line thickness.
-				private string cc;
+				private double start_angle;
+				private double end_angle;
+				//	private Point<double> start;
+				//	private Point<double> end;
+				private int thickness;
+				private FillStyle fill;
 			}
 
-			public class Text
+			public class Text : DrawRecord
 			{
-
-				public Text()
+				static Text()
 				{
-
+					RecordNameText = "T";
+				}
+				public Text(string line)
+					: base(RecordNameText)
+				{
+					string[] divstrs = line.Split(' ');
+					try
+					{
+						if (divstrs[0] != RecordName)
+						{
+							throw new ArgumentException();
+						}
+						//TextOrientation列挙体にキャスト可能なら
+						if (Enum.IsDefined(typeof(TextOrientation), int.Parse(divstrs[1])))
+						{
+							Orientation = (TextOrientation)(int.Parse(divstrs[1]));
+						}
+						else
+						{
+							throw new ArgumentException();
+						}
+						
+					}
+					catch (ArgumentOutOfRangeException)
+					{
+						throw new ArgumentException();
+					}
+					catch (FormatException)
+					{
+						throw new ArgumentException();
+					}
 				}
 
-				public string ToString()
+				public override string ToString()
 				{
 					throw new NotImplementedException();
 				}
 
-				private int orientation;
-				private string unit;
-				private string convert;
+				public TextOrientation Orientation { get { return orientation; } set { orientation = value; } }
+				public Point<int> Location { get { return point; } set { point = value; } }
+				public int TextSize { get { return text_size; } set { text_size = value; } }
+				public string Text { get { return text; } set { text = value; } }
+				public bool Italic
+				{
+					get { return (italic == TextItalic.Italic ? true : false); }
+					set { italic = (value == true ? TextItalic.Italic : TextItalic.Normal); }
+				}
+				public bool Bold
+				{
+					get { return (bold == TextBold.Bold ? true : false); }
+					set { bold = (value == true ? TextBold.Bold : TextBold.Normal); }
+				}
+				public HorizontalAlign HAlign { get { return h_align; } set { h_align = value; } }
+				public VerticalAlign VAlign { get { return v_align; } set { v_align = value; } }
+
+				private static readonly string RecordNameText;
+
+				private TextOrientation orientation;
+				private Point<int> point;
+				private int text_size;
+				private int text_type;		//???
 				private string text;
+				private TextItalic italic;
+				private TextBold bold;
+				private HorizontalAlign h_align;
+				private VerticalAlign v_align;
 			}
 
 			public class Pin
@@ -1080,6 +1322,46 @@ namespace KiLibraries
 
 
 
+			}
+
+			
+
+			/// <summary>
+			/// 塗りつぶし表現の選択
+			/// </summary>
+			public enum FillStyle
+			{
+				N,		//塗りつぶしなし
+				F,		//全面色で塗りつぶす
+				f		//背景色で塗りつぶす
+			}
+
+			/// <summary>
+			/// 変換表現（ド・モルガン表現）の選択
+			/// </summary>
+			public enum ConvertExpression : int
+			{
+				NotUse = 0,		//変換表現の採用に関係なく，どちらの表現タイプでも共通して使用する．変換表現を用いない場合もこちら．
+				Type1 = 1,		//変換表現1で使用する
+				Type2 = 2		//変換表現2で使用する
+			}
+
+			public enum TextOrientation : int
+			{
+				Holyzontal = 0,
+				Vertical = 900
+			}
+
+			public enum TextItalic
+			{
+				Normal,
+				Italic
+			}
+
+			public enum TextBold : int
+			{
+				Normal = 0,
+				Bold = 1
 			}
 
 			public static class Etype
@@ -1109,25 +1391,20 @@ namespace KiLibraries
 				public readonly static string FallingEdgeClock = "F";
 				public readonly static string NonLogic = "X";
 			}
-
-			public enum FillStyle
-			{
-				N,F,f
-			}
 		}
 
 		
 		
 
-		public struct Point
+		public struct Point<Type>
 		{
-			public Point(int x, int y)
+			public Point(Type x, Type y)
 			{
 				this.x = x;
 				this.y = y;
 			}
-			public int x;
-			public int y;
+			public Type x;
+			public Type y;
 		}
 	
 	

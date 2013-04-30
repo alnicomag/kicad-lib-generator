@@ -75,8 +75,9 @@
 			// ToolStripMenuItem_Open
 			// 
 			this.ToolStripMenuItem_Open.Name = "ToolStripMenuItem_Open";
-			this.ToolStripMenuItem_Open.Size = new System.Drawing.Size(100, 22);
+			this.ToolStripMenuItem_Open.Size = new System.Drawing.Size(152, 22);
 			this.ToolStripMenuItem_Open.Text = "開く";
+			this.ToolStripMenuItem_Open.Click += new System.EventHandler(this.ToolStripMenuItem_Open_Click);
 			// 
 			// statusStrip1
 			// 
