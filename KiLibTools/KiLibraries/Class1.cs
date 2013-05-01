@@ -143,7 +143,7 @@ namespace KiLibraries
 				}
 			}
 
-			public string ToString()
+			public override string ToString()
 			{
 				string field;
 				field = "F" + FieldNumber.ToString() + " "
@@ -947,7 +947,7 @@ namespace KiLibraries
 			//		this.expression = expression;
 				}
 
-				public abstract string ToString() { return ""; }
+				public new abstract string ToString();
 
 				public string RecordName { get { return record_name; } }
 				public int UnitID { get { return unit_id; } set { unit_id = value; } }
@@ -1140,6 +1140,10 @@ namespace KiLibraries
 					{
 						throw new ArgumentException();
 					}
+					catch (ArgumentException)
+					{
+						throw;
+					}
 					catch (FormatException)
 					{
 						throw new ArgumentException();
@@ -1203,6 +1207,10 @@ namespace KiLibraries
 					{
 						throw new ArgumentException();
 					}
+					catch(ArgumentException)
+					{
+						throw;
+					}
 					catch (FormatException)
 					{
 						throw new ArgumentException();
@@ -1261,13 +1269,29 @@ namespace KiLibraries
 						{
 							throw new ArgumentException();
 						}
-						
+
+						Location = new Point<int>(int.Parse(divstrs[2]), int.Parse(divstrs[3]));
+						TextSize = int.Parse(divstrs[4]);
+						UnitID = int.Parse(divstrs[6]);
+						Expression = (ConvertExpression)(Enum.Parse(typeof(ConvertExpression), divstrs[7]));
+						TextValue = divstrs[8];
+
+						//プロパティにアクセスした方がよさげ．．．
+						italic = (TextItalic)(Enum.Parse(typeof(TextItalic), divstrs[9]));
+						bold = (TextBold)(Enum.Parse(typeof(TextBold), divstrs[10]));
+
+						HAlign = (HorizontalAlign)(Enum.Parse(typeof(HorizontalAlign), divstrs[11]));
+						VAlign = (VerticalAlign)(Enum.Parse(typeof(VerticalAlign), divstrs[12]));
 					}
-					catch (ArgumentOutOfRangeException)
+					catch (ArgumentOutOfRangeException)		//divstr[]での例外
 					{
 						throw new ArgumentException();
 					}
-					catch (FormatException)
+					catch(ArgumentException)		//Enum.Parse()での例外
+					{
+						throw;
+					}
+					catch (FormatException)		//int.Parse(string)の例外
 					{
 						throw new ArgumentException();
 					}
@@ -1281,7 +1305,7 @@ namespace KiLibraries
 				public TextOrientation Orientation { get { return orientation; } set { orientation = value; } }
 				public Point<int> Location { get { return point; } set { point = value; } }
 				public int TextSize { get { return text_size; } set { text_size = value; } }
-				public string Text { get { return text; } set { text = value; } }
+				public string TextValue { get { return text; } set { text = value; } }
 				public bool Italic
 				{
 					get { return (italic == TextItalic.Italic ? true : false); }
@@ -1308,19 +1332,24 @@ namespace KiLibraries
 				private VerticalAlign v_align;
 			}
 
-			public class Pin
+			public class Pin : DrawRecord
 			{
+				static Pin()
+				{
+					RecordNameText = "X";
+				}
 				public Pin()
+					:base(RecordNameText)
 				{
 
 				}
 
-				public string ToString()
+				public override string ToString()
 				{
 					throw new NotImplementedException();
 				}
 
-
+				private static readonly string RecordNameText;
 
 			}
 
