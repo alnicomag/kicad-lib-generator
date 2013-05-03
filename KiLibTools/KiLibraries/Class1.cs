@@ -1349,8 +1349,20 @@ namespace KiLibraries
 					throw new NotImplementedException();
 				}
 
+				public string PinName { get { return pin_name; } set { pin_name = value; } }
+				public string PinNumber { get { return pin_number; } set { pin_number = value; } }
+
 				private static readonly string RecordNameText;
 
+				private string pin_name;
+				private string pin_number;
+				private Point<int> position;
+				private int length;
+				private PinOrientation orientation;
+				private int size_of_pin_number;
+				private int size_of_pin_name;
+				private Etype ele_type;
+				private Gstyle pin_shape;
 			}
 
 			
@@ -1391,6 +1403,14 @@ namespace KiLibraries
 			{
 				Normal = 0,
 				Bold = 1
+			}
+
+			public enum PinOrientation
+			{
+				U,
+				D,
+				R,
+				L
 			}
 
 			public static class Etype
