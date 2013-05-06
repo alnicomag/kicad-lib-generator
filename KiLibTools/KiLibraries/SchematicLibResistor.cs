@@ -16,9 +16,9 @@ namespace KiLibraries
 			VariableAmerican
 		}
 
-		public class ComponentOfResistor : Fields
+		public class ResistorComponent : Component
 		{
-			public ComponentOfResistor(string name, string reference, string footprint, string vendor, SymbolTagOfResistor tag)
+			public ResistorComponent(string name, string reference, string footprint, string vendor, SymbolTagOfResistor tag)
 				: base(name, reference, footprint, vendor)
 			{
 				this.tag = tag;
@@ -41,7 +41,7 @@ namespace KiLibraries
 			public Resistor(string fname)
 				: base(fname)
 			{
-				component = new List<ComponentOfResistor>();
+				components = new List<ResistorComponent>();
 				PlotSymbolMethods = new List<PlotSymbol>()
 				{
 					PlotFixedIEC,
@@ -62,7 +62,7 @@ namespace KiLibraries
 					{
 						if (args[0] == i.ToString())
 						{
-							component.Add(new ComponentOfResistor(args[1], args[2], args[3], args[4], (SymbolTagOfResistor)i));
+							components.Add(new ResistorComponent(args[1], args[2], args[3], args[4], (SymbolTagOfResistor)i));
 						}
 					}
 				}
@@ -85,17 +85,17 @@ namespace KiLibraries
 
 			private void WriteComponents(StreamWriter sw)
 			{
-				foreach (ComponentOfResistor i in component)
+				foreach (ResistorComponent i in components)
 				{
 					PlotSymbolMethods[(int)(i.tag)](sw, i);
 				}
 			}
 
-			private delegate void PlotSymbol(StreamWriter sw, ComponentOfResistor comp);
+			private delegate void PlotSymbol(StreamWriter sw, ResistorComponent comp);
 
 			private List<PlotSymbol> PlotSymbolMethods;
 
-			private void PlotFixedIEC(StreamWriter sw, ComponentOfResistor comp)
+			private void PlotFixedIEC(StreamWriter sw, ResistorComponent comp)
 			{
 				sw.WriteLine("#");
 				sw.WriteLine("# {0}", comp.ComponentName);
@@ -112,7 +112,7 @@ namespace KiLibraries
 				sw.WriteLine("ENDDRAW");
 				sw.WriteLine("ENDDEF");
 			}
-			private void PlotFixedAmerican(StreamWriter sw, ComponentOfResistor comp)
+			private void PlotFixedAmerican(StreamWriter sw, ResistorComponent comp)
 			{
 				sw.WriteLine("#");
 				sw.WriteLine("# {0}", comp.ComponentName);
@@ -129,16 +129,16 @@ namespace KiLibraries
 				sw.WriteLine("ENDDRAW");
 				sw.WriteLine("ENDDEF");
 			}
-			private void PlotVariableIEC(StreamWriter sw, ComponentOfResistor comp)
+			private void PlotVariableIEC(StreamWriter sw, ResistorComponent comp)
 			{
 
 			}
-			private void PlotVariableAmerican(StreamWriter sw, ComponentOfResistor comp)
+			private void PlotVariableAmerican(StreamWriter sw, ResistorComponent comp)
 			{
 
 			}
 
-			private List<ComponentOfResistor> component;
+			private List<ResistorComponent> components;
 
 			private readonly static string DEFAULT_FILE_NAME;
 			private readonly static string LABEL;

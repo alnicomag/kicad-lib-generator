@@ -11,3 +11,5 @@ C:\Users\tatsuya\Documents\GitHub\kicad-lib-generator\KiLibTools\SymbolViewer\ob
 C:\Users\tatsuya\Documents\GitHub\kicad-lib-generator\KiLibTools\SymbolViewer\obj\Debug\SymbolViewer.exe
 C:\Users\tatsuya\Documents\GitHub\kicad-lib-generator\KiLibTools\SymbolViewer\obj\Debug\SymbolViewer.pdb
 C:\Users\tatsuya\Documents\GitHub\kicad-lib-generator\KiLibTools\SymbolViewer\obj\Debug\SymbolViewer.Form1.resources
+C:\Users\tatsuya\Documents\GitHub\kicad-lib-generator\KiLibTools\SymbolViewer\bin\Debug\KiLibraries.dll
+C:\Users\tatsuya\Documents\GitHub\kicad-lib-generator\KiLibTools\SymbolViewer\bin\Debug\KiLibraries.pdb

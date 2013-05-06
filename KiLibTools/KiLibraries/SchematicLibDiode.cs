@@ -16,7 +16,7 @@ namespace KiLibraries
 			Undef
 		}
 
-		public class ComponentOfDiode : Fields
+		public class ComponentOfDiode : Component
 		{
 			public ComponentOfDiode(string name, string reference, string footprint, string vendor, SymbolTagOfDiode tag)
 				: base(name, reference, footprint, vendor)

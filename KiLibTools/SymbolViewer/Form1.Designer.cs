@@ -75,7 +75,7 @@
 			// ToolStripMenuItem_Open
 			// 
 			this.ToolStripMenuItem_Open.Name = "ToolStripMenuItem_Open";
-			this.ToolStripMenuItem_Open.Size = new System.Drawing.Size(152, 22);
+			this.ToolStripMenuItem_Open.Size = new System.Drawing.Size(100, 22);
 			this.ToolStripMenuItem_Open.Text = "開く";
 			this.ToolStripMenuItem_Open.Click += new System.EventHandler(this.ToolStripMenuItem_Open_Click);
 			// 
@@ -110,6 +110,7 @@
 			this.MainMenuStrip = this.menuStrip1;
 			this.Name = "Form1";
 			this.Text = "Form1";
+			this.Load += new System.EventHandler(this.Form1_Load);
 			this.menuStrip1.ResumeLayout(false);
 			this.menuStrip1.PerformLayout();
 			this.ResumeLayout(false);

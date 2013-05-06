@@ -45,6 +45,64 @@ namespace KiLibraries
 			}
 		}
 
+		public class Component
+		{
+			public Component()
+			{
+				Reference = new Field((int)FieldNumberList.Reference);
+				Value = new Field((int)FieldNumberList.Value);
+				PCBFootprint = new Field((int)FieldNumberList.PCBFootprint);
+				UserDocLink = new Field((int)FieldNumberList.UserDocLink);
+				user_fields = new List<Field>();
+				draw_records = new List<DrawSection.DrawRecord>();
+			}
+			public Component(string component_name, string reference, string footprint, string vendor)
+			{
+				ComponentName = component_name;
+				Reference = new Field((int)FieldNumberList.Reference, reference);
+				Value = new Field((int)FieldNumberList.Value, component_name);
+				PCBFootprint = new Field((int)FieldNumberList.PCBFootprint, footprint);
+				UserDocLink = new Field((int)FieldNumberList.UserDocLink);
+				//	Vendor = new Field((int)FieldNumberList.Vendor, vendor) { Name = "vendor" };
+				user_fields = new List<Field>();
+				draw_records = new List<DrawSection.DrawRecord>();
+			}
+			public string ComponentName { get; set; }
+			public string Referance { get; set; }
+			public int TextOffset { get; set; }
+			public bool DrawPinNumber { get; set; }
+			public bool DrawPinName { get; set; }
+			public int UnitCount { get; set; }
+			public bool UnitsLocked { get; set; }
+			public bool PowerType { get; set; }
+
+			public Field Reference { get; set; }
+			public Field Value { get; set; }
+			public Field PCBFootprint { get; set; }
+			public Field UserDocLink { get; set; }
+
+			//	public Field Vendor { get; set; }
+			public Field GetUserFields(int i) { throw new NotImplementedException(); }
+			public void SetUserField(int i, Field field) { throw new NotImplementedException(); }
+
+			public int RecordCount { get { return draw_records.Count; } }
+
+			public void AddDrawRecord(DrawSection.DrawRecord record)
+			{
+				draw_records.Add(record);
+			}
+			public List<DrawSection.DrawRecord> GetDrawRecords()
+			{
+				return draw_records;
+			}
+
+
+
+			private List<Field> user_fields;
+			private List<DrawSection.DrawRecord> draw_records;
+
+		}
+
 		/// <summary>
 		/// Field of SchematicLibrariesFiles (contains UserFields).
 		/// </summary>
@@ -163,13 +221,13 @@ namespace KiLibraries
 				return field;
 			}
 
-			[Obsolete]
+			
 			public void SetLibField(string line)
 			{
-				List<string> tempstrs = LineParse(line);
+				List<string> tempstrs = new List<string>(line.Split(' '));
 
 				FieldNumber = int.Parse(tempstrs[0].Substring(1, tempstrs[0].Length - 1));
-				Text = tempstrs[1];
+				Text = tempstrs[1].Substring(1, tempstrs[1].Length - 2);
 				X = int.Parse(tempstrs[2]);
 				Y = int.Parse(tempstrs[3]);
 				Size = int.Parse(tempstrs[4]);
@@ -275,27 +333,10 @@ namespace KiLibraries
 			Value,
 			PCBFootprint,
 			UserDocLink,
-			Vendor
+		//	Vendor
 		}
 
-		public class Fields
-		{
-			public Fields(string component_name, string reference, string footprint, string vendor)
-			{
-				ComponentName = component_name;
-				Reference = new Field((int)FieldNumberList.Reference, reference);
-				Value = new Field((int)FieldNumberList.Value, component_name);
-				PCBFootprint = new Field((int)FieldNumberList.PCBFootprint, footprint);
-				UserDocLink = new Field((int)FieldNumberList.UserDocLink);
-				Vendor = new Field((int)FieldNumberList.Vendor, vendor) { Name = "vendor" };
-			}
-			public string ComponentName { get; set; }
-			public Field Reference { get; set; }
-			public Field Value { get; set; }
-			public Field PCBFootprint { get; set; }
-			public Field UserDocLink { get; set; }
-			public Field Vendor { get; set; }
-		}
+		
 
 		public class ConMale : KiSchemaLibFile
 		{
@@ -958,6 +999,15 @@ namespace KiLibraries
 				protected ConvertExpression expression;
 			}
 
+			public enum Figure : int
+			{
+				Polyline = 0,
+				Rectangle,
+				Circle,
+				Arc,
+				Text,
+				Pin
+			}
 
 			/// <summary>
 			/// 複数の点を順次結ぶ折れ線
@@ -977,17 +1027,26 @@ namespace KiLibraries
 				public Polyline(string line)
 					: base(RecordNamePolyline)
 				{
-					string[] divstrs = line.Split(' ');
+					nodes = new List<Point<int>>();
+
+					List<string> divstrs = new List<string>(line.Split(' '));
+					//仕切りスペースが2文字分の場合に発生する空要素を削除
+					divstrs.RemoveAll(ls => ls == "");
+
+					if (divstrs.Count < 2)
+					{
+						throw new ArgumentException();
+					}
+					if (divstrs[0] != RecordName)
+					{
+						throw new ArgumentException();
+					}
+
 					try
 					{
-						if (divstrs[0] != RecordName)
-						{
-							throw new ArgumentException();
-						}
-
 						int number_of_points = int.Parse(divstrs[1]);
 						// divstrs[1]に記述されている点の数と実際に存在するデータの数に齟齬がないかチェック
-						if (divstrs.Length != 6 + 2 * number_of_points)
+						if (divstrs.Count != 6 + 2 * number_of_points)
 						{
 							throw new ArgumentException();
 						}
@@ -999,11 +1058,19 @@ namespace KiLibraries
 						{
 							nodes.Add(new Point<int>(int.Parse(divstrs[5 + i * 2]), int.Parse(divstrs[5 + i * 2 + 1])));
 						}
-						Fill = (FillStyle)(Enum.Parse(typeof(FillStyle), divstrs[5 + 2 * number_of_points]));
+
+						string temp = divstrs[5 + 2 * number_of_points];
+						// FillStyle列挙体に定義されている列挙体名である場合のみキャストする．（内部値を表す数値の文字列表記を除外）
+						// Enum.Parse()メソッドは，列挙体名そのものの文字列だけでなく，内部値を表す数値の文字列表記でも変換してしまう
+						if (Enum.IsDefined(typeof(FillStyle), temp))
+						{
+							Fill = (FillStyle)(Enum.Parse(typeof(FillStyle), temp));
+						}
+						else { throw new ArgumentException(); }
 					}
-					catch (ArgumentOutOfRangeException)
+					catch (ArgumentException)
 					{
-						throw new ArgumentException();
+						throw;
 					}
 					catch (FormatException)
 					{
@@ -1050,14 +1117,21 @@ namespace KiLibraries
 				public Rectangle(string line)
 					: base(RecordNameRectangle)
 				{
-					string[] divstrs = line.Split(' ');
+					List<string> divstrs = new List<string>(line.Split(' '));
+					//仕切りスペースが2文字分の場合に発生する空要素を削除
+					divstrs.RemoveAll(ls => ls == "");
+
+					if (divstrs.Count != 9)
+					{
+						throw new ArgumentException();
+					}
+					if (divstrs[0] != RecordName)
+					{
+						throw new ArgumentException();
+					}
+
 					try
 					{
-						if ((divstrs.Length != 9) & (divstrs[0] != RecordName))
-						{
-							throw new ArgumentException();
-						}
-
 						Top = Math.Max(int.Parse(divstrs[2]), int.Parse(divstrs[4]));
 						Bottom = Math.Min(int.Parse(divstrs[2]), int.Parse(divstrs[4]));
 						Left = Math.Min(int.Parse(divstrs[1]), int.Parse(divstrs[3]));
@@ -1066,11 +1140,18 @@ namespace KiLibraries
 						UnitID = int.Parse(divstrs[5]);
 						Expression = (ConvertExpression)(Enum.Parse(typeof(ConvertExpression), divstrs[6]));
 						Thickness = int.Parse(divstrs[7]);
-						Fill = (FillStyle)(Enum.Parse(typeof(FillStyle), divstrs[8]));
+
+						// FillStyle列挙体に定義されている列挙体名である場合のみキャストする．（内部値を表す数値の文字列表記を除外）
+						// Enum.Parse()メソッドは，列挙体名そのものの文字列だけでなく，内部値を表す数値の文字列表記でも変換してしまう
+						if (Enum.IsDefined(typeof(FillStyle), divstrs[8]))
+						{
+							Fill = (FillStyle)(Enum.Parse(typeof(FillStyle), divstrs[8]));
+						}
+						else { throw new ArgumentException(); }
 					}
-					catch (ArgumentOutOfRangeException)
+					catch(ArgumentException)
 					{
-						throw new ArgumentException();
+						throw;
 					}
 					catch (FormatException)
 					{
@@ -1121,24 +1202,34 @@ namespace KiLibraries
 				public Circle(string line)
 					: base(RecordNameCircle)
 				{
-					string[] divstrs = line.Split(' ');
+					List<string> divstrs = new List<string>(line.Split(' '));
+					//仕切りスペースが2文字分の場合に発生する空要素を削除
+					divstrs.RemoveAll(ls => ls == "");
+
+					if (divstrs.Count != 8)
+					{
+						throw new ArgumentException();
+					}
+					if (divstrs[0] != RecordName)
+					{
+						throw new ArgumentException();
+					}
+
 					try
 					{
-						if (divstrs[0] != RecordName)
-						{
-							throw new ArgumentException();
-						}
-
 						Center = new Point<int>(int.Parse(divstrs[1]), int.Parse(divstrs[2]));
 						Radius = int.Parse(divstrs[3]);
 						UnitID = int.Parse(divstrs[4]);
 						Expression = (ConvertExpression)(Enum.Parse(typeof(ConvertExpression), divstrs[5]));
 						Thickness = int.Parse(divstrs[6]);
-						Fill = (FillStyle)(Enum.Parse(typeof(FillStyle), divstrs[7]));
-					}
-					catch (ArgumentOutOfRangeException)
-					{
-						throw new ArgumentException();
+
+						// FillStyle列挙体に定義されている列挙体名である場合のみキャストする．（内部値を表す数値の文字列表記を除外）
+						// Enum.Parse()メソッドは，列挙体名そのものの文字列だけでなく，内部値を表す数値の文字列表記でも変換してしまう
+						if (Enum.IsDefined(typeof(FillStyle), divstrs[7]))
+						{
+							Fill = (FillStyle)(Enum.Parse(typeof(FillStyle), divstrs[7]));
+						}
+						else { throw new ArgumentException(); }
 					}
 					catch (ArgumentException)
 					{
@@ -1186,14 +1277,21 @@ namespace KiLibraries
 				public Arc(string line)
 					: base(RecordNameArc)
 				{
-					string[] divstrs = line.Split(' ');
+					List<string> divstrs = new List<string>(line.Split(' '));
+					//仕切りスペースが2文字分の場合に発生する空要素を削除
+					divstrs.RemoveAll(ls => ls == "");
+
+					if (divstrs.Count != 14)
+					{
+						throw new ArgumentException();
+					}
+					if (divstrs[0] != RecordName)
+					{
+						throw new ArgumentException();
+					}
+					
 					try
 					{
-						if (divstrs[0] != RecordName)
-						{
-							throw new ArgumentException();
-						}
-
 						Center = new Point<int>(int.Parse(divstrs[1]), int.Parse(divstrs[2]));
 						Radius = int.Parse(divstrs[3]);
 						StartAngle = double.Parse(divstrs[4]);
@@ -1201,11 +1299,14 @@ namespace KiLibraries
 						UnitID = int.Parse(divstrs[6]);
 						Expression = (ConvertExpression)(Enum.Parse(typeof(ConvertExpression), divstrs[7]));
 						Thickness = int.Parse(divstrs[8]);
-						Fill = (FillStyle)(Enum.Parse(typeof(FillStyle), divstrs[9]));
-					}
-					catch (ArgumentOutOfRangeException)
-					{
-						throw new ArgumentException();
+
+						// FillStyle列挙体に定義されている列挙体名である場合のみキャストする．（内部値を表す数値の文字列表記を除外）
+						// Enum.Parse()メソッドは，列挙体名そのものの文字列だけでなく，内部値を表す数値の文字列表記でも変換してしまう
+						if (Enum.IsDefined(typeof(FillStyle), divstrs[9]))
+						{
+							Fill = (FillStyle)(Enum.Parse(typeof(FillStyle), divstrs[9]));
+						}
+						else { throw new ArgumentException(); }
 					}
 					catch(ArgumentException)
 					{
@@ -1244,6 +1345,9 @@ namespace KiLibraries
 				private FillStyle fill;
 			}
 
+			/// <summary>
+			/// 文字
+			/// </summary>
 			public class Text : DrawRecord
 			{
 				static Text()
@@ -1253,28 +1357,28 @@ namespace KiLibraries
 				public Text(string line)
 					: base(RecordNameText)
 				{
-					string[] divstrs = line.Split(' ');
+					List<string> divstrs = new List<string>(line.Split(' '));
+					//仕切りスペースが2文字分の場合に発生する空要素を削除
+					divstrs.RemoveAll(ls => ls == "");
+
+					if (divstrs.Count != 13)
+					{
+						throw new ArgumentException();
+					}
+					if (divstrs[0] != RecordName)
+					{
+						throw new ArgumentException();
+					}
+
+					TextValue = divstrs[8];
 					try
 					{
-						if (divstrs[0] != RecordName)
-						{
-							throw new ArgumentException();
-						}
-						//TextOrientation列挙体にキャスト可能なら
-						if (Enum.IsDefined(typeof(TextOrientation), int.Parse(divstrs[1])))
-						{
-							Orientation = (TextOrientation)(int.Parse(divstrs[1]));
-						}
-						else
-						{
-							throw new ArgumentException();
-						}
-
+						Orientation = (TextOrientation)(int.Parse(divstrs[1]));
+						
 						Location = new Point<int>(int.Parse(divstrs[2]), int.Parse(divstrs[3]));
 						TextSize = int.Parse(divstrs[4]);
 						UnitID = int.Parse(divstrs[6]);
 						Expression = (ConvertExpression)(Enum.Parse(typeof(ConvertExpression), divstrs[7]));
-						TextValue = divstrs[8];
 
 						//プロパティにアクセスした方がよさげ．．．
 						italic = (TextItalic)(Enum.Parse(typeof(TextItalic), divstrs[9]));
@@ -1282,10 +1386,6 @@ namespace KiLibraries
 
 						HAlign = (HorizontalAlign)(Enum.Parse(typeof(HorizontalAlign), divstrs[11]));
 						VAlign = (VerticalAlign)(Enum.Parse(typeof(VerticalAlign), divstrs[12]));
-					}
-					catch (ArgumentOutOfRangeException)		//divstr[]での例外
-					{
-						throw new ArgumentException();
 					}
 					catch(ArgumentException)		//Enum.Parse()での例外
 					{
@@ -1332,16 +1432,73 @@ namespace KiLibraries
 				private VerticalAlign v_align;
 			}
 
+			/// <summary>
+			/// ピン
+			/// </summary>
 			public class Pin : DrawRecord
 			{
 				static Pin()
 				{
 					RecordNameText = "X";
 				}
-				public Pin()
+				public Pin(string line)
 					:base(RecordNameText)
 				{
+					List<string> divstrs = new List<string>(line.Split(' '));
+					divstrs.RemoveAll(ls => ls=="");	//仕切りスペースが2文字分の場合に発生する空要素を削除
 
+					if ((divstrs.Count != 12) & (divstrs.Count != 13))
+					{
+						throw new ArgumentException();
+					}
+					if (divstrs[0] != RecordName)
+					{
+						throw new ArgumentException();
+					}
+
+					PinName = divstrs[1];
+					PinNumber = divstrs[2];
+					try
+					{
+						Position = new Point<int>(int.Parse(divstrs[3]), int.Parse(divstrs[4]));
+						PinLength = int.Parse(divstrs[5]);
+
+						// PinOrientation列挙体に定義されている列挙体名である場合のみキャストする．（内部値を表す数値の文字列表記を除外）
+						// Enum.Parse()メソッドは，列挙体名そのものの文字列だけでなく，内部値を表す数値の文字列表記でも変換してしまう
+						if (Enum.IsDefined(typeof(PinOrientation), divstrs[6]))
+						{
+							Orientation = (PinOrientation)(Enum.Parse(typeof(PinOrientation), divstrs[6]));
+						}
+						else { throw new ArgumentException(); }
+
+						TextSizeOfPinNumber = int.Parse(divstrs[7]);
+						TextSizeOfPinName = int.Parse(divstrs[8]);
+						UnitID = int.Parse(divstrs[9]);
+						Expression = (ConvertExpression)(Enum.Parse(typeof(ConvertExpression), divstrs[10]));
+
+						if (Enum.IsDefined(typeof(EtypeOriginalString), divstrs[11]))
+						{
+							ElectricType = (Etype)(int)(EtypeOriginalString)(Enum.Parse(typeof(EtypeOriginalString), divstrs[11]));
+						}
+						else { throw new ArgumentException(); }
+
+						if (divstrs.Count == 12)
+						{
+							PinShape = Gtype.Line;
+						}
+						else
+						{
+							PinShape = (Gtype)(int)(GtypeOriginalString)(Enum.Parse(typeof(GtypeOriginalString), divstrs[12]));
+						}
+					}
+					catch (ArgumentException)		//Enum.Parse()での例外
+					{
+						throw;
+					}
+					catch (FormatException)		//int.Parse(string)の例外
+					{
+						throw new ArgumentException();
+					}
 				}
 
 				public override string ToString()
@@ -1351,6 +1508,13 @@ namespace KiLibraries
 
 				public string PinName { get { return pin_name; } set { pin_name = value; } }
 				public string PinNumber { get { return pin_number; } set { pin_number = value; } }
+				public Point<int> Position { get { return position; } set { position = value; } }
+				public int PinLength { get { return length; } set { length = value; } }
+				public PinOrientation Orientation { get { return orientation; } set { orientation = value; } }
+				public int TextSizeOfPinNumber { get { return size_of_pin_number; } set { size_of_pin_number = value; } }
+				public int TextSizeOfPinName { get { return size_of_pin_name; } set { size_of_pin_name = value; } }
+				public Etype ElectricType { get { return ele_type; } set { ele_type = value; } }
+				public Gtype PinShape { get { return pin_shape; } set { pin_shape = value; } }
 
 				private static readonly string RecordNameText;
 
@@ -1362,23 +1526,34 @@ namespace KiLibraries
 				private int size_of_pin_number;
 				private int size_of_pin_name;
 				private Etype ele_type;
-				private Gstyle pin_shape;
+				private Gtype pin_shape;
 			}
 
 			
 
 			/// <summary>
-			/// 塗りつぶし表現の選択
+			/// 塗りつぶし表現の選択．
+			/// ファイルでの表記は文字列側．
 			/// </summary>
 			public enum FillStyle
 			{
-				N,		//塗りつぶしなし
-				F,		//全面色で塗りつぶす
-				f		//背景色で塗りつぶす
+				/// <summary>
+				/// 塗りつぶしなし
+				/// </summary>
+				N,
+				/// <summary>
+				/// 全面色で塗りつぶす
+				/// </summary>
+				F,
+				/// <summary>
+				/// 背景色で塗りつぶす
+				/// </summary>
+				f
 			}
 
 			/// <summary>
-			/// 変換表現（ド・モルガン表現）の選択
+			/// 変換表現（ド・モルガン表現）の選択．
+			/// ファイルでの表記は数値側．
 			/// </summary>
 			public enum ConvertExpression : int
 			{
@@ -1387,24 +1562,36 @@ namespace KiLibraries
 				Type2 = 2		//変換表現2で使用する
 			}
 
+			/// <summary>
+			/// ファイルでの表記は数値側
+			/// </summary>
 			public enum TextOrientation : int
 			{
 				Holyzontal = 0,
 				Vertical = 900
 			}
 
+			/// <summary>
+			/// ファイルでの表記は文字列側
+			/// </summary>
 			public enum TextItalic
 			{
 				Normal,
 				Italic
 			}
 
+			/// <summary>
+			/// ファイルでの表記は数値側
+			/// </summary>
 			public enum TextBold : int
 			{
 				Normal = 0,
 				Bold = 1
 			}
 
+			/// <summary>
+			/// ファイルでの表記は文字列側
+			/// </summary>
 			public enum PinOrientation
 			{
 				U,
@@ -1413,6 +1600,37 @@ namespace KiLibraries
 				L
 			}
 
+			public enum EtypeOriginalString : int
+			{
+				I = 0,
+				O,
+				B,
+				T,
+				P,
+				U,
+				W,
+				w,
+				C,
+				E,
+				N
+			}
+
+			public enum Etype : int
+			{
+				Input = 0,
+				Oouput,
+				BiDi,
+				Tristate,
+				Passive,
+				Unspecified,
+				PowerInput,
+				PowerOutput,
+				OpenCollector,
+				OpenEmittor,
+				NotConnected
+			}
+
+			/*
 			public static class Etype
 			{
 				public readonly static string Input = "I";
@@ -1427,8 +1645,35 @@ namespace KiLibraries
 				public readonly static string OpenEmittor = "E";
 				public readonly static string NotConnected = "N";
 			}
+			*/
 
-			public static class Gstyle
+			public enum GtypeOriginalString : int
+			{
+				I = 0,
+				C,
+				CI,
+				L,
+				CL,
+				V,
+				F,
+				X
+			}
+
+			public enum Gtype : int
+			{
+				Inverted=0,		//反転
+				Clock,			//クロック
+				InvertedClock,	//反転クロック
+				InputLow,		//負論理入力
+				ClockLow,		//負論理クロック
+				OutputLow,		//負論理出力
+				FallingEdgeClock,	//立下りエッジクロック
+				NonLogic,		//非論理
+				Line			//標準
+			}
+
+			/*
+			public static class Gtype
 			{
 				public readonly static string Line = "";
 				public readonly static string Inverted = "I";
@@ -1440,6 +1685,7 @@ namespace KiLibraries
 				public readonly static string FallingEdgeClock = "F";
 				public readonly static string NonLogic = "X";
 			}
+			*/
 		}
 
 		

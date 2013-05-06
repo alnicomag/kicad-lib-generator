@@ -19,7 +19,7 @@ namespace KiLibraries
 			Earth
 		}
 
-		public class ComponentOfPowerSupply : Fields
+		public class ComponentOfPowerSupply : Component
 		{
 			public ComponentOfPowerSupply(string name, SymbolTagOfPowerSupply tag, string footprint, string vendor)
 				: base(name, "#PWR", footprint, vendor)

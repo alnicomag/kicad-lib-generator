@@ -15,7 +15,7 @@ namespace KiLibraries
 			NonePole
 		}
 
-		public class ComponentOfCapacitor : Fields
+		public class ComponentOfCapacitor : Component
 		{
 			public ComponentOfCapacitor(string name, string reference, string footprint, string vendor, SymbolTagOfCapacitor tag)
 				: base(name, reference, footprint, vendor)

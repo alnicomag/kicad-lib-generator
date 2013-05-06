@@ -12,6 +12,9 @@ using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using System.IO;
 
+using KiLibraries.SchematicLib.DrawSection;
+using KiLibraries.SchematicLib;
+
 namespace SymbolViewer
 {
 	public partial class Form1 : Form
@@ -19,7 +22,25 @@ namespace SymbolViewer
 		public Form1()
 		{
 			InitializeComponent();
+			
+			string a = "1";
+			PinOrientation orientation;
+			/*
+			if (Enum.IsDefined(typeof(PinOrientation), a))
+			{
+				orientation = (PinOrientation)(Enum.Parse(typeof(PinOrientation), a));
+			}
+			else
+			{
+				throw new ArgumentException();
+			}
+			*/
+		//	orientation = (PinOrientation)(Enum.Parse(typeof(PinOrientation), a));
+
+			read_components = new List<KiLibraries.SchematicLib.Component>();
 		}
+
+		List<KiLibraries.SchematicLib.Component> read_components;
 
 		private void SetProjection()
 		{
@@ -127,8 +148,86 @@ namespace SymbolViewer
 
 			using (StreamReader sr = new StreamReader(stream))
 			{
+				sr.ReadLine();
+				sr.ReadLine();
+
+				string line_str;
+				while (sr.Peek()>-1)
+				{
+					line_str = sr.ReadLine();
+					if (line_str.Substring(0, 1) != "#")
+					{
+						read_components.Add(new KiLibraries.SchematicLib.Component());
+						List<string> div = new List<string>(line_str.Split(' '));
+						read_components[read_components.Count - 1].ComponentName = div[1];
+						read_components[read_components.Count - 1].Referance = div[2];
+						read_components[read_components.Count - 1].TextOffset = int.Parse(div[4]);
+						read_components[read_components.Count - 1].DrawPinNumber = (div[5] == "Y" ? true : false);
+						read_components[read_components.Count - 1].DrawPinName = (div[6] == "Y" ? true : false);
+						read_components[read_components.Count - 1].UnitCount = int.Parse(div[7]);
+						read_components[read_components.Count - 1].UnitsLocked = (div[8] == "L" ? true : false);
+						read_components[read_components.Count - 1].PowerType = (div[9] == "P" ? true : false);
+						while ((line_str = sr.ReadLine())!="DRAW")
+						{
+							
+								if (line_str.Substring(1, 1) == "0")
+								{
+									read_components[read_components.Count - 1].Reference.SetLibField(line_str);
+								}
+								else if (line_str.Substring(1, 1) == "1")
+								{
+									read_components[read_components.Count - 1].Value.SetLibField(line_str);
+								}
+								else if (line_str.Substring(1, 1) == "2")
+								{
+									read_components[read_components.Count - 1].PCBFootprint.SetLibField(line_str);
+								}
+								else if (line_str.Substring(1, 1) == "3")
+								{
+									read_components[read_components.Count - 1].UserDocLink.SetLibField(line_str);
+								}
+							
+						}
+						while ((line_str = sr.ReadLine()) != "ENDDRAW")
+						{
+							switch (line_str.Substring(0, 1))
+							{
+								case "P":
+									read_components[read_components.Count - 1].AddDrawRecord(new Polyline(line_str));
+									break;
+								case "S":
+									read_components[read_components.Count - 1].AddDrawRecord(new KiLibraries.SchematicLib.DrawSection.Rectangle(line_str));
+									break;
+								case "C":
+									read_components[read_components.Count - 1].AddDrawRecord(new Circle(line_str));
+									break;
+								case "A":
+									read_components[read_components.Count - 1].AddDrawRecord(new Arc(line_str));
+									break;
+								case "T":
+									read_components[read_components.Count - 1].AddDrawRecord(new Text(line_str));
+									break;
+								case "X":
+									read_components[read_components.Count - 1].AddDrawRecord(new Pin(line_str));
+									break;
+							}
+						}
+						sr.ReadLine();		//ENDDEF読み飛ばし
+					}
+				}
 
 			}
+
+			foreach (KiLibraries.SchematicLib.Component i in read_components)
+			{
+				listBox1.Items.Add(i.ComponentName);
+			}
+			
+		}
+
+		private void Form1_Load(object sender, EventArgs e)
+		{
+
 		}
 
 	}
