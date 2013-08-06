@@ -1,0 +1,7 @@
+Battery
+Crystal
+
+ピンのバリエーション
+TR,FET,LED
+
+標準ロジック
