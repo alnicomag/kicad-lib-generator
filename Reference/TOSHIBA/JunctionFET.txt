@@ -1,0 +1,16 @@
+﻿品番	ライフサイクル	極性	V<sub>GDS</sub> (Max)(V)	I<sub>G</sub> (Max)(mA)	I<sub>DSS</sub> (Max)(mA)	I<sub>DSS</sub> (Min)(mA)	&#124;Yfs&#124; (Min)(mS)	ピン数	面実装区分	パッケージ名(Toshiba)
+2SK208		N-ch	-50	10	6.5	0.3	1.2	3	Y	S-Mini
+2SK209		N-ch	-50	10	14	1.2	4	3	Y	S-Mini
+2SK2145		N-ch x 2	-50	10	14	1.2	4	5	Y	SMV
+2SK3320		N-ch x 2	-50	10	14	1.2	4	5	Y	USV
+2SK3376CT		N-ch	-20	10	0.48	0.08	1.4	3	Y	CST3
+2SK3376MFV		N-ch	-20	10	0.48	0.08	1.4	3	Y	VESM
+2SK3582CT		N-ch	-20	10	0.3	0.08	1	3	Y	CST3
+2SK3582MFV		N-ch	-20	10	0.3	0.08	1	3	Y	VESM
+2SK3857CT		N-ch	-20	10	0.35	0.14	1.3	3	Y	CST3
+2SK3857MFV		N-ch	-20	10	0.35	0.14	1.3	3	Y	VESM
+2SK4059CT		N-ch	-20	10	0.5	0.14	1.85	3	Y	CST3
+2SK4059MFV		N-ch	-20	10	0.5	0.14	1.85	3	Y	VESM
+2SK879		N-ch	-50	10	6.5	0.3	1.2	3	Y	USM
+2SK880		N-ch	-50	10	14	1.2	4	3	Y	USM
+TTK101MFV		N-ch	-20	10	0.35	0.14	0.65	3	Y	VESM

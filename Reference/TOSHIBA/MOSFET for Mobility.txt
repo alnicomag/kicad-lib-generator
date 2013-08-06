@@ -1,0 +1,57 @@
+﻿品番	ライフサイクル	パッケージ名(Toshiba)	極性	V<sub>DSS</sub>(V)	V<sub>GSS</sub>(V)	I<sub>D</sub>(A)	P<sub>D</sub>(W)	R<sub>DS(ON)</sub>Max(Ω)&#124;V<sub>GS</sub>&#124;=2.5V	R<sub>DS(ON)</sub>Max(Ω)&#124;V<sub>GS</sub>&#124;=4V	R<sub>DS(ON)</sub>Max(Ω)&#124;V<sub>GS</sub>&#124;=4.5V	R<sub>DS(ON)</sub>Max(Ω)&#124;V<sub>GS</sub>&#124;=6V	R<sub>DS(ON)</sub>Max(Ω)&#124;V<sub>GS</sub>&#124;=10V	Qg(nC)	Tch(℃)	RoHS	端子処理<sup>(注3)</sup>	Mold	AEC-Q101
+TJ100F04M3L		TO-220SM(W)	P-ch	-40		-100	250				0.0054	0.0036	250	175	端子Pbフリー	SnAg		適合
+TJ100F06M3L		TO-220SM(W)	P-ch	-60		-100	250				0.0107	0.0071	250	175	端子Pbフリー	SnAg		適合
+TJ10S04M3L		DPAK+	P-ch	-40		-10	27				0.062	0.044	19	175	端子Pbフリー	SnAg	ハロゲンフリー	適合
+TJ150F04M3L		TO-220SM(W)	P-ch	-40		-150	300				0.0042	0.0028	390	175	端子Pbフリー	SnAg		適合
+TJ150F06M3L		TO-220SM(W)	P-ch	-60		-150	300				0.0061	0.0056	420	175	端子Pbフリー	SnAg		適合
+TJ15S06M3L		DPAK+	P-ch	-60		-15	41				0.063	0.05	36	175	端子Pbフリー	SnAg	ハロゲンフリー	適合
+TJ20S04M3L		DPAK+	P-ch	-40		-20	41				0.032	0.0222	37	175	端子Pbフリー	SnAg	ハロゲンフリー	適合
+TJ30S06M3L		DPAK+	P-ch	-60		-30	68				0.028	0.0218	80	175	端子Pbフリー	SnAg	ハロゲンフリー	適合
+TJ40S04M3L		DPAK+	P-ch	-40		-40	68				0.013	0.0091	83	175	端子Pbフリー	SnAg	ハロゲンフリー	適合
+TJ50S06M3L		DPAK+	P-ch	-60		-50	90				0.0174	0.0138	124	175	端子Pbフリー	SnAg	ハロゲンフリー	適合
+TJ60S04M3L		DPAK+	P-ch	-40		-60	90				0.0094	0.0063	125	175	端子Pbフリー	SnAg	ハロゲンフリー	適合
+TJ60S06M3L		DPAK+	P-ch	-60		-60	100				0.0145	0.0112	156	175	端子Pbフリー	SnAg	ハロゲンフリー	適合
+TJ80S04M3L		DPAK+	P-ch	-40		-80	100				0.0079	0.0052	158	175	端子Pbフリー	SnAg	ハロゲンフリー	適合
+TJ8S06M3L		DPAK+	P-ch	-60		-8	27				0.13	0.104	19	175	端子Pbフリー	SnAg	ハロゲンフリー	適合
+TK100F04K3L		TO-220SM(W)	N-ch	40		100	180				0.0045	0.003	105	175	端子Pbフリー	SnAg		適合
+TK100F04K3		TO-220SM(W)	N-ch	40		100	180					0.003	102	175	端子Pbフリー	SnAg		適合
+TK100F06K3		TO-220SM(W)	N-ch	60		100	180					0.005	98	175	端子Pbフリー	SnAg		適合
+TK100S04N1L		DPAK+	N-ch	40		100	100			0.0045		0.0023	76	175	端子Pbフリー	SnAg	ハロゲンフリー	適合
+TK10S04K3L		DPAK+	N-ch	40		10	25				0.054	0.028	10	175	端子Pbフリー	SnAg	ハロゲンフリー	適合
+TK130F06K3		TO-220SM(W)	N-ch	60		130	300					0.0034	170	175	端子Pbフリー	SnAg		適合
+TK150F04K3L		TO-220SM(W)	N-ch	40		150	300				0.0031	0.0021	190	175	端子Pbフリー	SnAg		適合
+TK150F04K3		TO-220SM(W)	N-ch	40		150	300					0.0021	166	175	端子Pbフリー	SnAg		適合
+TK20S04K3L		DPAK+	N-ch	40		20	38				0.026	0.014	18	175	端子Pbフリー	SnAg	ハロゲンフリー	適合
+TK20S06K3L		DPAK+	N-ch	60		20	38				0.04	0.029	18	175	端子Pbフリー	SnAg	ハロゲンフリー	適合
+TK30S06K3L		DPAK+	N-ch	60		30	58				0.03	0.018	28	175	端子Pbフリー	SnAg	ハロゲンフリー	適合
+TK35S04K3L		DPAK+	N-ch	40		35	58				0.015	0.0103	28	175	端子Pbフリー	SnAg	ハロゲンフリー	適合
+TK40S10K3Z		DPAK+	N-ch	100		40	93						61	175	端子Pbフリー	SnAg	ハロゲンフリー	適合
+TK50A04K3		TO-220SIS	N-ch	40		50	42					0.0035	102	175	端子Pbフリー	SnAgCu		
+TK50S04K3L		DPAK+	N-ch	40		50	68				0.01	0.0054	42	175	端子Pbフリー	SnAg	ハロゲンフリー	適合
+TK55S10N1		DPAK+	N-ch	100		55	100					0.0065	49	175	端子Pbフリー	SnAg	ハロゲンフリー	適合
+TK60S06K3L		DPAK+	N-ch	60		60	88				0.012	0.008	60	175	端子Pbフリー	SnAg	ハロゲンフリー	適合
+TK65S04K3L		DPAK+	N-ch	40		65	88				0.0079	0.0045	63	175	端子Pbフリー	SnAg	ハロゲンフリー	適合
+TK80A04K3L		TO-220SIS	N-ch	40		80	48				0.0035	0.0024	190	175	端子Pbフリー	SnAgCu		
+TK80F08K3		TO-220SM(W)	N-ch	75		80	300					0.0043	175	175	端子Pbフリー	SnAg		適合
+TK80S04K3L		DPAK+	N-ch	40		80	100				0.0048	0.0031	87	175	端子Pbフリー	SnAg	ハロゲンフリー	適合
+TK80S06K3L		DPAK+	N-ch	60		80	100				0.0078	0.0055	85	175	端子Pbフリー	SnAg	ハロゲンフリー	適合
+TK8S06K3L		DPAK+	N-ch	60		8	25				0.08	0.054	10	175	端子Pbフリー	SnAg	ハロゲンフリー	適合
+TPCA8083		SOP Advance	N-ch	40		60	84				0.0056	0.0033	83	175	端子Pbフリー	SnAg	ハロゲンフリー	
+TPCA8084		SOP Advance	N-ch	60		60	84				0.008	0.0053	83	175	端子Pbフリー	SnAg	ハロゲンフリー	
+TPCA8085		SOP Advance	N-ch	40		40	55				0.0104	0.0057	41	175	端子Pbフリー	SnAg	ハロゲンフリー	
+TPCA8086		SOP Advance	N-ch	60		35	55				0.0166	0.0112	41	175	端子Pbフリー	SnAg	ハロゲンフリー	
+TPCC8069		TSON Advance	N-ch	40		30	46.8				0.0141	0.0081	34	175	端子Pbフリー	PureSn	ハロゲンフリー	
+TPCC8070		TSON Advance	N-ch	60		30	46.8				0.0213	0.0135	34	175	端子Pbフリー	PureSn	ハロゲンフリー	
+TPCC8106		TSON Advance	P-ch	-40		-30	46.8				0.0189	0.0123	66	175	端子Pbフリー	PureSn	ハロゲンフリー	
+TPCC8107		TSON Advance	P-ch	-60		-25	46.8				0.0429	0.0305	63	175	端子Pbフリー	PureSn	ハロゲンフリー	
+TPCP8009		PS-8	N-ch	40		10	2.01				0.0195	0.0119	25.1	175	RoHS compatible	PureSn/SnAg	ハロゲンフリー	
+TPCP8010		PS-8	N-ch	40		6	2.01				0.0312	0.0248	13.1	175	RoHS compatible	PureSn/SnAg	ハロゲンフリー	
+TPCP8011		PS-8	N-ch	40		5	1.96				0.0416	0.0332	11.8	175	RoHS compatible	PureSn/SnAg	ハロゲンフリー	
+TPCP8012		PS-8	N-ch	60		8	2.01				0.0237	0.0195	26.6	175	RoHS compatible	PureSn/SnAg	ハロゲンフリー	
+TPCP8013		PS-8	N-ch	60		4	1.96				0.0633	0.054	12	175	RoHS compatible	PureSn/SnAg	ハロゲンフリー	
+TPCP8107		PS-8	P-ch	-40		-8	2.01				0.0269	0.0181	44.6	175	RoHS compatible	PureSn/SnAg	ハロゲンフリー	
+TPCP8109	新製品	PS-8	P-ch	-40		-4.5	1.96				0.0768	0.0523	18	175	RoHS compatible	PureSn/SnAg	ハロゲンフリー	
+TPCP8110	新製品	PS-8	P-ch	-60		-5	2.01				0.0532	0.0395	45	175	RoHS compatible	PureSn/SnAg	ハロゲンフリー	
+TPCP8111	新製品	PS-8	P-ch	-60		-3	1.96				0.1584	0.117	17	175	RoHS compatible	PureSn/SnAg	ハロゲンフリー	
+TPCP8207		PS-8	N-ch x 2	40		5	1.77					0.0378	11.8	175	RoHS compatible	PureSn/SnAg	ハロゲンフリー	
+TPCP8407	新製品	PS-8	N-ch + P-ch	-40		-4	1.96					0.0568	18	175	RoHS compatible	PureSn/SnAg	ハロゲンフリー	
