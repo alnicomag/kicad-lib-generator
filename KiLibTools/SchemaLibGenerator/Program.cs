@@ -37,7 +37,7 @@ namespace SchemaLibGenerator
 			PowerSupply ps = new PowerSupply();
 			Photo pd = new Photo();
 			Diode d = new Diode();
-
+			
 			using (StreamReader sr = new StreamReader(stream))
 			{
 				string line;

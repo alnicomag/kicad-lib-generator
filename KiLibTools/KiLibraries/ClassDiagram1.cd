@@ -64,7 +64,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="KiLibraries.SchematicLib.ComponentOfCapacitor">
-    <Position X="18.25" Y="19" Width="1.5" />
+    <Position X="21.75" Y="19.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>SchematicLibCapacitor.cs</FileName>
@@ -85,7 +85,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="KiLibraries.SchematicLib.ComponentOfDiode">
-    <Position X="22.75" Y="19" Width="1.5" />
+    <Position X="25.75" Y="19" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>SchematicLibDiode.cs</FileName>
@@ -99,7 +99,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="KiLibraries.SchematicLib.ComponentOfPowerSupply">
-    <Position X="16" Y="19" Width="1.5" />
+    <Position X="13.75" Y="19.25" Width="7.25" />
     <TypeIdentifier>
       <HashCode>AAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>SchematicLibPowerSupply.cs</FileName>
@@ -120,7 +120,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="KiLibraries.SchematicLib.ResistorComponent">
-    <Position X="20.5" Y="19" Width="1.5" />
+    <Position X="23.5" Y="19.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>SchematicLibResistor.cs</FileName>
